@@ -1,0 +1,4 @@
+# 项目排除路径
+/vue/node_modules/!/.idea/
+/.idea/*
+/springboot/target/

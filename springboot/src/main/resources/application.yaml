@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    username: root
+    password: dir99
+    url: jdbc:mysql://localhost:3306/project_spring_vue?useSSL=false&serverTimezone=GMT%2d8
+#    url: jdbc:mysql://39.107.102.145:3306/project_spring_vue?useSSL=false&serverTimezone=GMT%2d8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+server:
+  port: 8080
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+#files:
+#  upload:
+##    path: /home/files/
+#    path: C:/Users/Young/Desktop/小案例/2023前后端分离项目/files/
