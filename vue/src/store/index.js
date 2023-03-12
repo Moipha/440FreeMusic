@@ -6,15 +6,15 @@ Vue.use(Vuex)
 const actions = {}
 //准备mutations，用于操作state中的数据
 const mutations = {
-    REVERSE(state){
-        state.isCollapse = !state.isCollapse
-    },
+    //设置主题色
+    setTheme(state,theme){
+        state.theme = theme
+    }
 }
 //准备state，用于存放数据
 const state = {
-    isCollapse: false,
-    currentPath: '',
-    afterRegisterUsername: ''
+    //目前主题色
+    theme: 'black'
 }
 //创建并导出store
 export default new Vuex.Store({

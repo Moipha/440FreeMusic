@@ -10,7 +10,8 @@ import store from './store'
 
 Vue.config.productionTip = false
 Vue.use(VueRouter)
-Vue.use(ElementUI,{size:"small"})
+//使用element-ui，设置大小和默认主题色
+Vue.use(ElementUI,{size:"small",theme:'normal'})
 //设置配置后的axios
 Vue.prototype.request = request
 

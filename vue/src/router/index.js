@@ -1,5 +1,6 @@
 import VueRouter from "vue-router"
 import store from "@/store";
+import Mine from "@/pages/Mine";
 
 const router = new VueRouter({
     routes: [
@@ -18,6 +19,21 @@ const router = new VueRouter({
                     name: 'Register',
                     component: () => import('@/pages/Register')
                 },
+                {
+                    path: '/setting',
+                    name: 'Setting',
+                    component: () => import('@/pages/Setting')
+                },
+                {
+                    path: '/home',
+                    name: 'Home',
+                    component: () => import("@/pages/Home")
+                },
+                {
+                    path: '/mine',
+                    name: 'Mine',
+                    component: ()=>import("@/pages/Mine")
+                }
             ]
         },
         {
@@ -25,7 +41,6 @@ const router = new VueRouter({
             name: 'About',
             component: () => import('@/pages/About')
         },
-
         {
             path: '/404',
             name: 'NotFound',
