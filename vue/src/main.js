@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import VueRouter from 'vue-router'
-import router from "@/router"
+import {router,getThis} from "@/router"
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import './assets/global.css'
@@ -15,7 +15,7 @@ Vue.use(ElementUI,{size:"small",theme:'normal'})
 //设置配置后的axios
 Vue.prototype.request = request
 
-new Vue({
+const v = new Vue({
   render: h => h(App),
   router,
   store,
@@ -24,3 +24,5 @@ new Vue({
     Vue.prototype.$bus = this
   }
 }).$mount('#app')
+
+getThis(v)

@@ -2,7 +2,7 @@ import VueRouter from "vue-router"
 import store from "@/store";
 import Mine from "@/pages/Mine";
 
-const router = new VueRouter({
+export const router = new VueRouter({
     routes: [
         {
             path: '/',
@@ -27,7 +27,14 @@ const router = new VueRouter({
                 {
                     path: '/home',
                     name: 'Home',
-                    component: () => import("@/pages/Home")
+                    component: () => import("@/pages/Home"),
+                    children: [
+                        {
+                            path: 'recent',
+                            name: 'Recent',
+                            component: () => import("@/pages/Recent")
+                        }
+                    ]
                 },
                 {
                     path: '/mine',
@@ -118,5 +125,28 @@ const router = new VueRouter({
 //     }
 //     next()
 // })
+let _this = ''
+export function getThis(that){
+    _this = that
+}
+
+router.beforeEach((to, from, next) => {
+    //如果需要通过守卫
+    if(store.state.need){
+        store.commit("addVisited",to.path)
+    }else{
+        //前进或者后退，修改need为true
+        store.state.need = true
+    }
+    // console.log('当前索引'+store.state.index)
+    // console.log('数组长度'+store.state.visitedRoutes.length)
+    // console.log('当前数组',store.state.visitedRoutes)
+    if(_this!==''){
+        _this.$bus.$emit('changeActiveTab',to.fullPath)
+    }
+    next()
+})
+
+
 
 export default router

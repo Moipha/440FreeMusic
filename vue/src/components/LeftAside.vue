@@ -5,11 +5,11 @@
              :collapse-transition="false"
              router
              ref="menu"
-             :default-active="$route.path"
+             :default-active="$route.path !== '/home/recent' ? $route.path : '/home'"
     >
       <!--头像和登录键-->
-      <div style="height: 40px; line-height: 40px; text-align: center;margin: 32px 12px 20px" @click="login">
-        <span><el-avatar :size="40"/></span>
+      <div style="height: 40px; line-height: 40px; text-align: center;margin: 32px 12px 20px" @click="login" >
+        <span><el-avatar :size="40" :src="defaultUrl"/></span>
         <span style="float: right;cursor: pointer;font-weight: 700;margin-left: 12px" class="clickToLogin">
           点击登录
           <span class="el-icon-arrow-right" style="margin-left: 85px;font-weight: 800"/>
@@ -35,11 +35,16 @@
 export default {
   name: "LeftAside",
   data() {
-    return {}
+    return {
+      defaultUrl: require('@/assets/avatar.jpg')
+    }
   },
   methods:{
     login(){
-      this.$router.push('/login')
+      //如果当前页面不是login的话才进行跳转
+      if(this.$router.currentRoute.fullPath !== '/login'){
+        this.$router.push('/login')
+      }
     }
   },
 }
@@ -51,7 +56,7 @@ export default {
 }
 /*点击登录悬浮*/
 .clickToLogin:hover .el-icon-arrow-right,.clickToLogin:hover{
-  color: RGB(60, 126, 255);
+  color: var(--active);
 }
 .clickToLogin *,.clickToLogin{
   transition: 0.2s;
@@ -66,7 +71,7 @@ export default {
   font-weight: 600;
 }
 .leftSection:hover{
-  background-color: #666666;
+  background-color: var(--hover);
 }
 /*响应元素*/
 .leftSection.is-active {

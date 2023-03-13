@@ -6,3 +6,8 @@ html,body,div{
 html,body{
     height: 100%;
 }
+*{
+    user-select: none;
+    transition: 0.2s;
+
+}
