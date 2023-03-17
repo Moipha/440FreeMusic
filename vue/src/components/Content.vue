@@ -3,7 +3,7 @@
     <!--左边栏-->
     <LeftAside/>
     <!--右侧内容-->
-    <el-container style="flex-direction: column;background-color: var(--deepbg)">
+    <el-container style="flex-direction: column;background-color: var(--rightBg)">
       <!--上边栏-->
       <Header/>
       <!--主体内容-->

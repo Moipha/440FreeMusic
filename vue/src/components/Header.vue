@@ -1,27 +1,27 @@
 <template>
-  <el-header style="display: flex; font-size: 20px;width: 100%;background-color: var(--deepbgRgba)">
+  <el-header style="display: flex; font-size: 20px;width: 100%;background-color: var(--headerBg)">
     <!--前进后退按钮-->
     <span class="navigation" @click="goBack" :class="{disabled: $store.state.index===0}">
-      <span class="el-icon-arrow-left" style="font-weight: 1000;"/>
+      <span class="el-icon-arrow-left" style="font-weight: 1000;color: var(--headerText)"/>
     </span>
     <span class="navigation" @click="goForward" v-if="$store.state.index !== $store.state.visitedRoutes.length-1">
-      <span class="el-icon-arrow-right" style="font-weight: 1000;"/>
+      <span class="el-icon-arrow-right" style="font-weight: 1000;color: var(--headerText)"/>
     </span>
     <!--标签页-->
     <el-tabs @tab-click="handleClick" v-model="activeTab" style="line-height: 50px;margin-left: 20px">
       <el-tab-pane v-if="activeTab === '/home'|| activeTab === '/home/recent'" label="推荐" name="/home"/>
-      <el-tab-pane v-if="activeTab === '/home'|| activeTab === '/home/recent'" label="最近上传" @click="" name="/home/recent"/>
+      <el-tab-pane v-if="activeTab === '/home'|| activeTab === '/home/recent'" label="最近上传" name="/home/recent"/>
     </el-tabs>
     <!--假搜索框-->
-    <span style="width: 240px;height: 40px;background-color: var(--bg);
+    <span style="width: 240px;height: 40px;background-color: var(--headerSearchBg);
                 margin: auto 10px auto auto;border-radius: 20px;
-                font-weight: bold;font-size: 15px;cursor: pointer;"
+                ;font-size: 15px;cursor: pointer;color: var(--headerText)"
           @click="showDialog = true">
       <span class="el-icon-search" style="margin: 0 10px 0 20px;line-height: 40px"/>搜索
     </span>
     <el-tooltip class="item" effect="dark" content="主题切换" placement="bottom">
       <span class="el-dropdown-link" id="icon" @click="changeTheme">
-        <span :class="currentIcon"/>
+        <span :class="icon"/>
       </span>
     </el-tooltip>
     <!--对话框-->
@@ -31,10 +31,10 @@
                @open="openDialog"
                @close="closeDialog"
                ref="dialog">
-      <div style="font-weight: 700;font-size: 17px;color: var(--text)">
-        <span class="el-icon-search" style="line-height: 10px;margin: 20px 5px 20px 20px;color: var(--deeptext)"/>
+      <div style="font-size: 17px">
+        <span class="el-icon-search" style="line-height: 10px;margin: 20px 5px 20px 20px;color: var(--headerInputText)!important"/>
         <el-input
-            style="width: 80%;color: var(--text);user-select: auto;font-size: 16px;"
+            style="width: 80%;user-select: auto;font-size: 16px;"
             placeholder=" 搜索"
             ref="input"/>
       </div>
@@ -57,9 +57,14 @@ export default {
       //弹窗的动态样式
       dialogClass: 'animate__rotateInDownRight',
       //当前图标
-      currentIcon: 'el-icon-moon',
+      currentIcon: this.$store.state.theme,
       //当前响应的标签页
       activeTab: this.$router.currentRoute.fullPath
+    }
+  },
+  computed:{
+    icon(){
+      return this.currentIcon==='Dark'?'el-icon-moon':this.currentIcon==='Light'?'el-icon-sunny':'el-icon-orange'
     }
   },
   methods: {
@@ -85,17 +90,19 @@ export default {
     changeTheme() {
       const theme = this.$store.state.theme
       let themeName
-      if (theme === 'dark') {
-        themeName = 'light'
-        this.currentIcon = 'el-icon-sunny'
-      } else if (theme === 'light') {
-        themeName = 'orange'
-        this.currentIcon = 'el-icon-orange'
+      if (theme === 'Dark') {
+        themeName = 'Light'
+        this.$bus.$emit('changeIcon',themeName)
+      } else if (theme === 'Light') {
+        themeName = 'Orange'
+        this.$bus.$emit('changeIcon',themeName)
       } else {
-        themeName = 'dark'
-        this.currentIcon = 'el-icon-moon'
+        themeName = 'Dark'
+        this.$bus.$emit('changeIcon',themeName)
       }
       this.$store.commit('setTheme', themeName)
+      localStorage.setItem('theme',themeName)
+      this.$bus.$emit('changeTheme',themeName)
     },
     //标签页点击事件
     handleClick(option) {
@@ -108,6 +115,13 @@ export default {
     this.$bus.$on('changeActiveTab', (path) => {
       this.activeTab = path
     })
+    this.$bus.$on('changeIcon',(icon)=>{
+      this.currentIcon = icon
+    })
+  },
+  beforeDestroy() {
+    this.$bus.$off('changeActiveTab')
+    this.$bus.$off('changeIcon')
   }
 }
 </script>
@@ -116,7 +130,7 @@ export default {
 <style scoped>
 .navigation {
   border-radius: 50%;
-  background-color: var(--button);
+  background-color: var(--headerBtn);
   width: 26px;
   height: 38px;
   margin: 10px 8px 10px 0;
@@ -127,7 +141,7 @@ export default {
 }
 
 .navigation:hover {
-  background-color: var(--hover);
+  background-color: var(--headerBtnHover);
 }
 
 .disabled {
@@ -145,7 +159,7 @@ export default {
 }
 
 /deep/ .el-dialog {
-  background-color: var(--bg);
+  background-color: var(--dialogBg);
   border-radius: 20px;
   height: 450px;
   width: 500px;
@@ -168,9 +182,9 @@ export default {
 #icon {
   font-size: 20px;
   border-radius: 50%;
-  background-color: var(--button);
-  color: var(--deeptext);
-  padding: 0 9px 20px 11px;
+  background-color: var(--headerBtn);
+  color: var(--headerText);
+  padding: 0 10px 20px 10px;
   line-height: 40px;
   margin-left: 5px;
   margin-top: 10px;
@@ -181,22 +195,26 @@ export default {
 }
 
 #icon:hover {
-  background-color: var(--hover);
+  background-color: var(--headerBtnHover);
 }
 
 /*修改el-tabs*/
 ::v-deep .el-tabs__item {
   font-weight: bold;
-  color: var(--deeptext);
+  color: var(--headerTabText);
   padding: 0 15px;
 }
 ::v-deep .el-tabs__item.is-active {
-  color: var(--active);
+  color: var(--headerTabHover);
 }
 ::v-deep .el-tabs__nav-wrap::after {
   height: 0;
 }
 ::v-deep .el-tabs__active-bar {
-  background-color: var(--active);
+  background-color: var(--headerTabHover);
 }
+/deep/.el-input__inner::placeholder{
+   color:var(--headerInputText);
+}
+
 </style>

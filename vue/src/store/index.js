@@ -8,7 +8,7 @@ const actions = {}
 //准备state，用于存放数据
 const state = {
     //目前主题色
-    theme: 'dark',
+    theme: localStorage.getItem('theme').toString() ? localStorage.getItem('theme').toString() : 'dark',
     //访问过的路由数组
     visitedRoutes: [],
     //当前索引

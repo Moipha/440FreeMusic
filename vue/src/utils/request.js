@@ -36,9 +36,10 @@ request.interceptors.response.use(
         }
         //当权限验证不通过时给出提示
         if(res.code === '401'){
-            ElementUI.Message({
+            ElementUI.Notification({
                 message: res.msg,
-                type: 'error'
+                type: 'error',
+                title: '权限不足'
             })
         }
 

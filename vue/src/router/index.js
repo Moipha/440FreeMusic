@@ -40,6 +40,16 @@ export const router = new VueRouter({
                     path: '/mine',
                     name: 'Mine',
                     component: ()=>import("@/pages/Mine")
+                },
+                {
+                    path: '/forget',
+                    name: 'Forget',
+                    component: ()=>import("@/pages/Forget")
+                },
+                {
+                    path: '/likes',
+                    name: 'Likes',
+                    component: () => import("@/pages/Likes")
                 }
             ]
         },
