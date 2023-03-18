@@ -8,6 +8,12 @@ import './assets/global.css'
 import request from "@/utils/request"
 import store from './store'
 
+//解决跳转爆红问题
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}
+
 Vue.config.productionTip = false
 Vue.use(VueRouter)
 //使用element-ui，设置大小和默认主题色

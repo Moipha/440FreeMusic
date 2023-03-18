@@ -11,16 +11,19 @@
         <router-view></router-view>
       </el-main>
     </el-container>
+    <!--下边栏-->
+    <Footer/>
   </el-container>
 </template>
 
 <script>
 import Header from "@/components/Header";
 import LeftAside from "@/components/LeftAside";
+import Footer from "@/components/Footer";
 
 export default {
   name: "Content",
-  components: {LeftAside, Header},
+  components: {LeftAside, Header,Footer},
 }
 </script>
 

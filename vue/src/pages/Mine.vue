@@ -5,7 +5,8 @@
         <el-avatar style="width: 80px;height: 80px;">{{ initials }}</el-avatar>
       </div>
       <span style="color: var(--mineText);line-height: 100px;margin-left: 20px">{{ username.toUpperCase() }}</span>
-      <div style="color: var(--mineText);display: inline-block;float: right;height: 100px;line-height: 80px;font-weight: bold">
+      <div
+          style="color: var(--mineText);display: inline-block;float: right;height: 100px;line-height: 80px;font-weight: bold">
         <div class="inlineContainer">
           <div class="flexContainer">
             <span style="height: 25px">23</span>
@@ -26,9 +27,23 @@
         </div>
       </div>
     </el-card>
-    <el-tabs style="width: 80%;margin: 20px auto;" v-model="activeName">
+    <el-tabs style="width: 80%;margin: 20px auto;color: var(--mineText)" v-model="activeName">
       <el-tab-pane label="基本信息" name="data">
-        <div></div>
+
+        <el-form label-position="left" label-width="80px" :model="user" style="font-weight: bold;margin-top: 20px">
+          <el-form-item label="用户名">
+            {{ user.username }}
+          </el-form-item>
+          <el-form-item label="邮箱">
+            {{ user.email }}
+          </el-form-item>
+          <el-form-item label="昵称">
+            <span v-if="!nowChanging">{{ user.nickname }}</span>
+            <el-input v-if="nowChanging" v-model="user.nickname" class="input"></el-input>
+            <el-button :icon="currentIcon" class="mineBtn" @click="editNickname"></el-button>
+          </el-form-item>
+        </el-form>
+
       </el-tab-pane>
       <el-tab-pane label="账号设置" name="setting">
 
@@ -49,7 +64,9 @@ export default {
   data() {
     return {
       username: JSON.parse(localStorage.getItem('user')).username,
-      activeName: 'data'
+      activeName: 'data',
+      user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : {},
+      nowChanging: false,
     }
   },
   computed: {
@@ -62,6 +79,35 @@ export default {
         return firstChar.toUpperCase()
       }
       return ''
+    },
+    currentIcon(){
+      return this.nowChanging ? 'el-icon-finished' : 'el-icon-edit'
+    }
+  },
+  methods:{
+    editNickname(){
+      this.nowChanging = !this.nowChanging
+      //如果正在修改时点击视为保存，提交更新
+      if(!this.nowChanging){
+        this.request.post("/user/edit", this.user).then(response => {
+          if (response.code !== '200') {
+            //登陆失败
+            this.$notify({
+              title: '更新失败',
+              message: response.msg,
+              type: 'error'
+            })
+          } else {
+            //弹窗
+            this.$notify({
+              title: '成功',
+              message: '个人信息更新成功',
+              type: 'success'
+            })
+            localStorage.setItem('user',JSON.stringify(this.user))
+          }
+        })
+      }
     }
   }
 }
@@ -93,18 +139,64 @@ export default {
   color: var(--mineTabText);
   padding: 0 15px;
 }
-/deep/ .el-tabs__item:hover{
+
+/deep/ .el-tabs__item:hover {
   color: var(--mineTabHover);
 }
+
 ::v-deep .el-tabs__item.is-active {
   color: var(--mineTabHover);
 }
+
 ::v-deep .el-tabs__nav-wrap::after {
   height: 1px;
   background-color: var(--blackText);
 }
+
 ::v-deep .el-tabs__active-bar {
   background-color: var(--mineTabHover);
 }
+
+.input {
+  width: 300px;
+}
+/deep/ .el-input__inner{
+  background-color: var(--mineInputBg);
+  border: solid 1px var(--rightBg);
+  color: var(--mineText);
+}
+/deep/ .el-input__inner:hover{
+  border-color: var(--rightBg);
+}
+/deep/ .el-input__inner:focus {
+  border-color: var(--loginInputActive);
+}
+
+/deep/ .el-form-item__label{
+  color: var(--mineText);
+}
+
+.dataContainer {
+  margin-top: 20px;
+}
+
+.mineBtn {
+  margin-left: 20px;
+  background-color: var(--mineBtnBg);
+  color: var(--mineBtnText);
+  font-size: 15px;
+  padding: 8px 14px;
+  border: none;
+}
+.mineBtn:hover{
+  background-color: var(--mineBtnHover)!important;
+  color: var(--mineBtnText);
+}
+.mineBtn:focus{
+  background-color: var(--mineBtnBg);
+  color: var(--mineBtnText);
+}
+
+
 
 </style>

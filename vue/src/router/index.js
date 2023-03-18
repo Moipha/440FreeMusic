@@ -7,6 +7,7 @@ export const router = new VueRouter({
         {
             path: '/',
             name: 'Content',
+            redirect: '/home',
             component: () => import('@/components/Content'),
             children: [
                 {
@@ -154,6 +155,24 @@ router.beforeEach((to, from, next) => {
     if(_this!==''){
         _this.$bus.$emit('changeActiveTab',to.fullPath)
     }
+
+    //阻止原地踏步
+    if(to.path === from.path){
+        console.log("!")
+        next(false)
+    }
+    if(!to.matched.length){
+        const storeUser = localStorage.getItem('user')
+        //未找到路由
+        if(storeUser){
+            next('/404')
+        }else{
+            next('/login')
+        }
+    }
+    next()
+
+
     next()
 })
 

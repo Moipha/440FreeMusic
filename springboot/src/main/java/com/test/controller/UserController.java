@@ -27,4 +27,10 @@ public class UserController {
     public Result register(@RequestBody UserDTO user){
         return userService.register(user);
     }
+
+    //更新
+    @PostMapping("/edit")
+    public Result edit(@RequestBody UserDTO user){
+        return userService.edit(user);
+    }
 }

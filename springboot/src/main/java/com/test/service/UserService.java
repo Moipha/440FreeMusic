@@ -57,11 +57,11 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         //进行判断，如果用户名或者邮箱有重复则抛出异常
         QueryWrapper<User> qw = new QueryWrapper<>();
         //筛选用户名相同或者邮箱相同的用户
-        qw.eq("username",username).or().eq("email",email);
+        qw.eq("username", username).or().eq("email", email);
         //如果有重复抛出异常
-        if(getOne(qw) != null){
-            throw new ServiceException("400","已存在相同用户名或者邮箱的用户");
-        }else{
+        if (getOne(qw) != null) {
+            throw new ServiceException("400", "已存在相同用户名或者邮箱的用户");
+        } else {
             //无重复则进行注册
             User user = new User();
             user.setUsername(username);
@@ -70,5 +70,21 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             save(user);
         }
         return Result.success();
+    }
+
+    public Result edit(UserDTO userDTO) {
+        //获取对应id的用户
+        QueryWrapper<User> qw = new QueryWrapper<>();
+        qw.eq("id", userDTO.getId());
+        User user = getOne(qw);
+        if (user != null) {
+            //将dto中的属性值copy到刚获取的user对象中去
+            BeanUtil.copyProperties(userDTO, user, true);
+        }
+        if(updateById(user)){
+            return Result.success();
+        }else{
+            return Result.error("600","写入数据库的过程中失败");
+        }
     }
 }
