@@ -88,6 +88,7 @@ export default {
   border: none;
   color: var(--settingBtnText) !important;
   font-weight: bold;
+  transition: 0.2s;
 }
 
 .btn:hover {
@@ -133,6 +134,7 @@ export default {
   background-color: var(--settingBtn);
   border: none;
   color: var(--settingBtnText);
+  transition: 0.2s;
 }
 
 .btnGroup:hover {

@@ -81,6 +81,12 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             //将dto中的属性值copy到刚获取的user对象中去
             BeanUtil.copyProperties(userDTO, user, true);
         }
+        //排除昵称过长的情况
+        assert user != null;
+        if(user.getNickname().length()>50){
+            throw new ServiceException("400","昵称长度不可超过50");
+        }
+
         if(updateById(user)){
             return Result.success();
         }else{

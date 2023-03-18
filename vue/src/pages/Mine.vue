@@ -8,7 +8,7 @@
       <div
           style="color: var(--mineText);display: inline-block;float: right;height: 100px;line-height: 80px;font-weight: bold">
         <div class="inlineContainer">
-          <div class="flexContainer">
+          <div class="flexContainer" @click="activeName = 'music'">
             <span style="height: 25px">23</span>
             <span>上传</span>
           </div>
@@ -38,9 +38,12 @@
             {{ user.email }}
           </el-form-item>
           <el-form-item label="昵称">
-            <span v-if="!nowChanging">{{ user.nickname }}</span>
-            <el-input v-if="nowChanging" v-model="user.nickname" class="input"></el-input>
+            <span v-if="!nowChanging">{{ user.nickname ? user.nickname : '暂无' }}</span>
+            <el-input v-if="nowChanging" v-model="nickname" class="input" @blur="cancelEdit" ref="myInput"></el-input>
             <el-button :icon="currentIcon" class="mineBtn" @click="editNickname"></el-button>
+          </el-form-item>
+          <el-form-item label="注册日期">
+            {{ user.createTime }}
           </el-form-item>
         </el-form>
 
@@ -63,7 +66,8 @@ export default {
   name: "Mine",
   data() {
     return {
-      username: JSON.parse(localStorage.getItem('user')).username,
+      username: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).username : '',
+      nickname: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).nickname : '',
       activeName: 'data',
       user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : {},
       nowChanging: false,
@@ -80,23 +84,26 @@ export default {
       }
       return ''
     },
-    currentIcon(){
+    currentIcon() {
       return this.nowChanging ? 'el-icon-finished' : 'el-icon-edit'
     }
   },
-  methods:{
-    editNickname(){
+  methods: {
+    editNickname() {
       this.nowChanging = !this.nowChanging
       //如果正在修改时点击视为保存，提交更新
-      if(!this.nowChanging){
+      if (!this.nowChanging) {
+        this.user.nickname = this.nickname
         this.request.post("/user/edit", this.user).then(response => {
           if (response.code !== '200') {
-            //登陆失败
+            //更新失败
             this.$notify({
               title: '更新失败',
               message: response.msg,
               type: 'error'
             })
+            this.user.nickname = ''
+            this.nowChanging = true
           } else {
             //弹窗
             this.$notify({
@@ -104,13 +111,32 @@ export default {
               message: '个人信息更新成功',
               type: 'success'
             })
-            localStorage.setItem('user',JSON.stringify(this.user))
+            localStorage.setItem('user', JSON.stringify(this.user))
           }
+        }).catch(err => {
+          this.user.nickname = ''
+          this.nowChanging = true
+          this.$notify({
+            title: '更新失败',
+            message: err,
+            type: 'error'
+          })
+        })
+      } else {
+        //如果是刚打开那么获得焦点
+        this.$nextTick(() => {
+          this.$refs.myInput.focus()
         })
       }
+    },
+    cancelEdit() {
+      //设置300ms
+      setTimeout(() => {
+        this.nowChanging = false
+        this.nickname = this.user.nickname
+      }, 200)   },
     }
   }
-}
 </script>
 
 <style scoped>
@@ -131,7 +157,8 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center
+  align-items: center;
+  cursor: pointer;
 }
 
 /*修改el-tabs*/
@@ -160,19 +187,22 @@ export default {
 .input {
   width: 300px;
 }
-/deep/ .el-input__inner{
+
+/deep/ .el-input__inner {
   background-color: var(--mineInputBg);
   border: solid 1px var(--rightBg);
   color: var(--mineText);
 }
-/deep/ .el-input__inner:hover{
+
+/deep/ .el-input__inner:hover {
   border-color: var(--rightBg);
 }
+
 /deep/ .el-input__inner:focus {
   border-color: var(--loginInputActive);
 }
 
-/deep/ .el-form-item__label{
+/deep/ .el-form-item__label {
   color: var(--mineText);
 }
 
@@ -188,15 +218,16 @@ export default {
   padding: 8px 14px;
   border: none;
 }
-.mineBtn:hover{
-  background-color: var(--mineBtnHover)!important;
-  color: var(--mineBtnText);
-}
-.mineBtn:focus{
-  background-color: var(--mineBtnBg);
+
+.mineBtn:hover {
+  background-color: var(--mineBtnHover) !important;
   color: var(--mineBtnText);
 }
 
+.mineBtn:focus {
+  background-color: var(--mineBtnBg);
+  color: var(--mineBtnText);
+}
 
 
 </style>

@@ -32,7 +32,7 @@ export default {
   /*header*/
   --headerBg: rgba(23, 23, 26, 0.4);
   --headerBtn: var(--leftbg);
-  --headerBtnHover: #9f9f9f;
+  --headerBtnHover: #444444;
   --headerText: var(--whiteText);
   --headerSearchBg: var(--headerBtn);
   --headerTabText: var(--leftText);
@@ -45,9 +45,9 @@ export default {
   /*setting*/
   --settingText: var(--whiteText);
   --settingLightText: var(--lightBlackText);
-  --settingBtn: var(--leftBtnHover);
-  --settingBtnText: var(--lightWhiteText);
-  --settingBtnHover: #535355;
+  --settingBtn: var(--mineBtnBg);
+  --settingBtnText: var(--whiteText);
+  --settingBtnHover: var(--mineBtnHover);
   --settingHr: var(--hr);
   /*个人中心*/
   --mineText: var(--whiteText);
