@@ -49,7 +49,16 @@
 
       </el-tab-pane>
       <el-tab-pane label="账号设置" name="setting">
-
+        <el-form style="font-weight: bold;margin-top: 20px">
+          <el-form-item label="退出账号">
+            <span class="lightText">退出当前账号并返回至登录界面。</span>
+            <el-button style="float: right" class="mineBtn" @click="logout">退出账号</el-button>
+          </el-form-item>
+          <el-form-item label="登录密码">
+            <span class="lightText">已设置。密码至少六位字符，支持数字、字母和除空格以外的特殊字符。</span>
+            <el-button style="float: right" class="mineBtn" @click="changePassword">修改密码</el-button>
+          </el-form-item>
+        </el-form>
       </el-tab-pane>
       <el-tab-pane label="单曲上传" name="music">
 
@@ -134,9 +143,24 @@ export default {
       setTimeout(() => {
         this.nowChanging = false
         this.nickname = this.user.nickname
-      }, 200)   },
+      }, 200)
+    },
+    logout(){
+      localStorage.removeItem('user')
+      this.$bus.$emit('logout')
+      this.$notify({
+        title: '成功',
+        message: '账号已登出',
+        type: 'success'
+      });
+      this.$router.push('/login')
+    },
+    //TODO 实现改密码的功能： 最好是弹窗，然后让你输入旧密码，验证成功后再输入两次新密码，然后确定两次输入一样
+    changePassword(){
+
     }
-  }
+  },
+}
 </script>
 
 <style scoped>
@@ -217,6 +241,7 @@ export default {
   font-size: 15px;
   padding: 8px 14px;
   border: none;
+  transition: 0.2s
 }
 
 .mineBtn:hover {
@@ -227,6 +252,13 @@ export default {
 .mineBtn:focus {
   background-color: var(--mineBtnBg);
   color: var(--mineBtnText);
+}
+
+.lightText {
+  font-weight: 500;
+  margin-left: 20px;
+  color: var(--settingLightText)
+
 }
 
 

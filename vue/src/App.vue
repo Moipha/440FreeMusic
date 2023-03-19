@@ -14,6 +14,11 @@ export default {
   name: 'App',
 }
 
+//禁止鼠标右键菜单
+document.oncontextmenu = function(e){
+  return false;
+}
+
 </script>
 <style>
 
@@ -23,13 +28,17 @@ export default {
   --blackText: #333333;
   --lightWhiteText: #AAAAAA;
   --lightBlackText: #777777;
+  --scrollbar: #666666;
+  --scrollbarHover: #999999;
+
+  /*右部背景*/
   --rightBg: rgb(23, 23, 26);
   /*左边栏*/
   --leftbg: rgb(46, 46, 48);
   --leftText: var(--whiteText);
   --leftBtnActive: royalblue;
   --leftBtnHover: #444444;
-  /*header*/
+  /*上边栏*/
   --headerBg: rgba(23, 23, 26, 0.4);
   --headerBtn: var(--leftbg);
   --headerBtnHover: #444444;
@@ -38,11 +47,11 @@ export default {
   --headerTabText: var(--leftText);
   --headerTabHover: var(--leftBtnActive);
   --headerInputText: var(--lightBlackText);
-  /*dialog*/
+  /*搜索框*/
   --hr: rgb(61, 61, 63);
   --dialogBg: var(--leftbg);
   --dialogText: var(--headerText);
-  /*setting*/
+  /*设置*/
   --settingText: var(--whiteText);
   --settingLightText: var(--lightBlackText);
   --settingBtn: var(--mineBtnBg);
@@ -67,10 +76,19 @@ export default {
   --loginInputBg: var(--leftbg);
   --loginInputText: var(--lightBlackText);
   --loginInputActive: var(--mineCardBg);
-  --loginInputBorder: rgba(0,0,0,0);
+  --loginInputBorder: rgba(0, 0, 0, 0);
   --loginText: var(--whiteText);
   --loginBtnHover: dodgerblue;
   --loginAHover: var(--blackText);
+  /*搜索界面*/
+  --searchInputBg: var(--loginInputBg);
+  --searchInputText: var(--settingText);
+  --searchTabText: var(--mineTabText);
+  --searchText: var(--whiteText);
+  --searchHr: var(--settingHr);
+  --searchHover: var(--leftBtnHover);
+  --searchActive: var(--leftBtnActive);
+  --searchLightText: var(--lightBlackText);
 }
 
 .Orange {
@@ -79,34 +97,35 @@ export default {
   --blackText: #333333;
   --lightWhiteText: #AAAAAA;
   --lightBlackText: #777777;
-
-  --rightBg: rgb(58,60,63);
+  --scrollbar: var(--headerBtnHover);
+  /*右部背景*/
+  --rightBg: rgb(58, 60, 63);
   /*左边栏*/
   --leftbg: #B56536;
   --leftText: var(--whiteText);
   --leftBtnActive: #863020;
-  --leftBtnHover: rgb(115,45,98);
+  --leftBtnHover: rgb(115, 45, 98);
   /*header*/
-  --headerBg: rgb(151,88,50);
-  --headerBtn: rgba(31,33,36,0.8);
-  --headerBtnHover: rgb(187,181,172);
+  --headerBg: rgb(151, 88, 50);
+  --headerBtn: rgba(31, 33, 36, 0.8);
+  --headerBtnHover: rgb(187, 181, 172);
   --headerText: var(--whiteText);
-  --headerSearchBg: rgb(103,66,44);
+  --headerSearchBg: rgb(103, 66, 44);
   --headerTabText: var(--leftText);
-  --headerTabHover: rgb(134,48,32);
-  --headerInputText: rgb(58,60,63);
+  --headerTabHover: rgb(134, 48, 32);
+  --headerInputText: rgb(58, 60, 63);
 
   /*dialog*/
-  --hr: rgb(88,69,59);
-  --dialogBg: rgb(210,128,6);
+  --hr: rgb(88, 69, 59);
+  --dialogBg: rgb(210, 128, 6);
   --dialogText: var(--headerText);
   /*setting*/
   --settingText: var(--whiteText);
   --settingLightText: var(--lightBlackText);
-  --settingBtn: rgb(134,48,32);
+  --settingBtn: rgb(134, 48, 32);
   --settingBtnText: var(--lightWhiteText);
-  --settingBtnHover: rgb(119,50,39);
-  --settingHr: rgb(151,88,50);
+  --settingBtnHover: rgb(119, 50, 39);
+  --settingHr: rgb(151, 88, 50);
   /*个人中心*/
   --mineText: var(--whiteText);
   --mineCardBg: #862617;
@@ -119,16 +138,16 @@ export default {
   --mineBtnHover: var(--loginBtnHover);
   --mineInputBg: var(--loginInputBg);
   /*登录注册*/
-  --loginA: rgb(181,101,54);
+  --loginA: rgb(181, 101, 54);
   --loginBtn: var(--loginA);
   --loginBg: var(--mineTabHover);
-  --loginInputBg:rgb(141,88,58) ;
+  --loginInputBg: rgb(141, 88, 58);
   --loginInputText: var(--lightBlackText);
   --loginInputActive: var(--mineCardBg);
-  --loginInputBorder: rgba(0,0,0,0);
+  --loginInputBorder: rgba(0, 0, 0, 0);
   --loginText: var(--whiteText);
-  --loginBtnHover: rgb(157,93,56);
-  --loginAHover: rgba(181,101,54,0.6);
+  --loginBtnHover: rgb(157, 93, 56);
+  --loginAHover: rgba(181, 101, 54, 0.6);
 }
 
 .Light {
@@ -137,6 +156,8 @@ export default {
   --blackText: #333333;
   --lightWhiteText: #AAAAAA;
   --lightBlackText: #777777;
+  --scrollbar: var(--leftBtnActive);
+  /*右边栏*/
   --rightBg: #E9DABB;
   /*左边栏*/
   --leftbg: #001345;

@@ -91,6 +91,12 @@ export default {
               //修改边栏文字
               this.$bus.$emit('logout')
             }
+          }).catch(err => {
+            this.$notify({
+              title: '登录失败',
+              message: err,
+              type: 'error'
+            });
           })
         }
       })

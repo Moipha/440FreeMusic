@@ -1,13 +1,14 @@
-html,body,div{
+html, body, div {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-html,body{
+
+html, body {
     height: 100%;
 }
-*{
+
+* {
     user-select: none;
     transition: 0.2s;
-
 }

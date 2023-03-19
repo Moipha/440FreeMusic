@@ -19,7 +19,6 @@ public class UserController {
     //登录
     @PostMapping("/login")
     public Result login(@RequestBody UserDTO user){
-        System.out.println(user);
         return userService.login(user);
     }
     //注册

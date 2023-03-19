@@ -40,17 +40,22 @@ export const router = new VueRouter({
                 {
                     path: '/mine',
                     name: 'Mine',
-                    component: ()=>import("@/pages/Mine")
+                    component: () => import("@/pages/Mine")
                 },
                 {
                     path: '/forget',
                     name: 'Forget',
-                    component: ()=>import("@/pages/Forget")
+                    component: () => import("@/pages/Forget")
                 },
                 {
                     path: '/likes',
                     name: 'Likes',
                     component: () => import("@/pages/Likes")
+                },
+                {
+                    path: '/search',
+                    name: 'Search',
+                    component: () => import("@/pages/Search")
                 }
             ]
         },
@@ -137,36 +142,37 @@ export const router = new VueRouter({
 //     next()
 // })
 let _this = ''
-export function getThis(that){
+
+export function getThis(that) {
     _this = that
 }
 
 router.beforeEach((to, from, next) => {
     //如果需要通过守卫
-    if(store.state.need){
-        store.commit("addVisited",to.path)
-    }else{
+    if (store.state.need) {
+        store.commit("addVisited", to.path)
+    } else {
         //前进或者后退，修改need为true
         store.state.need = true
     }
     // console.log('当前索引'+store.state.index)
     // console.log('数组长度'+store.state.visitedRoutes.length)
     // console.log('当前数组',store.state.visitedRoutes)
-    if(_this!==''){
-        _this.$bus.$emit('changeActiveTab',to.fullPath)
+    if (_this !== '') {
+        _this.$bus.$emit('changeActiveTab', to.fullPath)
     }
 
     //阻止原地踏步
-    if(to.path === from.path){
+    if (to.path === from.path) {
         console.log("!")
         next(false)
     }
-    if(!to.matched.length){
+    if (!to.matched.length) {
         const storeUser = localStorage.getItem('user')
         //未找到路由
-        if(storeUser){
+        if (storeUser) {
             next('/404')
-        }else{
+        } else {
             next('/login')
         }
     }
@@ -175,7 +181,6 @@ router.beforeEach((to, from, next) => {
 
     next()
 })
-
 
 
 export default router

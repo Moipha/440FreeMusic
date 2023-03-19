@@ -21,7 +21,6 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         //获取密码和用户名
         String password = userDTO.getPassword();
         String username = userDTO.getUsername();
-        String email = userDTO.getEmail();
         //排除字符串为空的情况
         if (StrUtil.isBlank(password) || StrUtil.isBlank(username)) {
             return Result.error(Constants.CODE_400, "用户名或密码为空");
