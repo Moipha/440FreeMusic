@@ -194,13 +194,15 @@ export default {
       //是否暂停
       isPaused: true,
       //音乐地址
-      musicSrc: require('@/assets/test.mp3'),
+      musicSrc: require('@/assets/testMusic/test.flac'),
       //最大时间
       maxTime: 0,
       //当前时间
       currentTime: 0,
       //当前音量
       currentVolume: 50,
+      //加载是否就绪
+      isLoaded: false,
     }
   },
   methods: {
@@ -221,10 +223,12 @@ export default {
     },
     //播放或暂停按钮被点击后
     handlePlayOrPauseClick() {
-      if (this.isPaused) {
-        this.play()
-      } else {
-        this.pause()
+      if (this.isLoaded) {
+        if (this.isPaused) {
+          this.play()
+        } else {
+          this.pause()
+        }
       }
     },
     // 当timeupdate事件大概每秒一次，用来更新音频流的当前播放时间
@@ -234,6 +238,7 @@ export default {
     // 当加载语音流元数据完成后，会触发该事件的回调函数
     // 语音元数据主要是语音的长度之类的数据
     onLoadedmetadata(res) {
+      this.isLoaded = true
       this.maxTime = parseInt(res.target.duration)
     },
     // 拖动进度条，改变当前时间
@@ -269,6 +274,11 @@ export default {
       } else {
         this.playMode = 0
       }
+    },
+    //当加载就绪时
+    onCanPlay() {
+      console.log("!")
+      this.canPlay = true
     }
   },
   filters: {
@@ -277,9 +287,9 @@ export default {
       return realFormatSecond(second)
     }
   },
-  computed:{
+  computed: {
     //播放顺序悬浮提示
-    playModeTooltip(){
+    playModeTooltip() {
       return this.playMode === 0 ? '顺序播放' : this.playMode === 1 ? '随机播放' : '单曲循环'
     }
   }
@@ -301,7 +311,6 @@ export default {
 }
 
 /deep/ .icon {
-  background-color: var(--footerBg) !important;
   border-radius: 10px;
   margin: 0 10px;
   cursor: pointer;

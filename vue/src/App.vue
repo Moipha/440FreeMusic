@@ -162,6 +162,7 @@ export default {
   --lightWhiteText: #AAAAAA;
   --lightBlackText: #777777;
   --scrollbar: var(--leftBtnActive);
+  --scrollbarHover: var(--loginBtnHover);
   /*右边栏*/
   --rightBg: #E9DABB;
   /*左边栏*/
@@ -211,6 +212,20 @@ export default {
   --loginText: var(--blackText);
   --loginBtnHover: #beae2b;
   --loginAHover: var(--settingBtnHover);
+  /*搜索界面*/
+  --searchInputBg: var(--loginInputBg);
+  --searchInputText: var(--settingText);
+  --searchTabText: var(--mineTabText);
+  --searchText: var(--blackText);
+  --searchHr: var(--settingHr);
+  --searchHover: var(--leftBtnHover);
+  --searchActive: var(--leftBtnActive);
+  --searchLightText: var(--lightBlackText);
+  /*底栏*/
+  --footerText: var(--leftText);
+  --footerBg: #00000022;
+  --footerHover: var(--headerBtnHover);
+  --footerActive: var(--leftBtnActive);
 }
 
 
