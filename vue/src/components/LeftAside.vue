@@ -1,5 +1,5 @@
 <template>
-  <el-aside width="250px" style="height: 100%;overflow-x: hidden">
+  <el-aside width="250px" style="height: 100%;overflow-x: hidden;">
     <el-menu :default-openeds="['1', '3']"
              style="min-height: 100%; overflow-x: hidden;background-color: var(--leftbg);border: none"
              :collapse-transition="false"
@@ -19,19 +19,27 @@
         <i class="el-icon-s-home leftSectionInner"></i>
         <span slot="title">首页</span>
       </el-menu-item>
-      <el-menu-item index="/setting" class="leftSection">
-        <i class="el-icon-s-tools leftSectionInner"></i>
-        <span slot="title">设置</span>
-      </el-menu-item>
       <el-menu-item index="/likes" class="leftSection">
         <i class="el-icon-star-on leftSectionInner"></i>
         <span slot="title">收藏</span>
       </el-menu-item>
+      <el-menu-item index="/setting" class="leftSection">
+        <i class="el-icon-s-tools leftSectionInner"></i>
+        <span slot="title">设置</span>
+      </el-menu-item>
+      <el-submenu class="musicList" index="1">
+        <template slot="title">
+          <span style="font-size: 14px">创建的歌单</span>
+          <i class="el-icon-plus plus" @click="addMusicList"/>
+        </template>
+      </el-submenu>
+
     </el-menu>
   </el-aside>
 </template>
 
 <script>
+
 export default {
   name: "LeftAside",
   data() {
@@ -53,6 +61,12 @@ export default {
           this.$router.push('/login')
         }
       }
+    },
+    //添加歌单
+    addMusicList(){
+      //阻止冒泡
+      event.stopPropagation();
+
     }
   },
   computed: {
@@ -107,6 +121,7 @@ export default {
   line-height: 15px;
   padding: 10px !important;
   font-weight: 600;
+  font-size: 14px;
 }
 
 .leftSection:hover {
@@ -131,5 +146,27 @@ export default {
   color: var(--whiteText);
   margin-right: 10px
 }
+
+/deep/ .musicList .el-submenu__title:hover {
+  background-color: var(--leftbg) !important;
+}
+
+/deep/ .el-submenu__icon-arrow {
+  font-size: 15px !important;
+}
+
+
+
+/*创建歌单加号*/
+.plus {
+  margin-left: 80px;
+  font-size: 14px;
+  padding: 10px 5px;
+}
+
+.plus:hover {
+  background-color: var(--leftBtnHover);
+}
+
 
 </style>

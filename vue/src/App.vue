@@ -15,9 +15,9 @@ export default {
 }
 
 //禁止鼠标右键菜单
-document.oncontextmenu = function(e){
-  return false;
-}
+// document.oncontextmenu = function(e){
+//   return false;
+// }
 
 </script>
 <style>
@@ -89,6 +89,11 @@ document.oncontextmenu = function(e){
   --searchHover: var(--leftBtnHover);
   --searchActive: var(--leftBtnActive);
   --searchLightText: var(--lightBlackText);
+  /*底栏*/
+  --footerText: var(--leftText);
+  --footerBg: #00000022;
+  --footerHover: var(--headerBtnHover);
+  --footerActive: var(--leftBtnActive);
 }
 
 .Orange {
@@ -208,34 +213,6 @@ document.oncontextmenu = function(e){
   --loginAHover: var(--settingBtnHover);
 }
 
-
-/*.Light {*/
-/*  !*背景色*!*/
-/*  --leftbg: var(--deepbg);*/
-/*  --deepbg: #F3F2F1;*/
-/*  --bg: #DBD7D6;*/
-/*  --deepbgRgba: rgba(40, 40, 43, 0.4);*/
-/*  !*文字颜色*!*/
-/*  --deeptext: #333333;*/
-/*  --text: #333333;*/
-/*  !*响应元素颜色*!*/
-/*  --active: dodgerblue;*/
-/*  --deepactive: royalblue;*/
-/*  !*button背景色*!*/
-/*  --button: #DBD7D6;*/
-/*  !*主题色和文字颜色*!*/
-/*  --color-primary: #DBD7D6;*/
-/*  --color-text: #333333;*/
-/*  !*覆盖默认的背景色和文字颜色*!*/
-/*  background-color: var(--color-primary);*/
-/*  color: var(--color-text);*/
-/*  !*分割线颜色*!*/
-/*  --hr: #FFFFFF;*/
-/*  !*选项悬浮*!*/
-/*  --hover: #BBBBBB;*/
-/*  !*输入框字体颜色*!*/
-/*  --input: #777777*/
-/*}*/
 
 
 </style>

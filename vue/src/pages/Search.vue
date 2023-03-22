@@ -16,7 +16,8 @@
     >
       <el-table-column
           property="avatar"
-          width="50">
+          width="50"
+      >
       </el-table-column>
       <el-table-column
           property="name"
@@ -323,6 +324,10 @@ tr.el-table__row {
 }
 
 
+/deep/ .el-table_21_column_121 {
+  -moz-border-radius-topleft: 50% !important;
+  -moz-border-radius-bottomleft: 50% !important;
+}
 
 
 
