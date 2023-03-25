@@ -202,10 +202,14 @@ export default {
 ::v-deep .el-tabs__nav-wrap::after {
   height: 1px;
   background-color: var(--blackText);
+  z-index: 0;
 }
 
 ::v-deep .el-tabs__active-bar {
   background-color: var(--mineTabHover);
+}
+/deep/ .el-tabs__nav{
+  position: static;
 }
 
 .input {

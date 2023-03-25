@@ -1,7 +1,12 @@
 <template>
   <div style="display: flex;flex-direction: column">
-    <el-input class="input" suffix-icon="el-icon-search"></el-input>
-    <el-tabs v-model="activeName" style="width: 1150px;margin: auto">
+    <el-input
+        class="input"
+        suffix-icon="el-icon-search"
+        v-model="searchString"
+        clearable
+    ></el-input>
+    <el-tabs v-model="activeName" style="width: 1150px;margin: auto;">
       <el-tab-pane label="搜索结果" disabled class="dis"></el-tab-pane>
       <el-tab-pane label="单曲" name="music"/>
       <el-tab-pane label="专辑" name="album"/>
@@ -54,6 +59,8 @@ export default {
     return {
       activeName: 'music',
       currentRow: null,
+      //从header搜索框获取的数据
+      searchString: '',
       tableData: [
         {
           name: 'test1',
@@ -173,6 +180,12 @@ export default {
       ]
     }
   },
+  mounted() {
+    this.$bus.$on('changeSearchStr', (str) => {
+      this.searchString = str
+    })
+    this.searchString = this.$route.query.searchStr
+  },
   methods: {
     //表格所选行变动
     setCurrent(row) {
@@ -181,6 +194,9 @@ export default {
     handleCurrentChange(val) {
       this.currentRow = val;
     }
+  },
+  beforeDestroy() {
+    this.$bus.$off('changeSearchStr')
   }
 }
 </script>
@@ -191,12 +207,17 @@ export default {
   margin: 10px auto;
   justify-content: center;
   align-items: center;
+  border: solid 1px var(--searchInputBorder);
 }
 
 /deep/ .el-input__inner {
   color: var(--searchInputText);
   background-color: var(--searchInputBg);
   border: none;
+}
+
+/deep/ .el-input__icon {
+  color: var(--searchInputText);
 }
 
 /deep/ .el-tabs__item {
@@ -231,10 +252,16 @@ export default {
 ::v-deep .el-tabs__nav-wrap::after {
   height: 1px;
   background-color: var(--blackText);
+  z-index: 0;
 }
 
 ::v-deep .el-tabs__active-bar {
+  height: 3px;
+  border-radius: 5px;
   background-color: var(--mineTabHover);
+}
+/deep/ .el-tabs__nav{
+  position: static;
 }
 
 /*表格样式修改：*/

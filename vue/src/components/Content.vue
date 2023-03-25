@@ -1,23 +1,23 @@
 <template>
-    <el-container style="height: 100vh" :class="activeClass">
-      <!--左边栏-->
-      <LeftAside/>
-      <!--右侧内容-->
-      <el-container
-          style="flex-direction: column;background-color: var(--rightBg)"
-          @mouseenter.native="showScrollbar"
-          @mouseleave.native="hideScrollbar"
-      >
-        <!--上边栏-->
-        <Header/>
-        <!--主体内容-->
-        <el-main>
-          <router-view></router-view>
-        </el-main>
-      </el-container>
-      <!--下边栏-->
-      <Footer/>
+  <el-container style="height: 100vh">
+    <!--左边栏-->
+    <LeftAside/>
+    <!--右侧内容-->
+    <el-container
+        style="flex-direction: column;background-color: var(--rightBg)"
+        @mouseenter.native="showScrollbar"
+        @mouseleave.native="hideScrollbar"
+    >
+      <!--上边栏-->
+      <Header/>
+      <!--主体内容-->
+      <el-main>
+        <router-view></router-view>
+      </el-main>
     </el-container>
+    <!--下边栏-->
+    <Footer/>
+  </el-container>
 </template>
 
 <script>
@@ -27,26 +27,22 @@ import Footer from "@/components/Footer";
 
 export default {
   name: "Content",
-  components: {LeftAside, Header,Footer},
-  data(){
-    return{
-      activeClass: 'show'
-    }
-  },
-  methods:{
-    showScrollbar(){
+  components: {LeftAside, Header, Footer},
+  methods: {
+    showScrollbar() {
       document.documentElement.style.setProperty('--test', 'visible');
     },
-    hideScrollbar(){
+    hideScrollbar() {
       document.documentElement.style.setProperty('--test', 'hidden');
     }
-  }
+  },
+
 }
 </script>
 
 <style scoped>
 
-.test{
+.test {
   --test: visible;
 }
 

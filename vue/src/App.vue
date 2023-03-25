@@ -6,10 +6,6 @@
 
 <script>
 
-//testxiesonghao
-
-import store from "@/store"
-
 export default {
   name: 'App',
 }
@@ -46,7 +42,7 @@ export default {
   --headerSearchBg: var(--headerBtn);
   --headerTabText: var(--leftText);
   --headerTabHover: var(--leftBtnActive);
-  --headerInputText: var(--lightBlackText);
+  --headerInputText: var(--lightWhiteText);
   /*搜索框*/
   --hr: rgb(61, 61, 63);
   --dialogBg: var(--leftbg);
@@ -83,6 +79,7 @@ export default {
   /*搜索界面*/
   --searchInputBg: var(--loginInputBg);
   --searchInputText: var(--settingText);
+  --searchInputBorder: rgba(0, 0, 0, 0);
   --searchTabText: var(--mineTabText);
   --searchText: var(--whiteText);
   --searchHr: var(--settingHr);
@@ -214,20 +211,20 @@ export default {
   --loginAHover: var(--settingBtnHover);
   /*搜索界面*/
   --searchInputBg: var(--loginInputBg);
-  --searchInputText: var(--settingText);
+  --searchInputText: var(--blackText);
+  --searchInputBorder: var(--blackText);
   --searchTabText: var(--mineTabText);
   --searchText: var(--blackText);
   --searchHr: var(--settingHr);
-  --searchHover: var(--leftBtnHover);
+  --searchHover: #d3d0bf;
   --searchActive: var(--leftBtnActive);
   --searchLightText: var(--lightBlackText);
   /*底栏*/
   --footerText: var(--leftText);
-  --footerBg: #00000022;
-  --footerHover: var(--headerBtnHover);
-  --footerActive: var(--leftBtnActive);
+  --footerBg: #00000030;
+  --footerHover: var(--lightBlackText);
+  --footerActive: var(--mineTabHover);
 }
-
 
 
 </style>

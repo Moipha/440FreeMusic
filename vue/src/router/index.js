@@ -62,13 +62,13 @@ export const router = new VueRouter({
         {
             path: '/about',
             name: 'About',
-            component: () => import('@/pages/About')
+            component: () => import('@/components/About')
         },
         {
             path: '/404',
             name: 'NotFound',
-            component: () => import('@/pages/404')
-        }
+            component: () => import('@/components/404')
+        },
     ],
     mode: 'history'
 })
@@ -155,16 +155,12 @@ router.beforeEach((to, from, next) => {
         //前进或者后退，修改need为true
         store.state.need = true
     }
-    // console.log('当前索引'+store.state.index)
-    // console.log('数组长度'+store.state.visitedRoutes.length)
-    // console.log('当前数组',store.state.visitedRoutes)
     if (_this !== '') {
         _this.$bus.$emit('changeActiveTab', to.fullPath)
     }
 
     //阻止原地踏步
     if (to.path === from.path) {
-        console.log("!")
         next(false)
     }
     if (!to.matched.length) {
@@ -176,9 +172,6 @@ router.beforeEach((to, from, next) => {
             next('/login')
         }
     }
-    next()
-
-
     next()
 })
 

@@ -1,5 +1,5 @@
 <template>
-  <el-header style="display: flex; font-size: 20px;width: 100%;background-color: var(--headerBg)">
+  <el-header class="header">
     <!--前进后退按钮-->
     <span class="navigation" @click="goBack" :class="{disabled: $store.state.index===0}">
       <span class="el-icon-arrow-left" style="font-weight: 1000;color: var(--headerText)"/>
@@ -32,11 +32,14 @@
                @close="closeDialog"
                ref="dialog">
       <div style="font-size: 17px">
-        <span class="el-icon-search" style="line-height: 10px;margin: 20px 5px 20px 20px;color: var(--headerInputText)!important"/>
+        <span class="el-icon-search"
+              style="line-height: 10px;margin: 20px 5px 20px 20px;color: var(--headerInputText)!important"/>
         <el-input
-            style="width: 80%;user-select: auto;font-size: 16px;"
+            style="width: 80%;user-select: auto;font-size: 16px"
             placeholder=" 搜索"
-            ref="input"/>
+            ref="input"
+            v-model="searchString"
+            @keydown.enter.native="jumpToSearch"/>
       </div>
       <hr style="border: var(--hr) 1px solid;width: 100%;padding: 0;margin: 0">
     </el-dialog>
@@ -59,12 +62,14 @@ export default {
       //当前图标
       currentIcon: this.$store.state.theme,
       //当前响应的标签页
-      activeTab: this.$router.currentRoute.fullPath
+      activeTab: this.$router.currentRoute.fullPath,
+      //搜索的内容
+      searchString: ''
     }
   },
-  computed:{
-    icon(){
-      return this.currentIcon==='Dark'?'el-icon-moon':this.currentIcon==='Light'?'el-icon-sunny':'el-icon-orange'
+  computed: {
+    icon() {
+      return this.currentIcon === 'Dark' ? 'el-icon-moon' : this.currentIcon === 'Light' ? 'el-icon-sunny' : 'el-icon-orange'
     }
   },
   methods: {
@@ -92,30 +97,39 @@ export default {
       let themeName
       if (theme === 'Dark') {
         themeName = 'Light'
-        this.$bus.$emit('changeIcon',themeName)
+        this.$bus.$emit('changeIcon', themeName)
       } else if (theme === 'Light') {
         themeName = 'Orange'
-        this.$bus.$emit('changeIcon',themeName)
+        this.$bus.$emit('changeIcon', themeName)
       } else {
         themeName = 'Dark'
-        this.$bus.$emit('changeIcon',themeName)
+        this.$bus.$emit('changeIcon', themeName)
       }
       this.$store.commit('setTheme', themeName)
-      localStorage.setItem('theme',themeName)
-      this.$bus.$emit('changeTheme',themeName)
+      localStorage.setItem('theme', themeName)
+      this.$bus.$emit('changeTheme', themeName)
     },
     //标签页点击事件
     handleClick(option) {
       if (router.currentRoute.fullPath !== option.name) {
         router.push(option.name)
       }
+    },
+    //搜索
+    jumpToSearch() {
+
+      //跳转并传参
+      this.showDialog = false
+      this.$router.push({path: '/search', query: {searchStr: this.searchString}})
+      this.$bus.$emit('changeSearchStr', this.searchString)
+      this.searchString = ''
     }
   },
   mounted() {
     this.$bus.$on('changeActiveTab', (path) => {
       this.activeTab = path
     })
-    this.$bus.$on('changeIcon',(icon)=>{
+    this.$bus.$on('changeIcon', (icon) => {
       this.currentIcon = icon
     })
   },
@@ -128,6 +142,14 @@ export default {
 
 
 <style scoped>
+
+.header {
+  display: flex;
+  font-size: 20px;
+  width: 100%;
+  background-color: var(--headerBg);
+}
+
 .navigation {
   border-radius: 50%;
   background-color: var(--headerBtn);
@@ -176,6 +198,7 @@ export default {
 
 /deep/ .el-input__inner {
   background-color: rgba(0, 0, 0, 0);
+  color: var(--headerInputText)!important;
   border: none;
 }
 
@@ -204,17 +227,24 @@ export default {
   color: var(--headerTabText);
   padding: 0 15px;
 }
+
 ::v-deep .el-tabs__item.is-active {
   color: var(--headerTabHover);
 }
+
 ::v-deep .el-tabs__nav-wrap::after {
   height: 0;
 }
+
 ::v-deep .el-tabs__active-bar {
   background-color: var(--headerTabHover);
 }
-/deep/.el-input__inner::placeholder{
-   color:var(--headerInputText);
+
+/deep/ .el-input__inner::placeholder {
+  color: var(--headerInputText);
+}
+/deep/ .el-tabs__nav{
+  position: static;
 }
 
 </style>
