@@ -60,7 +60,143 @@
           </el-form-item>
         </el-form>
       </el-tab-pane>
-      <el-tab-pane label="单曲上传" name="music">
+      <el-tab-pane label="上传管理" name="music">
+        <el-button-group>
+          <el-tooltip content="上传">
+            <el-button @click="showDialog=true" class="btnInGroup btnGroup" icon="el-icon-plus"></el-button>
+          </el-tooltip>
+          <el-tooltip content="批量操作">
+            <el-button @click="mulEdit" class="btnInGroup btnGroup" icon="el-icon-s-grid"></el-button>
+          </el-tooltip>
+          <template v-if="showSelection">
+            <el-tooltip content="批量启用">
+              <el-button @click="mulEnable" class="btnInGroup btnGroup" icon="el-icon-open"></el-button>
+            </el-tooltip>
+            <el-tooltip content="批量禁用">
+              <el-button @click="mulDisable" class="btnInGroup btnGroup" icon="el-icon-turn-off"></el-button>
+            </el-tooltip>
+            <el-tooltip content="批量删除">
+              <el-button @click="mulDelete" class="btnInGroup btnGroup" icon="el-icon-delete"></el-button>
+            </el-tooltip>
+          </template>
+        </el-button-group>
+        <el-dialog :visible.sync="showDialog"
+                   :class="dialogClass"
+                   :show-close="false"
+                   @open="openDialog"
+                   @close="closeDialog"
+                   ref="dialog"
+                   :limit="1">
+          <el-upload
+              ref="uploader"
+              :limit="1"
+              class="upload-demo"
+              drag
+              :action="'http://'+serverIp+'/music/getData'"
+              :auto-upload="true"
+              :on-success="handleGetDataSuccess"
+              :before-upload="beforeGetData"
+              :show-file-list="false"
+              :disabled="!showDragger">
+            <template v-if="showDragger">
+              <i class="el-icon-upload"></i>
+              <div class="el-upload__text">将音频拖到此处，或<em>浏览本地音乐</em></div>
+            </template>
+            <template v-else>
+              <h1 style="margin-top: 40px"><i class="el-icon-headset"></i> 音频文件已读取</h1>
+              <h2>{{ fileName }}</h2>
+            </template>
+          </el-upload>
+          <div style="display: flex;flex-direction: row;margin-top: 40px">
+            <div style="display: flex;flex-direction: column;width: 40%">
+              <span style="margin-left: 15px;color: var(--mineText)">点击上传封面：</span>
+              <el-upload
+                  ref="avatar"
+                  class="avatar-uploader"
+                  :limit="1"
+                  :show-file-list="false"
+                  style="margin-top: 10px"
+                  :on-change="handleUploadAvatar"
+                  :action="'http://'+serverIp+'/music/saveAvatar'"
+                  :auto-upload="false"
+                  list-type="picture"
+                  :disabled="uploadAvatar!==''"
+                  :on-success="handleAvatarUpload">
+                <img v-if="uploadAvatar" :src="uploadAvatar" alt="" class="avatar">
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              </el-upload>
+            </div>
+            <el-form label-position="left" label-width="110px" style="width: 64%;display: flex;flex-direction: column">
+              <el-form-item label="音乐标题：" style="margin-bottom: 25px">
+                <el-input v-model="newMusic.name" class="input"></el-input>
+              </el-form-item>
+              <el-form-item label="音乐作者：" style="margin-bottom: 25px">
+                <el-input v-model="newMusic.author" class="input"></el-input>
+              </el-form-item>
+              <el-form-item label="所属专辑：" style="margin-bottom: 25px">
+                <el-input v-model="newMusic.album" class="input"></el-input>
+              </el-form-item>
+              <el-form-item label="文件大小(KB)：" style="margin-bottom: 25px">
+                <el-input v-model="newMusic.size" class="input" disabled></el-input>
+              </el-form-item>
+            </el-form>
+          </div>
+          <div style="width: 30%;margin: 30px auto">
+            <el-button @click="upload" class="btnGroup btnInGroup" style="float: left ;width: 80px;height: 40px">
+              上传
+            </el-button>
+            <el-button @click="cancelUpload" class="btnGroup btnInGroup"
+                       style="float: right;width: 80px;height: 40px">
+              取消
+            </el-button>
+          </div>
+
+        </el-dialog>
+        <el-table
+            ref="singleTable"
+            :data="tableData"
+            style="width: 1150px;margin: auto"
+            @selection-change="handleSelectionChange">
+          <el-table-column
+              type="selection"
+              width="50"
+              v-if="showSelection">
+          </el-table-column>
+          <el-table-column
+              property="avatar"
+              width="50">
+          </el-table-column>
+          <el-table-column
+              property="name"
+              label="音乐标题">
+          </el-table-column>
+          <el-table-column
+              property="author"
+              label="歌手">
+          </el-table-column>
+          <el-table-column
+              property="album"
+              label="专辑">
+          </el-table-column>
+          <el-table-column
+              property="time"
+              label="时长"
+              width="60">
+          </el-table-column>
+          <el-table-column
+              property="enable"
+              label="启用"
+              width="60">
+            <template slot-scope="scope">
+              <el-switch v-model="scope.row.enable" @change="changeEnable(scope.row)"></el-switch>
+            </template>
+          </el-table-column>
+          <el-table-column
+              property="edit"
+              width="50">
+            <span class="el-icon-more" style="cursor: pointer;font-size: 20px"></span>
+          </el-table-column>
+        </el-table>
 
       </el-tab-pane>
       <el-tab-pane label="关注用户" name="user">
@@ -71,15 +207,42 @@
 </template>
 
 <script>
+import {serverIp} from "../../public/config";
+import axios from "axios";
+
 export default {
   name: "Mine",
   data() {
     return {
       username: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).username : '',
       nickname: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).nickname : '',
-      activeName: 'data',
+      activeName: 'music',
       user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : {},
       nowChanging: false,
+      //表格数据
+      tableData: [{enable: true}, {}, {}, {}, {}],
+      //是否显示多选框
+      showSelection: false,
+      //多选的选项
+      multipleSelection: [],
+      //显示添加对话框
+      showDialog: false,
+      //弹窗的动态样式
+      dialogClass: 'animate__fadeInLeft',
+      //新增music
+      newMusic: {},
+      //加载中
+      loading: true,
+      //IP
+      serverIp: serverIp,
+      //upload-dragger样式修改
+      showDragger: true,
+      //即将上传的头像地址
+      uploadAvatar: '',
+      //上传的音频文件名
+      fileName: '',
+      //是否需要传入数据库
+      needSaveDB: true,
     }
   },
   computed: {
@@ -145,7 +308,7 @@ export default {
         this.nickname = this.user.nickname
       }, 200)
     },
-    logout(){
+    logout() {
       localStorage.removeItem('user')
       this.$bus.$emit('logout')
       this.$notify({
@@ -156,11 +319,179 @@ export default {
       this.$router.push('/login')
     },
     //TODO 实现改密码的功能： 最好是弹窗，然后让你输入旧密码，验证成功后再输入两次新密码，然后确定两次输入一样
-    changePassword(){
+    changePassword() {
 
+    },
+    //多选框变动
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+    },
+    //更新enable状态
+    changeEnable(scope) {
+      // this.request.post('',scope).then(response => {
+      //   console.log('更新成功',response)
+      // }).catch( error => {
+      //   console.log('更新失败',error)
+      // })
+    },
+    //批量启用
+    mulEnable() {
+      this.multipleSelection.forEach((music) => {
+        music.enable = true
+      })
+    },
+    //批量禁用
+    mulDisable() {
+      this.multipleSelection.forEach((music) => {
+        music.enable = false
+      })
+    },
+    //批量删除
+    mulDelete() {
+      this.multipleSelection.forEach((music) => {
+        music.isDelete = true
+      })
+    },
+    //批量操作
+    mulEdit() {
+      this.showSelection = !this.showSelection
+    },
+    //打开对话框
+    openDialog() {
+      this.dialogClass = 'animate__fadeInLeft';
+    },
+    //关闭对话框
+    closeDialog() {
+      this.dialogClass = 'animate__fadeOutLeft'
+    },
+    //上传音乐相关
+    handleGetDataSuccess(res) {
+      this.newMusic = res.data
+      this.showDragger = false
+    },
+    beforeGetData(file) {
+      //设置显示的文件名
+      this.fileName = file.name
+      const extension = file.name.split('.').pop().toLowerCase();
+      const isMusic = extension === 'mp3' || extension === 'flac';
+      const isLt50M = file.size / 1024 / 1024 < 50;
+      if (!isMusic) {
+        this.$notify.error('上传音乐只能是 MP3/FLAC 格式!');
+      } else if (!isLt50M) {
+        this.$notify.error('上传音乐文件大小不能超过 50MB!');
+      } else {
+        return true;
+      }
+      return false;
+    },
+    //取消上传后，关闭对话框并清除已上传的文件
+    cancelUpload() {
+      this.showDialog = false
+      this.newMusic = {}
+      this.showDragger = true
+      this.$refs.uploader.clearFiles()
+      this.uploadAvatar = ''
+      this.$refs.avatar.clearFiles()
+      this.fileName = ''
+    },
+    //显示上传的封面
+    handleUploadAvatar(file) {
+      const reader = new FileReader() // 创建FileReader对象
+      reader.readAsDataURL(file.raw) // 读取选择的文件的数据
+      reader.onload = () => {
+        this.uploadAvatar = reader.result; // 将文件的本地路径保存到data属性中
+      }
+    },
+    //上传完整的单曲信息以及封面和音频文件
+    upload() {
+      //上传音频
+      let file = this.$refs.uploader.uploadFiles[0].raw
+      let formData = new FormData()
+      formData.append('file', file)
+      //不能使用utils中配置的默认请求头，因为要使用multipart类型的contentType
+      axios.post(`http://${serverIp}/music/saveMusic`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        }
+      }).then(response => {
+        if (response.data.code !== '200') {
+          //上传失败
+          this.$notify({
+            title: '音频上传失败',
+            message: response.data.msg,
+            type: 'error'
+          })
+        } else {
+          this.$notify({
+            title: '音频上传成功',
+            type: 'success'
+          });
+          //获取返回的数据
+          this.newMusic.url = response.data.data.url
+          this.newMusic.md5 = response.data.data.md5
+          this.needSaveDB = response.data.data.enable
+          if (!this.needSaveDB) {
+            this.newMusic.id = response.data.data.id
+          }
+          //上传封面文件
+          this.$refs.avatar.submit()
+        }
+      }).catch(err => {
+        this.$notify({
+          title: '音频上传失败',
+          message: err,
+          type: 'error'
+        });
+      })
+    },
+    handleAvatarUpload(res) {
+      if (res.code !== '200') {
+        this.$notify({
+          title: '封面上传失败',
+          message: res.msg,
+          type: 'error'
+        })
+      } else {
+        this.$notify({
+          title: '封面上传成功',
+          type: 'success'
+        })
+        //将返回的封面路径存入对象
+        this.newMusic.avatar = res.data.url
+        //最后再上传前收拾一下对象
+        this.newMusic.uploader = JSON.parse(localStorage.getItem('user')).username
+        //然后，到这里封面和音频都上传成功了，此时将完整的Music对象存入数据库
+
+        this.request.post('/music/saveDB', this.newMusic).then(res => {
+          if (res.code !== '200') {
+            this.$notify({
+              title: '音乐信息保存失败',
+              message: res.msg,
+              type: 'error'
+            })
+          } else {
+            if (!this.needSaveDB) {
+              this.$notify({
+                title: '音乐信息已更新',
+                type: 'info'
+              })
+            } else {
+              this.$notify({
+                title: '音乐信息已存入数据库',
+                type: 'success'
+              })
+            }
+            //TODO 更新上传后的列表数据
+            //最后，清除各种信息并关闭窗口
+            console.log(this.newMusic)
+            this.cancelUpload()
+          }
+        })
+      }
     }
   },
 }
+
 </script>
 
 <style scoped>
@@ -208,7 +539,8 @@ export default {
 ::v-deep .el-tabs__active-bar {
   background-color: var(--mineTabHover);
 }
-/deep/ .el-tabs__nav{
+
+/deep/ .el-tabs__nav {
   position: static;
 }
 
@@ -217,8 +549,8 @@ export default {
 }
 
 /deep/ .el-input__inner {
-  background-color: var(--mineInputBg);
-  border: solid 1px var(--rightBg);
+  background-color: var(--mineInputBg) !important;
+  border: solid 1px var(--rightBg) !important;
   color: var(--mineText);
 }
 
@@ -263,6 +595,212 @@ export default {
   margin-left: 20px;
   color: var(--settingLightText)
 
+}
+
+
+/*表格样式修改：*/
+/*表头背景*/
+/deep/ .el-table th {
+  background-color: var(--rightBg) !important;
+  padding-bottom: 40px;
+  color: var(--searchLightText);
+  font-size: 14px;
+}
+
+/*表头文字*/
+/deep/ .el-table thead {
+  color: var(--searchText)
+}
+
+/*背景*/
+/deep/ .el-table tr {
+  background-color: var(--rightBg);
+  color: var(--searchText);
+  font-weight: bold;
+}
+
+/*行间线*/
+/deep/ .el-table td, .building-top .el-table th.is-leaf {
+  border-bottom: 0 !important;
+}
+
+/*表格末尾*/
+::v-deep .el-table::before {
+  border-bottom: 0;
+  height: 0;
+}
+
+/*无数据*/
+::v-deep .el-table__empty-block {
+  background-color: var(--rightBg);
+}
+
+::v-deep .el-table__empty-text {
+  color: var(--searchText);
+}
+
+/deep/ th {
+  border-bottom: 0 !important;
+}
+
+/*选中行的背景*/
+::v-deep .el-table__body tr.current-row > td {
+  background: var(--searchActive) !important;
+  color: var(--searchText);
+}
+
+::v-deep .el-table__body tr.current-row:hover > td {
+  background: var(--searchActive) !important;
+}
+
+::v-deep .el-table--enable-row-transition .el-table__body td, .el-table .cell {
+  background-color: var(--rightBg)
+}
+
+/*行高*/
+::v-deep .el-table td {
+  padding: 15px 0;
+}
+
+/*滚动条*/
+::v-deep .el-table--scrollable-x .el-table__body-wrapper {
+  display: none !important;
+}
+
+/deep/ .el-table, .el-table__expanded-cell {
+  background-color: var(--rightBg) !important;
+}
+
+/*鼠标悬浮*/
+/deep/ .el-table tbody tr:hover > td {
+  background-color: var(--searchHover) !important;
+}
+
+tr.el-table__row {
+  border-radius: 50% !important;
+}
+
+/deep/ .el-table__row:hover {
+  border-radius: 50% !important;
+}
+
+
+/deep/ .el-table_21_column_121 {
+  -moz-border-radius-topleft: 50% !important;
+  -moz-border-radius-bottomleft: 50% !important;
+}
+
+
+.btnGroup {
+  background-color: var(--settingBtn) !important;
+  border: none;
+  color: var(--settingBtnText) !important;
+  transition: 0.2s;
+}
+
+.btnGroup:hover {
+  background-color: var(--settingBtnHover) !important;
+}
+
+.btnInGroup {
+  width: 60px;
+  height: 30px;
+  font-size: 16px;
+  border-right: 2px solid var(--rightBg) !important;
+  margin-bottom: 10px;
+  padding: 5px;
+}
+
+/*弹窗动画持续时间*/
+.animate__fadeInLeft {
+  animation-duration: 0.4s;
+}
+
+.animate__fadeOutLeft {
+  animation-duration: 0.6s;
+}
+
+/deep/ .el-dialog {
+  background-color: var(--dialogBg);
+  border-radius: 20px;
+  height: 570px;
+  width: 700px;
+}
+
+/deep/ .el-dialog__body {
+  padding: 0;
+}
+
+/deep/ .el-dialog__header {
+  height: 0;
+  padding: 0;
+}
+
+/deep/ .el-upload {
+  width: 100% !important;
+}
+
+/deep/ .el-upload-dragger {
+  margin: 15px auto;
+  width: 670px;
+  background-color: var(--dialogBg);
+  color: var(--dialogText);
+  border: 1px dashed var(--dialogText) !important;
+}
+
+/deep/ .el-upload-dragger:hover {
+  border-color: var(--leftBtnActive) !important;
+}
+
+/*封面上传*/
+.avatar-uploader .el-upload {
+  border: 1px dashed var(--dialogText) !important;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.avatar-uploader {
+  margin-left: 15px;
+  width: 200px !important;
+  border: 1px dashed var(--dialogText) !important;
+  border-radius: 5px;
+}
+
+.avatar-uploader:hover {
+  border-color: var(--leftBtnActive) !important;
+}
+
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: var(--dialogText);
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+
+.avatar {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/*单选框*/
+/deep/ .el-switch.is-checked .el-switch__core {
+  background-color: var(--mineBtnBg);
+  border-color: var(--mineBtnBg);
+}
+
+/deep/ .el-checkbox__input.is-checked .el-checkbox__inner {
+  background-color: var(--mineBtnBg) !important;
+  border-color: var(--mineBtnBg) !important;
+}
+
+/deep/ .el-checkbox__input.is-indeterminate .el-checkbox__inner {
+  background-color: var(--mineBtnBg) !important;
+  border-color: var(--mineBtnBg) !important;
 }
 
 

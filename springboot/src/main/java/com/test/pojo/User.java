@@ -33,10 +33,6 @@ public class User {
     private String nickname;
     @Alias("邮箱")
     private String email;
-    //通过注解指定字段别名
-    @TableField(value = "avatar_url")
-    @Alias("头像")
-    private String avatar;
     @Alias("创建时间")
     private Date createTime;
 }

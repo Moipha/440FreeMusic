@@ -169,7 +169,7 @@
         <div class="leftDiv">
           <!--封面-->
           <div class="avatar">
-            <el-avatar size="large" style="width: 100%;height: 100%;border-radius: 20px;" shape="square"/>
+            <el-avatar :src="music.url" size="large" style="width: 100%;height: 100%;border-radius: 20px;" shape="square"/>
           </div>
           <!--标题-->
           <div style="display: flex;flex-direction: column;margin-left: 28vh;margin-top: 80px;color: var(--whiteText)">

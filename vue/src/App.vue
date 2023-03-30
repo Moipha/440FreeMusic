@@ -64,7 +64,7 @@ export default {
   --mineBtnBg: var(--loginBtn);
   --mineBtnText: var(--loginText);
   --mineBtnHover: var(--loginBtnHover);
-  --mineInputBg: var(--loginInputBg);
+  --mineInputBg: var(--blackText);
   /*登录注册*/
   --loginA: var(--mineCardBg);
   --loginBtn: var(--loginA);
@@ -194,7 +194,7 @@ export default {
   --mineTabHover: var(--settingBtnHover);
   --mineAvatarBg: var(--blackText);
   --mineAvatarText: var(--whiteText);
-  --mineInputBg: var(--loginInputBg);
+  --mineInputBg: var(--whiteText);
   --mineBtnBg: var(--settingBtn);
   --mineBtnText: var(--settingBtnText);
   --mineBtnHover: var(--settingBtnHover);

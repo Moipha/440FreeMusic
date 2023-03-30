@@ -5,6 +5,12 @@ spring:
     url: jdbc:mysql://localhost:3306/music?useSSL=false&serverTimezone=GMT%2d8
     #    url: jdbc:mysql://39.107.102.145:3306/music?useSSL=false&serverTimezone=GMT%2d8
     driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      #单文件最大上传为50mb，多文件上传最多100mb
+      max-file-size: 50MB
+      max-request-size: 100MB
+
 server:
   port: 8080
 
@@ -15,7 +21,7 @@ mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
-#files:
-#  upload:
-##    path: /home/files/
-#    path: C:/Users/Young/Desktop/小案例/2023前后端分离项目/files/
+files:
+  upload:
+    path: C:/Users/Young/Desktop/Works/daerxia/软件工程/Project/files/
+  #    path: /home/files/

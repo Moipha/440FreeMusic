@@ -121,5 +121,7 @@
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-websocket:2.7.7" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-messaging:5.3.24" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-websocket:5.3.24" level="project" />
+    <orderEntry type="library" name="Maven: com.mpatric:mp3agic:0.9.1" level="project" />
+    <orderEntry type="library" name="Maven: org:jaudiotagger:2.0.3" level="project" />
   </component>
 </module>

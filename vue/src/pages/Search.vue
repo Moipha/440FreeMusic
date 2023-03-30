@@ -30,18 +30,20 @@
       </el-table-column>
       <el-table-column
           property="author"
-          label="歌手"
-          width="250">
+          label="歌手">
       </el-table-column>
       <el-table-column
           property="album"
-          label="专辑"
-          width="250">
+          label="专辑">
       </el-table-column>
       <el-table-column
           property="time"
           label="时长"
           width="60">
+      </el-table-column>
+      <el-table-column
+          property="createTime"
+          label="上传时间">
       </el-table-column>
       <el-table-column
           property="edit"
@@ -187,10 +189,6 @@ export default {
     this.searchString = this.$route.query.searchStr
   },
   methods: {
-    //表格所选行变动
-    setCurrent(row) {
-      this.$refs.singleTable.setCurrentRow(row);
-    },
     handleCurrentChange(val) {
       this.currentRow = val;
     }
@@ -260,7 +258,8 @@ export default {
   border-radius: 5px;
   background-color: var(--mineTabHover);
 }
-/deep/ .el-tabs__nav{
+
+/deep/ .el-tabs__nav {
   position: static;
 }
 
@@ -355,7 +354,6 @@ tr.el-table__row {
   -moz-border-radius-topleft: 50% !important;
   -moz-border-radius-bottomleft: 50% !important;
 }
-
 
 
 </style>
