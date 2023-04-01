@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="loading">
     <div style="width: 400px;margin: 10% auto">
       <el-form :model="user" :rules="rules" ref="userForm" style="color: var(--loginText)">
         <h1 style="font-size: 30px;margin: 10px 0;">登录</h1>
@@ -61,7 +61,9 @@ export default {
           {required: true, message: '请输入密码', trigger: 'blur'},
           {min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur'}
         ],
-      }
+      },
+      //加载中
+      loading: false,
     }
   },
   methods: {
@@ -69,6 +71,7 @@ export default {
       this.$refs["userForm"].validate((valid) => {
         //发送请求前先检查是否合法
         if (valid) {
+          this.loading =  true
           this.request.post("/user/login", this.user).then(response => {
             if (response.code !== '200') {
               //登陆失败
@@ -77,6 +80,7 @@ export default {
                 message: response.msg,
                 type: 'error'
               })
+              this.loading = false
             } else {
               //登录成功
               //将传入的用户信息存入本地内存
@@ -90,6 +94,7 @@ export default {
               });
               //修改边栏文字
               this.$bus.$emit('logout')
+              this.loading = false
             }
           }).catch(err => {
             this.$notify({
@@ -97,6 +102,7 @@ export default {
               message: err,
               type: 'error'
             });
+            this.loading = false
           })
         }
       })
@@ -134,6 +140,15 @@ export default {
 
 /deep/ .el-button:hover {
   background-color: var(--loginBtnHover) !important;
+}
+
+/deep/ .el-loading-mask {
+  margin: auto;
+  padding: 0;
+  width: 50%;
+  height: 150%;
+  background-color: var(--rightBg);
+  border-radius: 15px;
 }
 
 </style>

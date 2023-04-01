@@ -87,84 +87,94 @@
                    @close="closeDialog"
                    ref="dialog"
                    :limit="1">
-          <el-upload
-              ref="uploader"
-              :limit="1"
-              class="upload-demo"
-              drag
-              :action="'http://'+serverIp+'/music/getData'"
-              :auto-upload="true"
-              :on-success="handleGetDataSuccess"
-              :before-upload="beforeGetData"
-              :show-file-list="false"
-              :disabled="!showDragger">
-            <template v-if="showDragger">
-              <i class="el-icon-upload"></i>
-              <div class="el-upload__text">将音频拖到此处，或<em>浏览本地音乐</em></div>
-            </template>
-            <template v-else>
-              <h1 style="margin-top: 40px"><i class="el-icon-headset"></i> 音频文件已读取</h1>
-              <h2>{{ fileName }}</h2>
-            </template>
-          </el-upload>
-          <div style="display: flex;flex-direction: row;margin-top: 40px">
-            <div style="display: flex;flex-direction: column;width: 40%">
-              <span style="margin-left: 15px;color: var(--mineText)">点击上传封面：</span>
-              <el-upload
-                  ref="avatar"
-                  class="avatar-uploader"
-                  :limit="1"
-                  :show-file-list="false"
-                  style="margin-top: 10px"
-                  :on-change="handleUploadAvatar"
-                  :action="'http://'+serverIp+'/music/saveAvatar'"
-                  :auto-upload="false"
-                  list-type="picture"
-                  :disabled="uploadAvatar!==''"
-                  :on-success="handleAvatarUpload">
-                <img v-if="uploadAvatar" :src="uploadAvatar" alt="" class="avatar">
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-              </el-upload>
+          <div v-loading="loading" style="height: 100%!important;">
+            <el-upload
+                ref="uploader"
+                :limit="1"
+                class="upload-demo"
+                drag
+                :action="'http://'+serverIp+'/music/getData'"
+                :auto-upload="true"
+                :on-success="handleGetDataSuccess"
+                :before-upload="beforeGetData"
+                :show-file-list="false"
+                :disabled="!showDragger">
+              <template v-if="showDragger">
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">将音频拖到此处，或<em>浏览本地音乐</em></div>
+              </template>
+              <template v-else>
+                <h1 style="margin-top: 40px"><i class="el-icon-headset"></i> 音频文件已读取</h1>
+                <h2>{{ fileName }}</h2>
+              </template>
+            </el-upload>
+            <div style="display: flex;flex-direction: row;margin-top: 40px">
+              <div style="display: flex;flex-direction: column;width: 40%">
+                <span style="margin-left: 15px;color: var(--mineText)">点击上传封面：</span>
+                <el-upload
+                    ref="avatar"
+                    class="avatar-uploader"
+                    :limit="1"
+                    :show-file-list="false"
+                    style="margin-top: 10px"
+                    :on-change="handleUploadAvatar"
+                    :action="'http://'+serverIp+'/avatar/saveAvatar'"
+                    :auto-upload="false"
+                    list-type="picture"
+                    :disabled="uploadAvatar!==''"
+                    :on-success="handleAvatarUpload">
+                  <img v-if="uploadAvatar" :src="uploadAvatar" alt="" class="avatar">
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+              </div>
+              <el-form
+                  label-position="left"
+                  label-width="110px"
+                  style="width: 64%;display: flex;flex-direction: column">
+                <el-form-item label="音乐标题：" style="margin-bottom: 25px">
+                  <el-input v-model="newMusic.name" class="input"></el-input>
+                </el-form-item>
+                <el-form-item label="音乐作者：" style="margin-bottom: 25px">
+                  <el-input v-model="newMusic.author" class="input"></el-input>
+                </el-form-item>
+                <el-form-item label="所属专辑：" style="margin-bottom: 25px">
+                  <el-input v-model="newMusic.album" class="input"></el-input>
+                </el-form-item>
+                <el-form-item label="文件大小(KB)：" style="margin-bottom: 25px">
+                  <el-input v-model="newMusic.size" class="input" disabled></el-input>
+                </el-form-item>
+              </el-form>
             </div>
-            <el-form label-position="left" label-width="110px" style="width: 64%;display: flex;flex-direction: column">
-              <el-form-item label="音乐标题：" style="margin-bottom: 25px">
-                <el-input v-model="newMusic.name" class="input"></el-input>
-              </el-form-item>
-              <el-form-item label="音乐作者：" style="margin-bottom: 25px">
-                <el-input v-model="newMusic.author" class="input"></el-input>
-              </el-form-item>
-              <el-form-item label="所属专辑：" style="margin-bottom: 25px">
-                <el-input v-model="newMusic.album" class="input"></el-input>
-              </el-form-item>
-              <el-form-item label="文件大小(KB)：" style="margin-bottom: 25px">
-                <el-input v-model="newMusic.size" class="input" disabled></el-input>
-              </el-form-item>
-            </el-form>
+            <div style="width: 30%;margin: 30px auto">
+              <el-button @click="upload" class="btnGroup btnInGroup" style="float: left ;width: 80px;height: 40px">
+                上传
+              </el-button>
+              <el-button @click="cancelUpload" class="btnGroup btnInGroup"
+                         style="float: right;width: 80px;height: 40px">
+                取消
+              </el-button>
+            </div>
           </div>
-          <div style="width: 30%;margin: 30px auto">
-            <el-button @click="upload" class="btnGroup btnInGroup" style="float: left ;width: 80px;height: 40px">
-              上传
-            </el-button>
-            <el-button @click="cancelUpload" class="btnGroup btnInGroup"
-                       style="float: right;width: 80px;height: 40px">
-              取消
-            </el-button>
-          </div>
+
 
         </el-dialog>
         <el-table
             ref="singleTable"
             :data="tableData"
             style="width: 1150px;margin: auto"
-            @selection-change="handleSelectionChange">
+            @selection-change="handleSelectionChange"
+            v-loading="loadingTable">
           <el-table-column
               type="selection"
               width="50"
               v-if="showSelection">
           </el-table-column>
           <el-table-column
-              property="avatar"
-              width="50">
+              width="70"
+              label="封面">
+            <template slot-scope="scope">
+              <img :src="scope.row.avatar" alt="" style="width: 100%;height: 50px">
+            </template>
           </el-table-column>
           <el-table-column
               property="name"
@@ -216,11 +226,11 @@ export default {
     return {
       username: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).username : '',
       nickname: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).nickname : '',
-      activeName: 'music',
+      activeName: 'data',
       user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : {},
       nowChanging: false,
       //表格数据
-      tableData: [{enable: true}, {}, {}, {}, {}],
+      tableData: [],
       //是否显示多选框
       showSelection: false,
       //多选的选项
@@ -232,7 +242,7 @@ export default {
       //新增music
       newMusic: {},
       //加载中
-      loading: true,
+      loading: false,
       //IP
       serverIp: serverIp,
       //upload-dragger样式修改
@@ -243,6 +253,8 @@ export default {
       fileName: '',
       //是否需要传入数据库
       needSaveDB: true,
+      //tableLoading
+      loadingTable: false
     }
   },
   computed: {
@@ -368,21 +380,24 @@ export default {
     handleGetDataSuccess(res) {
       this.newMusic = res.data
       this.showDragger = false
+      this.loading = false
     },
     beforeGetData(file) {
       //设置显示的文件名
       this.fileName = file.name
-      const extension = file.name.split('.').pop().toLowerCase();
-      const isMusic = extension === 'mp3' || extension === 'flac';
-      const isLt50M = file.size / 1024 / 1024 < 50;
+      const extension = file.name.split('.').pop().toLowerCase()
+      const isMusic = extension === 'mp3' || extension === 'flac'
+      const isLt50M = file.size / 1024 / 1024 < 50
       if (!isMusic) {
-        this.$notify.error('上传音乐只能是 MP3/FLAC 格式!');
+        this.$notify.error('上传音乐只能是 MP3/FLAC 格式!')
       } else if (!isLt50M) {
-        this.$notify.error('上传音乐文件大小不能超过 50MB!');
+        this.$notify.error('上传音乐文件大小不能超过 50MB!')
       } else {
-        return true;
+        //loading
+        this.loading = true
+        return true
       }
-      return false;
+      return false
     },
     //取消上传后，关闭对话框并清除已上传的文件
     cancelUpload() {
@@ -393,6 +408,7 @@ export default {
       this.uploadAvatar = ''
       this.$refs.avatar.clearFiles()
       this.fileName = ''
+      this.loading = false
     },
     //显示上传的封面
     handleUploadAvatar(file) {
@@ -404,6 +420,18 @@ export default {
     },
     //上传完整的单曲信息以及封面和音频文件
     upload() {
+      //loading
+      this.loading = true
+
+      if (!this.$refs.uploader.uploadFiles.length) {
+        this.$notify({
+          title: '上传失败',
+          message: '未选择音频',
+          type: 'error'
+        })
+        this.loading = false
+        return
+      }
       //上传音频
       let file = this.$refs.uploader.uploadFiles[0].raw
       let formData = new FormData()
@@ -421,6 +449,7 @@ export default {
             message: response.data.msg,
             type: 'error'
           })
+          this.loading = false
         } else {
           this.$notify({
             title: '音频上传成功',
@@ -442,6 +471,7 @@ export default {
           message: err,
           type: 'error'
         });
+        this.loading = false
       })
     },
     handleAvatarUpload(res) {
@@ -451,6 +481,7 @@ export default {
           message: res.msg,
           type: 'error'
         })
+        this.loading = false
       } else {
         this.$notify({
           title: '封面上传成功',
@@ -459,7 +490,7 @@ export default {
         //将返回的封面路径存入对象
         this.newMusic.avatar = res.data.url
         //最后再上传前收拾一下对象
-        this.newMusic.uploader = JSON.parse(localStorage.getItem('user')).username
+        this.newMusic.uploader = JSON.parse(localStorage.getItem('user')).id
         //然后，到这里封面和音频都上传成功了，此时将完整的Music对象存入数据库
 
         this.request.post('/music/saveDB', this.newMusic).then(res => {
@@ -469,6 +500,7 @@ export default {
               message: res.msg,
               type: 'error'
             })
+            this.loading = false
           } else {
             if (!this.needSaveDB) {
               this.$notify({
@@ -482,14 +514,33 @@ export default {
               })
             }
             //TODO 更新上传后的列表数据
+            this.getUploadList()
             //最后，清除各种信息并关闭窗口
-            console.log(this.newMusic)
             this.cancelUpload()
           }
         })
       }
+    },
+    //获取当前用户上传过的音乐列表
+    getUploadList(){
+      this.loadingTable = true
+      this.request.get('/user/getUploadList/'+JSON.parse(localStorage.getItem('user')).id).then(res=>{
+          if(res.code !== '200'){
+            this.$notify({
+              title: '获取数据失败',
+              message: res.msg,
+              type: 'error'
+            })
+          }else{
+            this.tableData = res.data
+          }
+      })
+      this.loadingTable = false
     }
   },
+  mounted() {
+    this.getUploadList()
+  }
 }
 
 </script>
@@ -659,7 +710,7 @@ export default {
 
 /*行高*/
 ::v-deep .el-table td {
-  padding: 15px 0;
+  padding: 8px 0 0;
 }
 
 /*滚动条*/
@@ -728,6 +779,7 @@ tr.el-table__row {
 }
 
 /deep/ .el-dialog__body {
+  height: 100%;
   padding: 0;
 }
 
@@ -803,5 +855,9 @@ tr.el-table__row {
   border-color: var(--mineBtnBg) !important;
 }
 
-
+/deep/ .el-loading-mask {
+  background-color: var(--maskBg);
+  height: 100%;
+  border-radius: 15px;
+}
 </style>

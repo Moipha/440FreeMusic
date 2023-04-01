@@ -22,12 +22,13 @@ public class Music {
     private String name;
     private String author;
     private String album;
-    private String uploader;
+    private Integer uploader;
     private String avatar;
     private String url;
     private Integer size;
     private String md5;
     private Boolean isDelete;
     private Boolean enable;
-    private Integer time;
+    private String time;
+    private Date createTime;
 }

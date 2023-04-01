@@ -35,11 +35,6 @@ public class MusicController {
         return musicService.saveMusic(file);
     }
 
-    //上传保存封面
-    @PostMapping("/saveAvatar")
-    public Result saveAvatar(@RequestParam MultipartFile file) throws IOException {
-        return musicService.saveAvatar(file);
-    }
 
     //将音乐信息存入数据库
     @PostMapping("/saveDB")
@@ -52,4 +47,11 @@ public class MusicController {
     public void download(@PathVariable String fileUuid, HttpServletResponse response) throws IOException {
         musicService.download(fileUuid, response);
     }
+
+    //查询
+    @PostMapping("/searchByName")
+    public Result searchByName(@RequestBody Music music){
+        return musicService.searchByName(music.getName());
+    }
+
 }

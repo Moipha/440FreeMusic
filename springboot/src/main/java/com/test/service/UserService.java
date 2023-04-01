@@ -9,12 +9,18 @@ import com.test.common.Result;
 import com.test.common.ServiceException;
 import com.test.dto.UserDTO;
 import com.test.mapper.UserMapper;
+import com.test.pojo.Music;
 import com.test.pojo.User;
 import com.test.utils.TokenUtils;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.List;
+
 @Service
 public class UserService extends ServiceImpl<UserMapper, User> {
+    @Resource
+    private MusicService musicService;
 
     //登录实现
     public Result login(UserDTO userDTO) {
@@ -91,5 +97,13 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         }else{
             return Result.error("600","写入数据库的过程中失败");
         }
+    }
+
+    //获取该用户上传的music
+    public Result getUploadList(Integer id) {
+        QueryWrapper<Music> qw = new QueryWrapper<>();
+        qw.eq("uploader",id);
+        List<Music> musicList = musicService.list(qw);
+        return Result.success(musicList);
     }
 }

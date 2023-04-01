@@ -4,10 +4,7 @@ import com.test.common.Result;
 import com.test.dto.UserDTO;
 import com.test.pojo.User;
 import com.test.service.UserService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -31,5 +28,11 @@ public class UserController {
     @PostMapping("/edit")
     public Result edit(@RequestBody UserDTO user){
         return userService.edit(user);
+    }
+
+    //获取用户上传的音乐列表
+    @GetMapping("/getUploadList/{id}")
+    public Result getUploadList(@PathVariable Integer id){
+        return userService.getUploadList(id);
     }
 }

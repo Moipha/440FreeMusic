@@ -26,6 +26,7 @@ export default {
   --lightBlackText: #777777;
   --scrollbar: #666666;
   --scrollbarHover: #999999;
+  --maskBg: #333333DD;
 
   /*右部背景*/
   --rightBg: rgb(23, 23, 26);

@@ -5,6 +5,7 @@
         suffix-icon="el-icon-search"
         v-model="searchString"
         clearable
+        @keydown.enter.native="search"
     ></el-input>
     <el-tabs v-model="activeName" style="width: 1150px;margin: auto;">
       <el-tab-pane label="搜索结果" disabled class="dis"></el-tab-pane>
@@ -18,11 +19,14 @@
         highlight-current-row
         @current-change="handleCurrentChange"
         style="width: 1150px;margin: auto"
+        v-loading="loading"
     >
       <el-table-column
-          property="avatar"
-          width="50"
-      >
+          width="70"
+          label="封面">
+        <template slot-scope="scope">
+          <img :src="scope.row.avatar" alt="" style="width: 100%;height: 50px">
+        </template>
       </el-table-column>
       <el-table-column
           property="name"
@@ -55,6 +59,8 @@
 </template>
 
 <script>
+import router from "@/router";
+
 export default {
   name: "Search",
   data() {
@@ -63,135 +69,54 @@ export default {
       currentRow: null,
       //从header搜索框获取的数据
       searchString: '',
-      tableData: [
-        {
-          name: 'test1',
-          author: '张三',
-          album: '专辑1',
-          time: '02:12'
-        },
-        {
-          name: 'test1',
-          author: '张三',
-          album: '专辑1',
-          time: '02:12'
-        },
-        {
-          name: 'test1',
-          author: '张三',
-          album: '专辑1',
-          time: '02:12'
-        },
-        {
-          name: 'test1',
-          author: '张三',
-          album: '专辑1',
-          time: '02:12'
-        },
-        {
-          name: 'test1',
-          author: '张三',
-          album: '专辑1',
-          time: '02:12'
-        },
-        {
-          name: 'test1',
-          author: '张三',
-          album: '专辑1',
-          time: '02:12'
-        },
-        {
-          name: 'test1',
-          author: '张三',
-          album: '专辑1',
-          time: '02:12'
-        },
-        {
-          name: 'test1',
-          author: '张三',
-          album: '专辑1',
-          time: '02:12'
-        },
-        {
-          name: 'test1',
-          author: '张三',
-          album: '专辑1',
-          time: '02:12'
-        },
-        {
-          name: 'test1',
-          author: '张三',
-          album: '专辑1',
-          time: '02:12'
-        },
-        {
-          name: 'test1',
-          author: '张三',
-          album: '专辑1',
-          time: '02:12'
-        },
-        {
-          name: 'test1',
-          author: '张三',
-          album: '专辑1',
-          time: '02:12'
-        },
-        {
-          name: 'test1',
-          author: '张三',
-          album: '专辑1',
-          time: '02:12'
-        },
-        {
-          name: 'test1',
-          author: '张三',
-          album: '专辑1',
-          time: '02:12'
-        },
-        {
-          name: 'test1',
-          author: '张三',
-          album: '专辑1',
-          time: '02:12'
-        },
-        {
-          name: 'test1',
-          author: '张三',
-          album: '专辑1',
-          time: '02:12'
-        },
-        {
-          name: 'test1',
-          author: '张三',
-          album: '专辑1',
-          time: '02:12'
-        },
-        {
-          name: 'test1',
-          author: '张三',
-          album: '专辑1',
-          time: '02:12'
-        },
-        {
-          name: 'test1',
-          author: '张三',
-          album: '专辑1',
-          time: '02:12'
-        },
-
-      ]
+      //表格数据
+      tableData: [],
+      //加载中
+      loading: false,
     }
   },
   mounted() {
     this.$bus.$on('changeSearchStr', (str) => {
       this.searchString = str
+      this.getTableData()
     })
     this.searchString = this.$route.query.searchStr
+    this.getTableData()
   },
   methods: {
     handleCurrentChange(val) {
       this.currentRow = val;
+    },
+    //获取表格数据
+    getTableData(){
+      this.loading = true
+      //发送请求获取数据
+      this.request.post('/music/searchByName/',{name:this.searchString}).then(res=>{
+        if(res.code !== '200'){
+          this.$notify({
+            title: '查询数据失败',
+            message: res.msg,
+            type: 'error'
+          })
+          this.loading = false
+        }else{
+          this.tableData = res.data
+          this.loading = false
+        }
+      }).catch(err=>{
+        this.$notify({
+          title: '查询数据失败',
+          message: err,
+          type: 'error'
+        })
+        this.loading = false
+      })
+    },
+    search(){
+      this.getTableData()
+      this.$router.push({path: '/search', query: {searchStr: this.searchString}})
     }
+
   },
   beforeDestroy() {
     this.$bus.$off('changeSearchStr')
@@ -324,7 +249,7 @@ export default {
 
 /*行高*/
 ::v-deep .el-table td {
-  padding: 15px 0;
+  padding: 8px 0 0;
 }
 
 /*滚动条*/
@@ -355,5 +280,9 @@ tr.el-table__row {
   -moz-border-radius-bottomleft: 50% !important;
 }
 
+/deep/ .el-loading-mask {
+  background-color: var(--maskBg);
+  height: 100%;
+}
 
 </style>
