@@ -36,7 +36,7 @@ export default {
   --leftBtnActive: royalblue;
   --leftBtnHover: #444444;
   /*上边栏*/
-  --headerBg: rgba(23, 23, 26, 0.4);
+  --headerBg: rgba(23, 23, 26, 0.8);
   --headerBtn: var(--leftbg);
   --headerBtnHover: #444444;
   --headerText: var(--whiteText);
@@ -88,10 +88,17 @@ export default {
   --searchActive: var(--leftBtnActive);
   --searchLightText: var(--lightBlackText);
   /*底栏*/
-  --footerText: var(--leftText);
+  --footerText: #FFFFFF;
   --footerBg: #00000022;
   --footerHover: var(--headerBtnHover);
   --footerActive: var(--leftBtnActive);
+  /*右边栏*/
+  --rightAsideBg: #222222;
+  --rightAsideText: var(--whiteText);
+  --rightTabBg: #333333;
+  --rightTab: #555555;
+  --rightLightText: #AAAAAA;
+  --rightHover: #444444;
 }
 
 .Orange {

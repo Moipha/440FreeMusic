@@ -87,23 +87,23 @@ export default {
     handleCurrentChange(val) {
       this.currentRow = val;
     },
-    //获取表格数据
-    getTableData(){
+    // 获取表格数据
+    getTableData() {
       this.loading = true
       //发送请求获取数据
-      this.request.post('/music/searchByName/',{name:this.searchString}).then(res=>{
-        if(res.code !== '200'){
+      this.request.post('/music/searchByName/', {name: this.searchString}).then(res => {
+        if (res.code !== '200') {
           this.$notify({
             title: '查询数据失败',
             message: res.msg,
             type: 'error'
           })
           this.loading = false
-        }else{
+        } else {
           this.tableData = res.data
           this.loading = false
         }
-      }).catch(err=>{
+      }).catch(err => {
         this.$notify({
           title: '查询数据失败',
           message: err,
@@ -112,7 +112,7 @@ export default {
         this.loading = false
       })
     },
-    search(){
+    search() {
       this.getTableData()
       this.$router.push({path: '/search', query: {searchStr: this.searchString}})
     }

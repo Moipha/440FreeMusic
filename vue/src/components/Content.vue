@@ -4,15 +4,18 @@
     <LeftAside/>
     <!--右侧内容-->
     <el-container
-        style="flex-direction: column;background-color: var(--rightBg)"
+        style="flex-direction: column;background-color: var(--rightBg);position: relative;z-index: 1"
         @mouseenter.native="showScrollbar"
         @mouseleave.native="hideScrollbar"
     >
-      <!--上边栏-->
-      <Header/>
+
       <!--主体内容-->
-      <el-main>
-        <router-view></router-view>
+      <el-main style="padding:0">
+        <!--上边栏-->
+        <Header/>
+        <router-view style="padding: 80px 20px 20px 20px"></router-view>
+        <!--右边栏-->
+        <RightAside/>
       </el-main>
     </el-container>
     <!--下边栏-->
@@ -24,10 +27,11 @@
 import Header from "@/components/Header";
 import LeftAside from "@/components/LeftAside";
 import Footer from "@/components/Footer";
+import RightAside from "@/components/RightAside";
 
 export default {
   name: "Content",
-  components: {LeftAside, Header, Footer},
+  components: {LeftAside, Header, Footer, RightAside},
   methods: {
     showScrollbar() {
       document.documentElement.style.setProperty('--test', 'visible');
@@ -66,7 +70,6 @@ export default {
   background-color: var(--rightBg);
   border-radius: 5px;
 }
-
 
 
 </style>

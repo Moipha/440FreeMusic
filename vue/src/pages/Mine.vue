@@ -27,7 +27,7 @@
         </div>
       </div>
     </el-card>
-    <el-tabs style="width: 80%;margin: 20px auto;color: var(--mineText)" v-model="activeName">
+    <el-tabs style="width: 80%;margin: 20px auto;color: var(--mineText)" v-model="activeName" @tab-click="changeTab">
       <el-tab-pane label="基本信息" name="data">
 
         <el-form label-position="left" label-width="80px" :model="user" style="font-weight: bold;margin-top: 20px">
@@ -81,10 +81,7 @@
           </template>
         </el-button-group>
         <el-dialog :visible.sync="showDialog"
-                   :class="dialogClass"
                    :show-close="false"
-                   @open="openDialog"
-                   @close="closeDialog"
                    ref="dialog"
                    :limit="1">
           <div v-loading="loading" style="height: 100%!important;">
@@ -155,13 +152,12 @@
               </el-button>
             </div>
           </div>
-
-
         </el-dialog>
+
         <el-table
             ref="singleTable"
             :data="tableData"
-            style="width: 1150px;margin: auto"
+            style="width: 100%;margin: auto"
             @selection-change="handleSelectionChange"
             v-loading="loadingTable">
           <el-table-column
@@ -189,10 +185,14 @@
               label="专辑">
           </el-table-column>
           <el-table-column
+              property="createTime"
+              label="上传时间"/>
+          <el-table-column
               property="time"
               label="时长"
               width="60">
           </el-table-column>
+
           <el-table-column
               property="enable"
               label="启用"
@@ -237,8 +237,6 @@ export default {
       multipleSelection: [],
       //显示添加对话框
       showDialog: false,
-      //弹窗的动态样式
-      dialogClass: 'animate__fadeInLeft',
       //新增music
       newMusic: {},
       //加载中
@@ -254,7 +252,7 @@ export default {
       //是否需要传入数据库
       needSaveDB: true,
       //tableLoading
-      loadingTable: false
+      loadingTable: true
     }
   },
   computed: {
@@ -367,14 +365,6 @@ export default {
     //批量操作
     mulEdit() {
       this.showSelection = !this.showSelection
-    },
-    //打开对话框
-    openDialog() {
-      this.dialogClass = 'animate__fadeInLeft';
-    },
-    //关闭对话框
-    closeDialog() {
-      this.dialogClass = 'animate__fadeOutLeft'
     },
     //上传音乐相关
     handleGetDataSuccess(res) {
@@ -536,11 +526,13 @@ export default {
           }
       })
       this.loadingTable = false
+    },
+    changeTab(tab){
+      if(tab.name==='music'){
+        this.getUploadList()
+      }
     }
   },
-  mounted() {
-    this.getUploadList()
-  }
 }
 
 </script>
@@ -762,14 +754,6 @@ tr.el-table__row {
   padding: 5px;
 }
 
-/*弹窗动画持续时间*/
-.animate__fadeInLeft {
-  animation-duration: 0.4s;
-}
-
-.animate__fadeOutLeft {
-  animation-duration: 0.6s;
-}
 
 /deep/ .el-dialog {
   background-color: var(--dialogBg);
@@ -859,5 +843,46 @@ tr.el-table__row {
   background-color: var(--maskBg);
   height: 100%;
   border-radius: 15px;
+}
+
+
+
+/deep/ .el-dialog__wrapper {
+  transition-duration: 0.3s;
+}
+/deep/ .dialog-fade-enter-active{
+  animation: none !important;
+}
+/deep/ .dialog-fade-leave-active {
+  transition-duration: 0.15s !important;
+  animation: none !important;
+}
+
+/deep/ .dialog-fade-enter-active .el-dialog,
+.dialog-fade-leave-active .el-dialog{
+  animation-fill-mode: forwards;
+}
+
+/deep/ .dialog-fade-enter-active .el-dialog{
+  animation-duration: 0.3s;
+  animation-name: anim-open;
+  animation-timing-function: cubic-bezier(0.6,0,0.4,1);
+}
+
+/deep/ .dialog-fade-leave-active .el-dialog{
+  animation-duration: 0.3s;
+  animation-name: anim-close;
+}
+
+
+@keyframes anim-open {
+  0% { opacity: 0;  transform: scale3d(0, 0, 1); }
+  100% { opacity: 1; transform: scale3d(1, 1, 1); }
+}
+
+
+@keyframes anim-close {
+  0% { opacity: 1; }
+  100% { opacity: 0; transform: scale3d(0.5, 0.5, 1); }
 }
 </style>

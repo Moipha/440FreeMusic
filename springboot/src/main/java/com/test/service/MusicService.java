@@ -168,6 +168,8 @@ public class MusicService extends ServiceImpl<MusicMapper, Music> {
         //通过标题模糊查询
         QueryWrapper<Music> qw = new QueryWrapper<>();
         qw.like("name",keyword);
+        qw.eq("enable",true);
+        qw.eq("is_delete",false);
         List<Music> list = list(qw);
         return Result.success(list);
     }

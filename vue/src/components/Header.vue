@@ -1,5 +1,5 @@
 <template>
-  <el-header class="header">
+  <el-header ref="header" class="header" style="width: calc(100% - 250px)">
     <!--前进后退按钮-->
     <span class="navigation" @click="goBack" :class="{disabled: $store.state.index===0}">
       <span class="el-icon-arrow-left" style="font-weight: 1000;color: var(--headerText)"/>
@@ -16,7 +16,7 @@
     <span style="width: 240px;height: 40px;background-color: var(--headerSearchBg);
                 margin: auto 10px auto auto;border-radius: 20px;
                 ;font-size: 15px;cursor: pointer;color: var(--headerText)"
-          @click="showDialog = true">
+          @click="openD">
       <span class="el-icon-search" style="margin: 0 10px 0 20px;line-height: 40px"/>搜索
     </span>
     <el-tooltip class="item" effect="dark" content="主题切换" placement="bottom">
@@ -26,11 +26,11 @@
     </el-tooltip>
     <!--对话框-->
     <el-dialog :visible.sync="showDialog"
-               :class="dialogClass"
                :show-close="false"
                @open="openDialog"
-               @close="closeDialog"
-               ref="dialog">
+               ref="dialog"
+               :modal-append-to-body='false'
+               :append-to-body="false">
       <div style="font-size: 17px">
         <span class="el-icon-search"
               style="line-height: 10px;margin: 20px 5px 20px 20px;color: var(--headerInputText)!important"/>
@@ -43,8 +43,8 @@
       </div>
       <hr style="border: var(--hr) 1px solid;width: 100%;padding: 0;margin: 0">
     </el-dialog>
-  </el-header>
 
+  </el-header>
 </template>
 
 <script>
@@ -57,14 +57,12 @@ export default {
     return {
       //弹窗显示
       showDialog: false,
-      //弹窗的动态样式
-      dialogClass: 'animate__rotateInDownRight',
       //当前图标
       currentIcon: this.$store.state.theme,
       //当前响应的标签页
       activeTab: this.$router.currentRoute.fullPath,
       //搜索的内容
-      searchString: ''
+      searchString: '',
     }
   },
   computed: {
@@ -82,14 +80,9 @@ export default {
     },
     //打开对话框
     openDialog() {
-      this.dialogClass = 'animate__rotateInDownRight';
       this.$nextTick(() => {
         this.$refs.input.focus();
       })
-    },
-    //关闭对话框
-    closeDialog() {
-      this.dialogClass = 'animate__rotateOutUpRight'
     },
     //修改主题
     changeTheme() {
@@ -123,6 +116,21 @@ export default {
       this.$router.push({path: '/search', query: {searchStr: this.searchString}})
       this.$bus.$emit('changeSearchStr', this.searchString)
       this.searchString = ''
+    },
+    //滚动条
+    handleScroll(e) {
+      const header = document.getElementsByClassName('header')[0]
+      if (header) {
+        header.style.borderBottomColor = `rgba(64,64,64,${e.target.scrollTop})`
+        // if (e.target.scrollTop !== 0) {
+        //   header.style.backdropFilter = 'blur(15px)'
+        // } else {
+        //   header.style.backdropFilter = null
+        // }
+      }
+    },
+    openD() {
+      this.showDialog = true
     }
   },
   mounted() {
@@ -132,10 +140,13 @@ export default {
     this.$bus.$on('changeIcon', (icon) => {
       this.currentIcon = icon
     })
+    //监听滚动条事件
+    window.addEventListener('scroll', this.handleScroll, true);
   },
   beforeDestroy() {
     this.$bus.$off('changeActiveTab')
     this.$bus.$off('changeIcon')
+    window.removeEventListener('scroll', this.handleScroll)
   }
 }
 </script>
@@ -144,10 +155,14 @@ export default {
 <style scoped>
 
 .header {
+  position: fixed;
+  z-index: 1;
+  height: 60px;
   display: flex;
   font-size: 20px;
-  width: 100%;
   background-color: var(--headerBg);
+  border-bottom: solid 1px rgba(64, 64, 64, 0);
+  width: 100%;
 }
 
 .navigation {
@@ -171,15 +186,6 @@ export default {
   cursor: not-allowed;
 }
 
-/*弹窗动画持续时间*/
-.animate__rotateInDownRight {
-  animation-duration: 0.4s;
-}
-
-.animate__rotateOutUpRight {
-  animation-duration: 0.8s;
-}
-
 /deep/ .el-dialog {
   background-color: var(--dialogBg);
   border-radius: 20px;
@@ -198,7 +204,7 @@ export default {
 
 /deep/ .el-input__inner {
   background-color: rgba(0, 0, 0, 0);
-  color: var(--headerInputText)!important;
+  color: var(--headerInputText) !important;
   border: none;
 }
 
@@ -243,8 +249,61 @@ export default {
 /deep/ .el-input__inner::placeholder {
   color: var(--headerInputText);
 }
-/deep/ .el-tabs__nav{
+
+/deep/ .el-tabs__nav {
   position: static;
+}
+
+/deep/ .el-dialog__wrapper {
+  transition-duration: 0.3s;
+}
+
+/deep/ .dialog-fade-enter-active {
+  animation: none !important;
+}
+
+/deep/ .dialog-fade-leave-active {
+  transition-duration: 0.15s !important;
+  animation: none !important;
+}
+
+/deep/ .dialog-fade-enter-active .el-dialog,
+.dialog-fade-leave-active .el-dialog {
+  animation-fill-mode: forwards;
+}
+
+/deep/ .dialog-fade-enter-active .el-dialog {
+  animation-duration: 0.3s;
+  animation-name: anim-open;
+  animation-timing-function: cubic-bezier(0.6, 0, 0.4, 1);
+}
+
+/deep/ .dialog-fade-leave-active .el-dialog {
+  animation-duration: 0.3s;
+  animation-name: anim-close;
+}
+
+
+@keyframes anim-open {
+  0% {
+    opacity: 0;
+    transform: scale3d(0, 0, 1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+
+@keyframes anim-close {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale3d(0.5, 0.5, 1);
+  }
 }
 
 </style>

@@ -6,7 +6,7 @@
       <div class="leftContainer">
         <!--头像-->
         <div @click="showMusic" class="avatarContainer">
-          <el-avatar shape="square" :size="70" :src="music.url"></el-avatar>
+          <el-avatar shape="square" :size="70" :src="music.avatar"></el-avatar>
           <i class="el-icon-full-screen avatarIcon"></i>
         </div>
         <div class="musicDataContainer">
@@ -143,7 +143,7 @@
         </svg>
         <el-slider @change="changeVolume" v-model="currentVolume" style="width: 20%;margin-right: 10%"></el-slider>
         <!--弹出侧边栏-->
-        <svg t="1679378020715" class="iconRight" style="position: fixed;right: 20px;bottom: 30px"
+        <svg @click.stop="changeRightAside" t="1679378020715" class="iconRight" style="position: fixed;right: 20px;bottom: 30px"
              viewBox="0 0 1024 1024"
              version="1.1"
              xmlns="http://www.w3.org/2000/svg"
@@ -165,20 +165,24 @@
     <!--底部-->
     <div>
       <div :class="bottomClass"
-           style="left: 0;width: 100%;height: 100%;position: fixed;transition: 0.5s;background-color: #005283;display: flex;flex-direction: row">
+           style="left: 0;width: 100%;height: 100%;
+           position: fixed!important;transition: 0.5s;display: flex;
+           flex-direction: row"
+           ref="bottom">
         <div class="leftDiv">
           <!--封面-->
           <div class="avatar">
-            <el-avatar :src="music.url" size="large" style="width: 100%;height: 100%;border-radius: 20px;" shape="square"/>
+            <el-avatar :src="music.avatar" size="large" style="width: 100%;height: 100%;border-radius: 20px;"
+                       shape="square"/>
           </div>
           <!--标题-->
-          <div style="display: flex;flex-direction: column;margin-left: 28vh;margin-top: 80px;color: var(--whiteText)">
-            <span style="padding: 5px;font-size: 22px;font-weight: bold">标题</span>
-            <span style="padding: 5px;font-size: 12px">作者</span>
+          <div style="display: flex;flex-direction: column;margin-left: 28vh;margin-top: 80px">
+            <span style="padding: 5px 5px 5px 0;font-size: 22px;font-weight: bold">标题</span>
+            <span style="padding: 5px 5px 5px 0;font-size: 12px">作者</span>
           </div>
           <!--进度条-->
           <div style="display: flex;flex-direction: row;margin-left: 28vh;margin-top: 30px">
-            <span style="width: 8vh;line-height: 20px;color: var(--whiteText)">{{ currentTime | formatSecond }}</span>
+            <span style="width: 8vh;line-height: 20px">{{ currentTime | formatSecond }}</span>
             <el-slider
                 v-model="currentTime"
                 @change="changeCurrentTime"
@@ -187,7 +191,9 @@
                 :max="this.maxTime"
             />
 
-            <span style="width:8vh;line-height: 20px;text-align: right;color: var(--whiteText)">{{ maxTime | formatSecond }}</span>
+            <span style="width:8vh;line-height: 20px;text-align: right">{{
+                maxTime | formatSecond
+              }}</span>
           </div>
           <!--控件-->
           <div class="bottomIcons">
@@ -245,7 +251,8 @@
                   fill="#ffffff" p-id="19675"></path>
             </svg>
             <!--下一首-->
-            <svg t="1679312946491" class="icon" style="padding: 10px;margin: auto 10px"  viewBox="0 0 1024 1024" version="1.1"
+            <svg t="1679312946491" class="icon" style="padding: 10px;margin: auto 10px" viewBox="0 0 1024 1024"
+                 version="1.1"
                  xmlns="http://www.w3.org/2000/svg" p-id="7439" width="30px" height="30px">
               <path
                   d="M817 160h38c30.928 0 56 25.072 56 56v593c0 30.928-25.072 56-56 56h-38c-30.928 0-56-25.072-56-56V216c0-30.928 25.072-56 56-56zM648.314 546.191l-422.304 303.4c-32.294 23.201-77.282 15.83-100.484-16.464A72 72 0 0 1 112 791.117V232.064c0-39.764 32.235-72 72-72a72 72 0 0 1 39.95 12.1l422.762 281.959c25.73 17.16 32.677 51.93 15.517 77.66a56 56 0 0 1-13.915 14.408z"
@@ -253,7 +260,8 @@
             </svg>
             <!--like-->
             <div @click="like">
-              <svg t="1679376624033" style="margin: 5px 5px 0 5px" v-if="!music.isLike" class="iconRight" viewBox="0 0 1024 1024" version="1.1"
+              <svg t="1679376624033" style="margin: 5px 5px 0 5px" v-if="!music.isLike" class="iconRight"
+                   viewBox="0 0 1024 1024" version="1.1"
                    xmlns="http://www.w3.org/2000/svg"
                    p-id="4392" width="35" height="35">
                 <path
@@ -282,13 +290,15 @@
   </el-footer>
 </template>
 
-<script>/**
+<script>
+import router from "@/router";
+import ColorThief from "colorthief"
+
+/**
  * 格式化时间
  * @param second 传入总秒数
  * @returns {string} 返回 mm:ss 格式的时间字符串
  */
-import router from "@/router";
-
 function realFormatSecond(second) {
   let secondType = typeof second;
   if (secondType === 'number' || secondType === 'string') {
@@ -301,6 +311,7 @@ function realFormatSecond(second) {
   } else {
     return '00:00'
   }
+
 }
 
 export default {
@@ -323,12 +334,15 @@ export default {
       isLoaded: false,
       //音乐对象
       music: {
-        url: require('@/assets/avatar.png'),
+        // avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
+        avatar: require('@/assets/avatar.png'),
         src: require('@/assets/testMusic/test2.mp3'),
         isLike: false,
       },
       //音乐界面的类名
       bottomClass: 'hiddenMusic',
+      //图片主题色
+      themeColor: [],
     }
   },
   methods: {
@@ -412,6 +426,11 @@ export default {
       } else {
         this.bottomClass = 'hiddenMusic'
       }
+    },
+    //打开侧边栏
+    changeRightAside(){
+      this.$bus.$emit('changeRightAside')
+
     }
   },
   filters: {
@@ -425,6 +444,20 @@ export default {
     playModeTooltip() {
       return this.playMode === 0 ? '顺序播放' : this.playMode === 1 ? '随机播放' : '单曲循环'
     }
+  },
+  mounted() {
+    const colorThief = new ColorThief()
+    const image = new Image()
+    // 加载图像
+    image.src = this.music.avatar + '?' + new Date().getTime();
+    image.setAttribute('crossOrigin', '');
+    image.addEventListener('load', () => {
+      // 获取图像的颜色
+      const palette = colorThief.getPalette(image, 2)
+      this.themeColor[0] = `rgb(${palette[0][0]}, ${palette[0][1]}, ${palette[0][2]})`
+      this.themeColor[1] = `rgb(${palette[1][0]}, ${palette[1][1]}, ${palette[1][2]})`
+      this.$refs.bottom.style.backgroundImage = `linear-gradient(to bottom right, ${this.themeColor[1]}, ${this.themeColor[0]})`
+    })
   }
 }
 </script>
@@ -435,6 +468,7 @@ export default {
   bottom: -100%;
   width: 100%;
   height: 100%;
+  z-index: 2;
 }
 
 .footer {
@@ -447,8 +481,9 @@ export default {
   display: flex;
   flex-direction: row;
   padding: 0;
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(15px);
   color: var(--footerText);
+  border-top: 1px var(--footerHover) solid;
 }
 
 /deep/ .icon {
@@ -570,6 +605,7 @@ export default {
   flex-direction: column;
   width: 50%;
   height: 100%;
+  color: var(--footerText) !important;
 }
 
 .avatar {
@@ -584,7 +620,6 @@ export default {
 .midDiv {
   width: 50%;
   height: 100%;
-  background-color: #B4A117;
 }
 
 .rightDiv {
@@ -594,12 +629,11 @@ export default {
   right: 0;
   display: flex;
   flex-direction: column;
-  background-color: #863020;
 }
 
 .rightIcon {
   font-size: 40px;
-  color: var(--lightWhiteText);
+  color: var(--footerText);
   margin: 5px auto;
   padding: 13px;
   border-radius: 22px;
