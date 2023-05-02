@@ -8,19 +8,26 @@ import com.test.common.Constants;
 import com.test.common.Result;
 import com.test.common.ServiceException;
 import com.test.dto.UserDTO;
+import com.test.mapper.ListMapper;
 import com.test.mapper.UserMapper;
 import com.test.pojo.Music;
 import com.test.pojo.User;
+import com.test.pojo.UserList;
 import com.test.utils.TokenUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class UserService extends ServiceImpl<UserMapper, User> {
     @Resource
     private MusicService musicService;
+    @Resource
+    private ListMapper listMapper;
+    @Resource
+    private UserListService userListService;
 
     //登录实现
     public Result login(UserDTO userDTO) {
@@ -50,6 +57,8 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             //设置token
             String token = TokenUtils.genToken(user.getId().toString(), user.getPassword());
             userDTO.setToken(token);
+            //设置用户歌单
+            userDTO.setLists(getLists(user.getId()));
             return Result.success(userDTO);
         }
     }
@@ -105,5 +114,22 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         qw.eq("uploader",id);
         List<Music> musicList = musicService.list(qw);
         return Result.success(musicList);
+    }
+
+    //获取该用户创建的歌单
+    public List<com.test.pojo.List> getLists(Integer userId){
+        //获取该用户相关的所有UserList对象
+        List<UserList> userLists = userListService.list(new QueryWrapper<UserList>().eq("user_id", userId).eq("type",1));
+        //获取list的id数组
+        List<Integer> listIds = new ArrayList<>();
+        for (UserList userList : userLists) {
+            listIds.add(userList.getListId());
+        }
+        //通过listId获取list对象集合
+        List<com.test.pojo.List> result = new ArrayList<>();
+        for (Integer id : listIds) {
+            result.add(listMapper.selectOne(new QueryWrapper<com.test.pojo.List>().eq("id",id)));
+        }
+        return result;
     }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div style="display: flex;flex-direction: column">
+  <div style="display: flex;flex-direction: column" @contextmenu.prevent>
     <el-input
         class="input"
         suffix-icon="el-icon-search"

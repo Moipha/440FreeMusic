@@ -14,16 +14,22 @@
     </el-tabs>
     <!--假搜索框-->
     <span style="width: 240px;height: 40px;background-color: var(--headerSearchBg);
-                margin: auto 10px auto auto;border-radius: 20px;
+                margin: auto 0 auto auto;border-radius: 20px;
                 ;font-size: 15px;cursor: pointer;color: var(--headerText)"
           @click="openD">
       <span class="el-icon-search" style="margin: 0 10px 0 20px;line-height: 40px"/>搜索
     </span>
     <el-tooltip class="item" effect="dark" content="主题切换" placement="bottom">
       <span class="el-dropdown-link" id="icon" @click="changeTheme">
+        <span class="el-icon-tickets"/>
+      </span>
+    </el-tooltip>
+    <el-tooltip class="item" effect="dark" content="主题切换" placement="bottom">
+      <span class="el-dropdown-link" id="icon" @click="changeTheme">
         <span :class="icon"/>
       </span>
     </el-tooltip>
+
     <!--对话框-->
     <el-dialog :visible.sync="showDialog"
                :show-close="false"
@@ -119,14 +125,18 @@ export default {
     },
     //滚动条
     handleScroll(e) {
-      const header = document.getElementsByClassName('header')[0]
-      if (header) {
-        header.style.borderBottomColor = `rgba(64,64,64,${e.target.scrollTop})`
-        // if (e.target.scrollTop !== 0) {
-        //   header.style.backdropFilter = 'blur(15px)'
-        // } else {
-        //   header.style.backdropFilter = null
-        // }
+      console.log()
+      if(e.target.__vue__._uid === '22'){
+        const header = document.getElementsByClassName('header')[0]
+        if (header) {
+          header.style.borderBottomColor = `rgba(64,64,64,${e.target.scrollTop})`
+          if (e.target.scrollTop !== 0) {
+            header.style.backgroundColor = 'var(--rightBg)'
+          } else {
+            header.style.backgroundColor = 'var(--headerBg)'
+
+          }
+        }
       }
     },
     openD() {
@@ -163,6 +173,7 @@ export default {
   background-color: var(--headerBg);
   border-bottom: solid 1px rgba(64, 64, 64, 0);
   width: 100%;
+  padding-right: 18px;
 }
 
 .navigation {

@@ -1,16 +1,17 @@
 <template>
   <el-aside width="250px" style="height: 100%;overflow-x: hidden;">
-    <el-menu :default-openeds="['1', '3']"
-             style="min-height: 100%; overflow-x: hidden;background-color: var(--leftbg);border: none"
-             :collapse-transition="false"
+    <el-menu style="min-height: 100%; overflow-x: hidden;background-color: var(--leftbg);border: none"
              router
              ref="menu"
-             :default-active="$route.path !== '/home/recent' ? $route.path : '/home'"
+             :default-active="defaultActiveUrl"
+             unique-opened
+             :default-openeds="['/']"
     >
       <!--头像和登录键-->
       <div style="height: 40px; line-height: 40px;margin: 32px 12px 20px 15px" @click="login">
         <span><el-avatar :size="40" :src="defaultUrl">{{ initials }}</el-avatar></span>
-        <span style="float: right;cursor: pointer;font-weight: 700;margin-left: 12px" class="clickToLogin">
+        <span style="float: right;cursor: pointer;font-weight: 700;margin-left: 12px;letter-spacing: normal"
+              class="clickToLogin">
           {{ username }}
           <span class="el-icon-arrow-right" style="margin-left: 80px;font-weight: 800"/>
         </span>
@@ -36,7 +37,8 @@
         <span slot="title">收藏</span>
       </el-menu-item>
       <el-menu-item index="/setting" class="leftSection">
-        <svg t="1680361090482" class="icon leftSectionInner" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+        <svg t="1680361090482" class="icon leftSectionInner" viewBox="0 0 1024 1024" version="1.1"
+             xmlns="http://www.w3.org/2000/svg"
              p-id="10945" width="13" height="13">
           <path
               d="M944.48 552.458667l-182.357333 330.666666a73.792 73.792 0 0 1-64.565334 38.325334h-362.133333a73.792 73.792 0 0 1-64.565333-38.325334l-182.357334-330.666666a75.338667 75.338667 0 0 1 0-72.682667l182.357334-330.666667a73.792 73.792 0 0 1 64.565333-38.325333h362.133333a73.792 73.792 0 0 1 64.565334 38.325333l182.357333 330.666667a75.338667 75.338667 0 0 1 0 72.682667z m-55.989333-31.146667a10.773333 10.773333 0 0 0 0-10.378667l-182.037334-330.666666a10.517333 10.517333 0 0 0-9.205333-5.482667H335.733333a10.517333 10.517333 0 0 0-9.205333 5.482667l-182.037333 330.666666a10.773333 10.773333 0 0 0 0 10.378667l182.037333 330.666667a10.517333 10.517333 0 0 0 9.205333 5.472h361.514667a10.517333 10.517333 0 0 0 9.205333-5.472l182.037334-330.666667zM513.738667 682.666667c-94.261333 0-170.666667-76.405333-170.666667-170.666667s76.405333-170.666667 170.666667-170.666667c94.250667 0 170.666667 76.405333 170.666666 170.666667s-76.416 170.666667-170.666666 170.666667z m0-64c58.912 0 106.666667-47.754667 106.666666-106.666667s-47.754667-106.666667-106.666666-106.666667-106.666667 47.754667-106.666667 106.666667 47.754667 106.666667 106.666667 106.666667z"
@@ -44,14 +46,36 @@
         </svg>
         <span slot="title">设置</span>
       </el-menu-item>
-      <el-submenu class="musicList" index="1">
+      <el-submenu class="musicList" index="/">
         <template slot="title">
           <span style="font-size: 14px">创建的歌单</span>
-          <i class="el-icon-plus plus" @click="addMusicList"/>
+          <i class="el-icon-plus plus" @click.stop.prevent="open"/>
         </template>
+        <!--注：在要跳转的路径前加#可以阻止默认的跳转行为-->
+        <el-menu-item :index="'#'+list.title" @click="jumpToList(list.title)" class="leftSection" v-for="list in userLists">
+          {{ list.title }}
+        </el-menu-item>
       </el-submenu>
-
     </el-menu>
+    <!--对话框-->
+    <el-dialog :visible.sync="showDialog"
+               :show-close="false"
+               :modal-append-to-body='false'
+               :append-to-body="false">
+      <div style="padding: 15px;text-align: center;font-size: 16px;font-weight: bold;color: var(--dialogText)">新建歌单
+      </div>
+      <hr style="border: var(--hr) 1px solid;width: 100%;padding: 0;margin: 0">
+      <el-input
+          style="width: 90%;user-select: auto;font-size: 16px"
+          placeholder="请输入新歌单标题"
+          ref="input"
+          v-model="newList.title"
+          @keydown.enter.native="create"/>
+      <el-checkbox v-model="newList.p" style="margin-left: 30px">设置为私有歌单</el-checkbox>
+      <div style="width: 100%">
+        <el-button :disabled="disabled" class="createBtn" @click="create">创建</el-button>
+      </div>
+    </el-dialog>
   </el-aside>
 </template>
 
@@ -61,10 +85,30 @@ export default {
   name: "LeftAside",
   data() {
     return {
-      username: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).username.toUpperCase() : '点击登录'
+      username: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).username.toUpperCase() : '点击登录',
+      showDialog: false,
+      newList: {title: '', p: false},
+      disabled: true,
+      userLists: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).lists : []
     }
   },
   methods: {
+    //打开弹出框
+    open() {
+      //如果未登录不可添加
+      if(localStorage.getItem("user")){
+        this.showDialog = true
+        this.$nextTick(() => {
+          this.$refs.input.focus();
+        })
+      }else{
+        this.$notify({
+          type: 'error',
+          title: '操作失败',
+          message: '请先登录账号'
+        })
+      }
+    },
     login() {
       //如果已登录的话跳转至个人中心
       if (localStorage.getItem('user') !== null) {
@@ -80,13 +124,62 @@ export default {
       }
     },
     //添加歌单
-    addMusicList() {
-      //阻止冒泡
-      event.stopPropagation();
+    create() {
+      if (this.newList.title.trim() === '') {
+        this.$notify({
+          title: '创建失败',
+          type: 'error',
+          message: '歌单名不能为空'
+        })
+      } else {
+        //先获取userId
+        const userId = JSON.parse(localStorage.getItem('user')).id
+        //发送请求
+        this.request.post(`/list/add`, {"list":this.newList,"userId":userId}).then((res) => {
+          if (res.code === '200') {
+            this.$notify({
+              type: 'success',
+              title: '成功',
+              message: '歌单创建成功'
+            })
+            //修改内存中的数据
+            let user = JSON.parse(localStorage.getItem('user'))
+            user.lists.push(this.newList)
+            localStorage.setItem('user', JSON.stringify(user))
+            //再修该this中的数据
+            this.userLists = user.lists
+            //关闭
+            this.showDialog = false
+            this.newList = {p: false}
+          } else {
+            this.$notify({
+              type: 'error',
+              title: '歌单创建失败',
+              message: res.msg
+            })
 
+            //关闭
+            this.showDialog = false
+            this.newList = {p: false}
+          }
+        }).catch((err) => {
+          this.$notify({
+            type: 'error',
+            title: '歌单创建失败',
+            message: err
+          })
+        })
+      }
+    },
+    //跳转至歌单页面
+    jumpToList(title) {
+      event.stopPropagation()
+      this.$router.push({path: '/list', query: {listTitle: title}})
+      this.$bus.$emit('changeList')
     }
   },
   computed: {
+    //修改用户名
     initials() {
       if (!this.username) {
         return ''
@@ -103,15 +196,42 @@ export default {
       } else {
         return ''
       }
+    },
+    //默认高亮显示的导航栏项
+    defaultActiveUrl() {
+      let result = this.$route.path !== '/home/recent' ? this.$route.path : '/home'
+
+      if(result === '/list'){
+        let length = this.$route.fullPath.length - this.$route.fullPath.search('=') - 1
+        result = '#'+this.$route.fullPath.slice(-length)
+      }
+      return result
     }
   },
   mounted() {
     this.$bus.$on('logout', () => {
       this.username = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).username.toUpperCase() : '点击登录'
     })
+    this.$bus.$on('changeLists', (lists) => {
+      this.userLists = lists
+    })
   },
   beforeDestroy() {
     this.$bus.$off('logout')
+    this.$bus.$off('changeLists')
+  },
+  watch: {
+    'newList.title': {
+      handler(n, o) {
+        if (n !== '') {
+          this.disabled = false
+          document.getElementsByClassName('createBtn')[0].style.opacity = '1'
+        } else {
+          this.disabled = true
+          document.getElementsByClassName('createBtn')[0].style.opacity = '0.5'
+        }
+      }
+    }
   }
 }
 </script>
@@ -185,5 +305,138 @@ export default {
   background-color: var(--leftBtnHover);
 }
 
+/*弹出框样式*/
+/deep/ .el-dialog {
+  background-color: var(--dialogBg);
+  border-radius: 15px;
+  height: 220px;
+  width: 540px;
+}
 
+/deep/ .el-dialog__body {
+  padding: 0;
+}
+
+/deep/ .el-dialog__header {
+  height: 0;
+  padding: 0;
+}
+
+/deep/ .el-dialog__wrapper {
+  transition-duration: 0.3s;
+}
+
+/deep/ .dialog-fade-enter-active {
+  animation: none !important;
+}
+
+/deep/ .dialog-fade-leave-active {
+  transition-duration: 0.15s !important;
+  animation: none !important;
+}
+
+/deep/ .dialog-fade-enter-active .el-dialog,
+.dialog-fade-leave-active .el-dialog {
+  animation-fill-mode: forwards;
+}
+
+/deep/ .dialog-fade-enter-active .el-dialog {
+  animation-duration: 0.3s;
+  animation-name: anim-open;
+  animation-timing-function: cubic-bezier(0.6, 0, 0.4, 1);
+}
+
+/deep/ .dialog-fade-leave-active .el-dialog {
+  animation-duration: 0.3s;
+  animation-name: anim-close;
+}
+
+
+@keyframes anim-open {
+  0% {
+    opacity: 0;
+    transform: scale3d(0, 0, 1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+
+@keyframes anim-close {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale3d(0.5, 0.5, 1);
+  }
+}
+
+/deep/ .el-input__inner {
+  margin: 25px 25px 15px;
+  color: var(--dialogText);
+  background-color: var(--dialogInputBg);
+  border: var(--loginInputBorder) solid 1px;
+  border-radius: 1px;
+  transition: 0.2s;
+}
+
+/deep/ .el-input__inner:focus {
+  border-color: var(--loginInputActive);
+  background-color: var(--dialogInputActiveBg);
+}
+
+/deep/ .el-input__inner::placeholder {
+  color: var(--loginInputText);
+  font-size: 14px;
+}
+
+/*多选框*/
+/deep/ .el-checkbox__inner {
+  background-color: var(--dialogText);
+  border: none;
+}
+
+/deep/ .el-checkbox__input.is-checked .el-checkbox__inner {
+  background-color: var(--leftBtnActive);
+}
+
+/deep/ .el-checkbox__input.is-checked + .el-checkbox__label {
+  color: var(--leftBtnActive);
+}
+
+/*按钮*/
+.createBtn {
+  margin: 20px auto;
+  width: 200px;
+  height: 40px;
+  background-color: var(--loginBtn);
+  border: none;
+  color: var(--loginText);
+  font-weight: bold;
+  font-size: 14px;
+  transition: 0.4s;
+  display: block;
+  opacity: 0.5;
+}
+
+.createBtn:hover {
+  background-color: var(--loginBtnHover);
+}
+
+/deep/ .el-menu .el-menu--inline {
+  background: var(--leftListBg);
+}
+
+/deep/ .el-menu-item:focus {
+  background-color: var(--leftBtnActive);
+}
+
+/deep/ .el-menu--inline .el-menu-item {
+  font-size: 14px !important;
+  font-weight: normal;
+  padding-left: 20px !important;
+}
 </style>

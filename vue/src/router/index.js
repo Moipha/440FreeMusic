@@ -56,6 +56,11 @@ export const router = new VueRouter({
                     path: '/search',
                     name: 'Search',
                     component: () => import("@/pages/Search")
+                },
+                {
+                    path: '/list',
+                    name: 'List',
+                    component: () => import("@/pages/List.vue")
                 }
             ]
         },
@@ -150,7 +155,9 @@ export function getThis(that) {
 router.beforeEach((to, from, next) => {
     //如果需要通过守卫
     if (store.state.need) {
-        store.commit("addVisited", to.path)
+        if(to.fullPath.substring(0,6) !== '/list#'){
+            store.commit("addVisited", to.fullPath)
+        }
     } else {
         //前进或者后退，修改need为true
         store.state.need = true

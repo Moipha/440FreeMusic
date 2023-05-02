@@ -19,12 +19,12 @@ public class UserDTO {
     private String password;
     @Alias("昵称")
     private String nickname;
-    @Alias("头像")
-    private String avatar;
     @Alias("邮箱")
     private String email;
     @Alias("创建时间")
     private Date createTime;
+
     private String token;
+    private List<com.test.pojo.List> lists;
 
 }

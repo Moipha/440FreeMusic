@@ -95,6 +95,8 @@ export default {
               //修改边栏文字
               this.$bus.$emit('logout')
               this.loading = false
+              //修改歌单项
+              this.$bus.$emit('changeLists',response.data.lists)
             }
           }).catch(err => {
             this.$notify({

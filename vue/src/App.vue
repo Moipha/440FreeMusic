@@ -35,9 +35,11 @@ export default {
   --leftText: var(--whiteText);
   --leftBtnActive: royalblue;
   --leftBtnHover: #444444;
+  --leftListBg: var(--rightTabBg);
   /*上边栏*/
-  --headerBg: rgba(23, 23, 26, 0.8);
-  --headerBtn: var(--leftbg);
+  /*--headerBg: rgba(23, 23, 26, 0.8);*/
+  --headerBg: rgba(0, 0, 0, 0);
+  --headerBtn: rgba(46, 46, 48, 0.7);
   --headerBtnHover: #444444;
   --headerText: var(--whiteText);
   --headerSearchBg: var(--headerBtn);
@@ -48,6 +50,8 @@ export default {
   --hr: rgb(61, 61, 63);
   --dialogBg: var(--leftbg);
   --dialogText: var(--headerText);
+  --dialogInputBg: var(--rightTabBg);
+  --dialogInputActiveBg: var(--rightBg);
   /*设置*/
   --settingText: var(--whiteText);
   --settingLightText: var(--lightBlackText);
@@ -99,6 +103,12 @@ export default {
   --rightTab: #555555;
   --rightLightText: #AAAAAA;
   --rightHover: #444444;
+  /*歌单*/
+  --listText: var(--whiteText);
+  --listHover: #aaaaaa55;
+  --listBtn: var(--loginBtn);
+  --listBtnHover: var(--loginBtnHover);
+  --listTh: rgb(134, 134, 136);
 }
 
 .Orange {
@@ -176,17 +186,18 @@ export default {
   --leftBtnActive: #B4A117;
   --leftBtnHover: #005283;
   /*header*/
-  --headerBg: rgba(0, 19, 69, 0.6);
-  --headerBtn: #DBD7D6;
-  --headerBtnHover: #9f9f9f;
-  --headerText: #333333;
+  /*--headerBg: rgba(0, 19, 69, 0.6);*/
+  --headerBg: rgba(0, 0, 0, 0);
+  --headerBtn: #005283dd;
+  --headerBtnHover: #001345cc;
+  --headerText: var(--whiteText);
   --headerSearchBg: var(--headerBtn);
-  --headerTabText: var(--leftText);
+  --headerTabText: var(--blackText);
   --headerTabHover: var(--leftBtnActive);
   --headerInputText: var(--lightBlackText);
   /*dialog*/
   --hr: #FFFFFF;
-  --dialogBg: var(--headerBtn);
+  --dialogBg: #DBD7D6;
   --dialogText: var(--headerText);
   /*setting*/
   --settingText: var(--blackText);
@@ -210,7 +221,7 @@ export default {
   --loginA: var(--mineCardBg);
   --loginBtn: var(--loginA);
   --loginBg: var(--mineTabHover);
-  --loginInputBg: var(--headerBtn);
+  --loginInputBg: var(--dialogBg);
   --loginInputText: var(--lightBlackText);
   --loginInputActive: var(--mineCardBg);
   --loginInputBorder: var(--blackText);

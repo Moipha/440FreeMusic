@@ -327,6 +327,7 @@ export default {
         type: 'success'
       });
       this.$router.push('/login')
+      this.$bus.$emit('changeLists',[])
     },
     //TODO 实现改密码的功能： 最好是弹窗，然后让你输入旧密码，验证成功后再输入两次新密码，然后确定两次输入一样
     changePassword() {

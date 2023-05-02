@@ -37,7 +37,7 @@ const mutations = {
             //前进和后退不通过路由守卫
             state.need = false
             state.index++
-            router.forward()
+            router.push(state.visitedRoutes[state.index])
         }
     },
     //后退
@@ -47,7 +47,7 @@ const mutations = {
             //前进和后退不通过路由守卫
             state.need = false
             state.index--
-            router.back()
+            router.push(state.visitedRoutes[state.index])
         }
     }
 }

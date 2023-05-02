@@ -14,7 +14,20 @@
       </div>
       <div style="padding: 5px;font-size: 13px;font-weight: bold;color: var(--rightLightText)">
         <span style="padding: 5px 10px;float: left">总 {{ tableData.length }} 首</span>
-        <span class="clear">清空列表</span>
+        <span slot="reference" class="clear" @click="dialogVisible=true">清空列表</span>
+        <el-dialog :visible.sync="dialogVisible"
+                   :show-close="false"
+                   :append-to-body="false"
+                   :modal="false">
+          <div style="display: flex;flex-direction: row">
+            <i class="el-icon-warning" style="color: red;font-size: 20px;line-height: 20px;margin-right: 5px"></i>
+            <span style="color: var(--rightLightText);line-height: 20px">确认清除列表？</span>
+          </div>
+          <div style="display: flex;flex-direction: row;color: var(--rightAsideText)">
+            <span class="dialogBtn" @click="clear">确认</span>
+            <span class="dialogBtn" @click="dialogVisible=false">取消</span>
+          </div>
+        </el-dialog>
       </div>
       <div style="overflow-y: hidden">
         <!--当前播放-->
@@ -182,6 +195,7 @@ export default {
           author: 'testAuthor'
         },
       ],
+      dialogVisible: false,
     }
   },
   mounted() {
@@ -196,8 +210,8 @@ export default {
       })
     })
     //点击其他区域关闭右边栏
-    document.addEventListener('click',e=>{
-      if(!this.$el.contains(e.target)){
+    document.addEventListener('click', e => {
+      if (!this.$el.contains(e.target)) {
         this.$refs.test.style.right = '-400px'
       }
     })
@@ -230,6 +244,12 @@ export default {
     },
     hideScrollbar() {
       document.documentElement.style.setProperty('--test', 'hidden');
+    },
+    //清除记录
+    clear() {
+      this.tableData = []
+
+      this.dialogVisible = false
     }
   }
 }
@@ -242,12 +262,12 @@ export default {
 }
 
 .right {
-  width: 400px !important;
-  height: calc(100% - 60px - 100px) !important;
-  padding-top: 10px;
+  width: 360px !important;
+  height: calc(100% - 100px) !important;
+  padding-top: 70px;
   position: absolute;
-  /*right: -400px;*/
-  right: 0;
+  right: -400px;
+  /*right: 0;*/
   bottom: 100px;
   background-color: var(--rightAsideBg);
   transition: 0.3s ease-in-out;
@@ -260,7 +280,7 @@ export default {
 .tabContainer {
   background-color: var(--rightTabBg);
   height: 40px;
-  width: 84%;
+  width: 80%;
   border-radius: 20px;
   margin-left: 10px;
 }
@@ -364,7 +384,94 @@ export default {
   padding: 10px;
   border-radius: 10px;
 }
-.item:hover{
+
+.item:hover {
   background-color: var(--rightTabBg);
 }
+
+/*弹出确认框相关*/
+/deep/ .el-dialog__wrapper {
+  transition-duration: 0.3s;
+}
+
+/deep/ .dialog-fade-enter-active {
+  animation: none !important;
+}
+
+/deep/ .dialog-fade-leave-active {
+  transition-duration: 0.15s !important;
+  animation: none !important;
+}
+
+/deep/ .dialog-fade-enter-active .el-dialog,
+.dialog-fade-leave-active .el-dialog {
+  animation-fill-mode: forwards;
+}
+
+/deep/ .dialog-fade-enter-active .el-dialog {
+  animation-duration: 0.3s;
+  animation-name: anim-open;
+  animation-timing-function: cubic-bezier(0.6, 0, 0.4, 1);
+}
+
+/deep/ .dialog-fade-leave-active .el-dialog {
+  animation-duration: 0.3s;
+  animation-name: anim-close;
+}
+
+/deep/ .el-dialog {
+  background-color: var(--dialogBg);
+  height: 72px;
+  width: 150px;
+  position: absolute;
+  right: 50px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 10px 0;
+}
+
+/deep/ .el-dialog__body {
+  padding: 0;
+}
+
+/deep/ .el-dialog__header {
+  height: 0;
+  padding: 0;
+}
+
+@keyframes anim-open {
+  0% {
+    opacity: 0;
+    transform: scale3d(0, 0, 1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+@keyframes anim-close {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale3d(0.5, 0.5, 1);
+  }
+}
+
+.dialogBtn {
+  font-size: 12px !important;
+  background-color: var(--rightHover);
+  padding: 5px 10px;
+  border-radius: 3px;
+  margin: 8px auto 0;
+  cursor: pointer;
+}
+
+.dialogBtn:hover {
+  background-color: var(--rightTab);
+}
+
+
 </style>

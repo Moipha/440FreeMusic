@@ -69,6 +69,7 @@ export default {
         type: 'success'
       });
       this.existUser = false
+      this.$bus.$emit('changeLists',[])
     }
   },
   mounted() {
