@@ -20,6 +20,8 @@
     </el-container>
     <!--下边栏-->
     <Footer/>
+    <!--菜单栏-->
+    <Menu></Menu>
   </el-container>
 </template>
 
@@ -28,10 +30,11 @@ import Header from "@/components/Header";
 import LeftAside from "@/components/LeftAside";
 import Footer from "@/components/Footer";
 import RightAside from "@/components/RightAside";
+import Menu from "@/components/Menu";
 
 export default {
   name: "Content",
-  components: {LeftAside, Header, Footer, RightAside},
+  components: {Menu, LeftAside, Header, Footer, RightAside},
   methods: {
     showScrollbar() {
       document.documentElement.style.setProperty('--test', 'visible');
@@ -61,6 +64,7 @@ export default {
   visibility: var(--test);
 
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--scrollbarHover);
 }

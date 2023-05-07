@@ -1,6 +1,7 @@
 import axios from 'axios'
 import ElementUI from "element-ui";
 import {serverIp} from "../../public/config";
+import router from "@/router";
 
 const request = axios.create({
     baseURL: 'http://'+serverIp,  // 注意！！ 这里是全局统一加上了 后端接口前缀 前缀，后端必须进行跨域配置！
@@ -34,13 +35,10 @@ request.interceptors.response.use(
         if (typeof res === 'string') {
             res = res ? JSON.parse(res) : res
         }
-        //当权限验证不通过时给出提示
+        //当权限验证不通过时直接弹出
         if(res.code === '401'){
-            ElementUI.Notification({
-                message: res.msg,
-                type: 'error',
-                title: '权限不足'
-            })
+            localStorage.removeItem('user')
+            router.push('/login')
         }
 
         return res;

@@ -19,10 +19,10 @@
           @click="openD">
       <span class="el-icon-search" style="margin: 0 10px 0 20px;line-height: 40px"/>搜索
     </span>
-    <el-tooltip class="item" effect="dark" content="主题切换" placement="bottom">
-      <span class="el-dropdown-link" id="icon" @click="changeTheme">
+    <el-tooltip class="item" effect="dark" content="项目地址" placement="bottom">
+      <a class="el-dropdown-link" id="icon" href="https://gitee.com/YoungTrendFar/Project" target="_blank">
         <span class="el-icon-tickets"/>
-      </span>
+      </a>
     </el-tooltip>
     <el-tooltip class="item" effect="dark" content="主题切换" placement="bottom">
       <span class="el-dropdown-link" id="icon" @click="changeTheme">
@@ -126,7 +126,7 @@ export default {
     //滚动条
     handleScroll(e) {
       console.log()
-      if(e.target.__vue__._uid === '22'){
+      if (e.target.__vue__._uid === '22') {
         const header = document.getElementsByClassName('header')[0]
         if (header) {
           header.style.borderBottomColor = `rgba(64,64,64,${e.target.scrollTop})`
@@ -141,7 +141,7 @@ export default {
     },
     openD() {
       this.showDialog = true
-    }
+    },
   },
   mounted() {
     this.$bus.$on('changeActiveTab', (path) => {

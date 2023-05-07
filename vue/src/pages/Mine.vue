@@ -9,7 +9,7 @@
           style="color: var(--mineText);display: inline-block;float: right;height: 100px;line-height: 80px;font-weight: bold">
         <div class="inlineContainer">
           <div class="flexContainer" @click="activeName = 'music'">
-            <span style="height: 25px">23</span>
+            <span style="height: 25px">{{tableData.length}}</span>
             <span>上传</span>
           </div>
         </div>
@@ -83,7 +83,9 @@
         <el-dialog :visible.sync="showDialog"
                    :show-close="false"
                    ref="dialog"
-                   :limit="1">
+                   :limit="1"
+                   :modal-append-to-body='false'
+                   :append-to-body="false">
           <div v-loading="loading" style="height: 100%!important;">
             <el-upload
                 ref="uploader"
@@ -126,7 +128,7 @@
               </div>
               <el-form
                   label-position="left"
-                  label-width="110px"
+                  label-width="120px"
                   style="width: 64%;display: flex;flex-direction: column">
                 <el-form-item label="音乐标题：" style="margin-bottom: 25px">
                   <el-input v-model="newMusic.name" class="input"></el-input>
@@ -157,19 +159,21 @@
         <el-table
             ref="singleTable"
             :data="tableData"
-            style="width: 100%;margin: auto"
+            style="width: 100%;margin: auto;height: calc(100vh - 450px);overflow-y: scroll;padding-right: 8px"
             @selection-change="handleSelectionChange"
-            v-loading="loadingTable">
+            v-loading="loadingTable"
+            @mouseenter.native="showScrollbar"
+            @mouseleave.native="hideScrollbar">
           <el-table-column
               type="selection"
               width="50"
               v-if="showSelection">
           </el-table-column>
           <el-table-column
-              width="70"
-              label="封面">
+              width="70">
             <template slot-scope="scope">
-              <img :src="scope.row.avatar" alt="" style="width: 100%;height: 50px">
+              <el-avatar shape="square" size="medium" style="background-color: #00000000" :src="scope.row.avatar"></el-avatar>
+<!--              <img :src="scope.row.avatar" alt="" style="width: 100%;height: 50px">-->
             </template>
           </el-table-column>
           <el-table-column
@@ -215,7 +219,7 @@
     </el-tabs>
   </div>
 </template>
-
+<!--TODO 实现多选操作和启用等操作-->
 <script>
 import {serverIp} from "../../public/config";
 import axios from "axios";
@@ -254,6 +258,9 @@ export default {
       //tableLoading
       loadingTable: true
     }
+  },
+  mounted() {
+    this.getUploadList()
   },
   computed: {
     initials() {
@@ -327,7 +334,7 @@ export default {
         type: 'success'
       });
       this.$router.push('/login')
-      this.$bus.$emit('changeLists',[])
+      this.$bus.$emit('changeLists', [])
     },
     //TODO 实现改密码的功能： 最好是弹窗，然后让你输入旧密码，验证成功后再输入两次新密码，然后确定两次输入一样
     changePassword() {
@@ -453,8 +460,14 @@ export default {
           if (!this.needSaveDB) {
             this.newMusic.id = response.data.data.id
           }
-          //上传封面文件
-          this.$refs.avatar.submit()
+          if (this.uploadAvatar) {
+            //上传封面文件
+            this.$refs.avatar.submit()
+          } else {
+            //存入没有封面的对象
+            this.newMusic.avatar = require('@/assets/DefaultAvatar.png')
+            this.saveMusic()
+          }
         }
       }).catch(err => {
         this.$notify({
@@ -480,58 +493,63 @@ export default {
         })
         //将返回的封面路径存入对象
         this.newMusic.avatar = res.data.url
-        //最后再上传前收拾一下对象
-        this.newMusic.uploader = JSON.parse(localStorage.getItem('user')).id
-        //然后，到这里封面和音频都上传成功了，此时将完整的Music对象存入数据库
-
-        this.request.post('/music/saveDB', this.newMusic).then(res => {
-          if (res.code !== '200') {
-            this.$notify({
-              title: '音乐信息保存失败',
-              message: res.msg,
-              type: 'error'
-            })
-            this.loading = false
-          } else {
-            if (!this.needSaveDB) {
-              this.$notify({
-                title: '音乐信息已更新',
-                type: 'info'
-              })
-            } else {
-              this.$notify({
-                title: '音乐信息已存入数据库',
-                type: 'success'
-              })
-            }
-            //TODO 更新上传后的列表数据
-            this.getUploadList()
-            //最后，清除各种信息并关闭窗口
-            this.cancelUpload()
-          }
-        })
+        //将完整的对象存入
+        this.saveMusic()
       }
     },
-    //获取当前用户上传过的音乐列表
-    getUploadList(){
-      this.loadingTable = true
-      this.request.get('/user/getUploadList/'+JSON.parse(localStorage.getItem('user')).id).then(res=>{
-          if(res.code !== '200'){
+    saveMusic() {
+      //最后再上传前收拾一下对象
+      this.newMusic.uploader = JSON.parse(localStorage.getItem('user')).id
+      //然后，到这里封面和音频都上传成功了，此时将完整的Music对象存入数据库
+      this.request.post('/music/saveDB', this.newMusic).then(res => {
+        if (res.code !== '200') {
+          this.$notify({
+            title: '音乐信息保存失败',
+            message: res.msg,
+            type: 'error'
+          })
+          this.loading = false
+        } else {
+          if (!this.needSaveDB) {
             this.$notify({
-              title: '获取数据失败',
-              message: res.msg,
-              type: 'error'
+              title: '音乐信息已更新',
+              type: 'info'
             })
-          }else{
-            this.tableData = res.data
+          } else {
+            this.$notify({
+              title: '音乐信息已存入数据库',
+              type: 'success'
+            })
           }
+          //TODO 更新上传后的列表数据
+          this.getUploadList()
+          //最后，清除各种信息并关闭窗口
+          this.cancelUpload()
+        }
+      })
+    },
+    //获取当前用户上传过的音乐列表
+    getUploadList() {
+      this.loadingTable = true
+      this.request.get('/user/getUploadList/' + JSON.parse(localStorage.getItem('user')).id).then(res => {
+        if (res.code !== '200') {
+          this.$notify({
+            title: '获取数据失败',
+            message: res.msg,
+            type: 'error'
+          })
+        } else {
+          this.tableData = res.data
+        }
       })
       this.loadingTable = false
     },
-    changeTab(tab){
-      if(tab.name==='music'){
-        this.getUploadList()
-      }
+    //切换滚动条状态
+    showScrollbar() {
+      document.documentElement.style.setProperty('--test2', 'visible');
+    },
+    hideScrollbar() {
+      document.documentElement.style.setProperty('--test2', 'hidden');
     }
   },
 }
@@ -847,43 +865,84 @@ tr.el-table__row {
 }
 
 
-
 /deep/ .el-dialog__wrapper {
   transition-duration: 0.3s;
 }
-/deep/ .dialog-fade-enter-active{
+
+/deep/ .dialog-fade-enter-active {
   animation: none !important;
 }
+
 /deep/ .dialog-fade-leave-active {
   transition-duration: 0.15s !important;
   animation: none !important;
 }
 
 /deep/ .dialog-fade-enter-active .el-dialog,
-.dialog-fade-leave-active .el-dialog{
+.dialog-fade-leave-active .el-dialog {
   animation-fill-mode: forwards;
 }
 
-/deep/ .dialog-fade-enter-active .el-dialog{
+/deep/ .dialog-fade-enter-active .el-dialog {
   animation-duration: 0.3s;
   animation-name: anim-open;
-  animation-timing-function: cubic-bezier(0.6,0,0.4,1);
+  animation-timing-function: cubic-bezier(0.6, 0, 0.4, 1);
 }
 
-/deep/ .dialog-fade-leave-active .el-dialog{
+/deep/ .dialog-fade-leave-active .el-dialog {
   animation-duration: 0.3s;
   animation-name: anim-close;
 }
 
 
 @keyframes anim-open {
-  0% { opacity: 0;  transform: scale3d(0, 0, 1); }
-  100% { opacity: 1; transform: scale3d(1, 1, 1); }
+  0% {
+    opacity: 0;
+    transform: scale3d(0, 0, 1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
 }
 
 
 @keyframes anim-close {
-  0% { opacity: 1; }
-  100% { opacity: 0; transform: scale3d(0.5, 0.5, 1); }
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale3d(0.5, 0.5, 1);
+  }
+}
+
+
+/*滚动条*/
+
+.test2 {
+  --test2: visible;
+}
+
+::-webkit-scrollbar {
+  overflow: auto;
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar);
+  border-radius: 5px;
+  visibility: var(--test2);
+
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbarHover);
+}
+
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background-color: var(--rightBg);
+  border-radius: 5px;
 }
 </style>

@@ -83,4 +83,22 @@ public class ListService extends ServiceImpl<ListMapper, List> {
         }
         return Result.success(musics);
     }
+
+    //给歌单添加新曲
+    public Result saveMusic(ListMusic listMusic) {
+        //先检查是否已存在该曲
+        QueryWrapper<ListMusic> qw = new QueryWrapper<>();
+        qw.eq("list_id",listMusic.getListId());
+        qw.eq("music_id",listMusic.getMusicId());
+        ListMusic lm = listMusicMapper.selectOne(qw);
+        if(lm == null){
+            //不存在，保存
+            listMusicMapper.insert(listMusic);
+        }else{
+            throw new ServiceException("400","该歌单中已存在该歌曲");
+        }
+        return Result.success();
+    }
+
+
 }

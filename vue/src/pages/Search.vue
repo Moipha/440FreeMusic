@@ -1,5 +1,5 @@
 <template>
-  <div style="display: flex;flex-direction: column" @contextmenu.prevent>
+  <div style="display: flex;flex-direction: column">
     <el-input
         class="input"
         suffix-icon="el-icon-search"
@@ -7,54 +7,36 @@
         clearable
         @keydown.enter.native="search"
     ></el-input>
-    <el-tabs v-model="activeName" style="width: 1150px;margin: auto;">
+    <el-tabs v-model="activeName" style="width: 97%;margin: auto;">
       <el-tab-pane label="搜索结果" disabled class="dis"></el-tab-pane>
       <el-tab-pane label="单曲" name="music"/>
       <el-tab-pane label="专辑" name="album"/>
       <el-tab-pane label="歌手" name="author"/>
     </el-tabs>
-    <el-table
-        ref="singleTable"
-        :data="tableData"
-        highlight-current-row
-        @current-change="handleCurrentChange"
-        style="width: 1150px;margin: auto"
-        v-loading="loading"
-    >
-      <el-table-column
-          width="70"
-          label="封面">
-        <template slot-scope="scope">
-          <img :src="scope.row.avatar" alt="" style="width: 100%;height: 50px">
-        </template>
-      </el-table-column>
-      <el-table-column
-          property="name"
-          label="音乐标题">
-      </el-table-column>
-      <el-table-column
-          property="author"
-          label="歌手">
-      </el-table-column>
-      <el-table-column
-          property="album"
-          label="专辑">
-      </el-table-column>
-      <el-table-column
-          property="time"
-          label="时长"
-          width="60">
-      </el-table-column>
-      <el-table-column
-          property="createTime"
-          label="上传时间">
-      </el-table-column>
-      <el-table-column
-          property="edit"
-          width="50">
-        <span class="el-icon-more" style="cursor: pointer;font-size: 20px"></span>
-      </el-table-column>
-    </el-table>
+    <table>
+      <tr style="color: var(--listTh);font-size: 14px">
+        <th style="width: 5%" align="center"></th>
+        <th align="left" style="width: 40%;">音乐标题</th>
+        <th align="left" style="width: 20%">歌手</th>
+        <th align="left" style="width: 20%">专辑</th>
+        <th align="left" style="width: 5%">时长</th>
+        <th align="left" style="width: 5%;"></th>
+      </tr>
+      <tr style="height: 20px"></tr>
+      <tr class="items" v-for="music in tableData" @contextmenu.prevent="openMenu($event,music)">
+
+        <td style="padding-top: 5px">
+          <el-avatar :src="music.avatar" shape="square"></el-avatar>
+        </td>
+        <td>{{ music.name }}</td>
+        <td>{{ music.author }}</td>
+        <td>{{ music.album }}</td>
+        <td>{{ music.time }}</td>
+        <td>
+          <span @click.stop="openMenu($event,music)" class="el-icon-more" style="cursor: pointer;font-size: 20px"></span>
+        </td>
+      </tr>
+    </table>
   </div>
 </template>
 
@@ -66,13 +48,14 @@ export default {
   data() {
     return {
       activeName: 'music',
-      currentRow: null,
       //从header搜索框获取的数据
       searchString: '',
       //表格数据
       tableData: [],
       //加载中
       loading: false,
+      //是否已有显示的菜单
+      existMenu: false,
     }
   },
   mounted() {
@@ -82,11 +65,18 @@ export default {
     })
     this.searchString = this.$route.query.searchStr
     this.getTableData()
+
+    //点击其他区域关闭菜单
+    document.addEventListener('click', e => {
+      e.stopPropagation();
+      const menu = document.querySelector('.menu');
+      if (!menu.contains(e.target)) {
+        this.$bus.$emit('showMenu', 0, 0, false, {})
+        this.existMenu = false
+      }
+    })
   },
   methods: {
-    handleCurrentChange(val) {
-      this.currentRow = val;
-    },
     // 获取表格数据
     getTableData() {
       this.loading = true
@@ -115,6 +105,10 @@ export default {
     search() {
       this.getTableData()
       this.$router.push({path: '/search', query: {searchStr: this.searchString}})
+    },
+    openMenu(e, music) {
+      this.$bus.$emit('showMenu', e.x, e.y, true, music)
+      this.existMenu = true
     }
 
   },
@@ -188,101 +182,42 @@ export default {
   position: static;
 }
 
-/*表格样式修改：*/
-/*表头背景*/
-/deep/ .el-table th {
-  background-color: var(--rightBg);
-  padding-bottom: 40px;
-  color: var(--searchLightText);
-  font-size: 14px;
-}
-
-/*表头文字*/
-/deep/ .el-table thead {
-  color: var(--searchText)
-}
-
-/*背景*/
-/deep/ .el-table tr {
-  background-color: var(--rightBg);
-  color: var(--searchText);
-  font-weight: bold;
-}
-
-/*行间线*/
-/deep/ .el-table td, .building-top .el-table th.is-leaf {
-  border-bottom: 0 !important;
-}
-
-/*表格末尾*/
-::v-deep .el-table::before {
-  border-bottom: 0;
-  height: 0;
-}
-
-/*无数据*/
-::v-deep .el-table__empty-block {
-  background-color: var(--rightBg);
-}
-
-::v-deep .el-table__empty-text {
-  color: var(--searchText);
-}
-
-/deep/ th {
-  border-bottom: 0 !important;
-}
-
-/*选中行的背景*/
-::v-deep .el-table__body tr.current-row > td {
-  background: var(--searchActive) !important;
-  color: var(--searchText);
-}
-
-::v-deep .el-table__body tr.current-row:hover > td {
-  background: var(--searchActive) !important;
-}
-
-::v-deep .el-table--enable-row-transition .el-table__body td, .el-table .cell {
-  background-color: var(--rightBg)
-}
-
-/*行高*/
-::v-deep .el-table td {
-  padding: 8px 0 0;
-}
-
-/*滚动条*/
-::v-deep .el-table--scrollable-x .el-table__body-wrapper {
-  display: none !important;
-}
-
-/deep/ .el-table, .el-table__expanded-cell {
-  background-color: var(--rightBg);
-}
-
-/*鼠标悬浮*/
-/deep/ .el-table tbody tr:hover > td {
-  background-color: var(--searchHover) !important;
-}
-
-tr.el-table__row {
-  border-radius: 50% !important;
-}
-
-/deep/ .el-table__row:hover {
-  border-radius: 50% !important;
-}
-
-
-/deep/ .el-table_21_column_121 {
-  -moz-border-radius-topleft: 50% !important;
-  -moz-border-radius-bottomleft: 50% !important;
-}
-
 /deep/ .el-loading-mask {
   background-color: var(--maskBg);
   height: 100%;
+}
+
+.items {
+  width: 100%;
+  font-size: 14px;
+  height: 54px;
+  border: solid #00000000;
+  border-width: 10px 10px 10px 20px;
+}
+
+.items * {
+  letter-spacing: normal;
+}
+
+.items:hover {
+  background: var(--searchHover);
+}
+
+table {
+  width: 100%;
+  color: var(--searchText);
+  border-collapse: collapse;
+  border: none;
+}
+
+tr td:first-child {
+  border-bottom-left-radius: 12px;
+  border-top-left-radius: 12px;
+}
+
+tr td:last-child {
+  border-bottom-right-radius: 12px;
+  border-top-right-radius: 12px;
 }
 
 </style>

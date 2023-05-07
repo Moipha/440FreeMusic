@@ -335,7 +335,7 @@ export default {
       //音乐对象
       music: {
         // avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
-        avatar: require('@/assets/avatar.png'),
+        avatar: require('@/assets/DefaultAvatar.png'),
         src: require('@/assets/testMusic/test2.mp3'),
         isLike: false,
       },

@@ -35,4 +35,9 @@ public class UserController {
     public Result getUploadList(@PathVariable Integer id){
         return userService.getUploadList(id);
     }
+
+    @GetMapping("/getLists/{id}")
+    public Result getLists(@PathVariable Integer id){
+        return Result.success(userService.getLists(id));
+    }
 }

@@ -109,6 +109,12 @@ export default {
   --listBtn: var(--loginBtn);
   --listBtnHover: var(--loginBtnHover);
   --listTh: rgb(134, 134, 136);
+  --listInput: #55555577;
+  /*菜单*/
+  --menuBg: #222222bb;
+  --menuText: var(--leftText);
+  --menuBorder: #333333;
+  --menuHover: var(--searchHover);
 }
 
 .Orange {
