@@ -8,12 +8,15 @@
              :default-openeds="['/']"
     >
       <!--头像和登录键-->
-      <div style="height: 40px; line-height: 40px;margin: 32px 12px 20px 15px" @click="login">
+      <div style="height: 40px; line-height: 40px;margin: 32px 12px 20px 15px;display: flex;flex-direction: row;"
+           @click="login">
         <span><el-avatar :size="40" :src="defaultUrl">{{ initials }}</el-avatar></span>
-        <span style="float: right;cursor: pointer;font-weight: 700;margin-left: 12px;letter-spacing: normal"
+        <span style="width: 100%;cursor: pointer;font-weight: 700;margin-left: 12px;letter-spacing: normal"
               class="clickToLogin">
           {{ username }}
-          <span class="el-icon-arrow-right" style="margin-left: 80px;font-weight: 800"/>
+          <span style="display: inline-block;float: right">
+         <i class="el-icon-arrow-right" style="font-weight: 800;"></i>
+          </span>
         </span>
       </div>
       <el-menu-item index="/home" class="leftSection">
@@ -52,7 +55,8 @@
           <i class="el-icon-plus plus" @click.stop.prevent="open"/>
         </template>
         <!--注：在要跳转的路径前加#可以阻止默认的跳转行为-->
-        <el-menu-item :index="'#'+list.title" @click="jumpToList(list.title)" class="leftSection" v-for="list in userLists">
+        <el-menu-item :index="'#'+list.title" @click="jumpToList(list.title)" class="leftSection"
+                      v-for="list in userLists">
           {{ list.title }}
         </el-menu-item>
       </el-submenu>
@@ -96,12 +100,12 @@ export default {
     //打开弹出框
     open() {
       //如果未登录不可添加
-      if(localStorage.getItem("user")){
+      if (localStorage.getItem("user")) {
         this.showDialog = true
         this.$nextTick(() => {
           this.$refs.input.focus();
         })
-      }else{
+      } else {
         this.$notify({
           type: 'error',
           title: '操作失败',
@@ -135,7 +139,7 @@ export default {
         //先获取userId
         const userId = JSON.parse(localStorage.getItem('user')).id
         //发送请求
-        this.request.post(`/list/add`, {"list":this.newList,"userId":userId}).then((res) => {
+        this.request.post(`/list/add`, {"list": this.newList, "userId": userId}).then((res) => {
           if (res.code === '200') {
             this.$notify({
               type: 'success',
@@ -201,9 +205,9 @@ export default {
     defaultActiveUrl() {
       let result = this.$route.path !== '/home/recent' ? this.$route.path : '/home'
 
-      if(result === '/list'){
+      if (result === '/list') {
         let length = this.$route.fullPath.length - this.$route.fullPath.search('=') - 1
-        result = '#'+this.$route.fullPath.slice(-length)
+        result = '#' + this.$route.fullPath.slice(-length)
       }
       return result
     }

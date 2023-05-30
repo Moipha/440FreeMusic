@@ -14,26 +14,37 @@
       <hr style="border: var(--hr) 1px solid;margin-top: 15px">
       <div class="avatarContainer">
         <span style="margin-bottom: 10px">封面</span>
-        <el-avatar shape="square" size="large" :src="src"></el-avatar>
-        <span class="dialogBtn">更改封面</span>
+        <el-avatar shape="square" size="large" :src="src" style="margin-bottom: 10px"></el-avatar>
+        <el-upload
+            ref="avatar"
+            :action="'http://'+serverIp+'/avatar/saveAvatar'"
+            :limit="1"
+            :show-file-list="false"
+            :on-change="handleUploadAvatar"
+            :auto-upload="false"
+            :on-success="handleAvatarUpload">
+          <span class="dialogBtn">更改封面</span>
+        </el-upload>
+
         <span style="margin-top: 20px">
           <span style="color: tomato;font-size: 16px;position: relative;top: 3px;right: 2px">*</span>
           歌单名
         </span>
-        <el-input style="margin-top: 10px" show-word-limit maxlength="20"></el-input>
+        <el-input v-model="list.title" style="margin-top: 10px" show-word-limit maxlength="20"></el-input>
         <span style="margin-top: 20px;margin-bottom: 10px">歌单描述</span>
-        <el-input type="textarea" :rows="4" show-word-limit maxlength="200"></el-input>
+        <el-input v-model="list.description" type="textarea" :rows="4" show-word-limit maxlength="200"></el-input>
       </div>
       <hr style="border: var(--hr) 1px solid;margin-top: 15px">
-      <span class="listBtn saveBtn" style="background-color: var(--listBtn);margin: 10px 20px 15px 10px">保存</span>
-      <span class="listBtn cancelBtn" style="background-color: var(--listInput);margin: 10px 0 15px">取消</span>
+      <span class="listBtn saveBtn" style="background-color: var(--listBtn);margin: 10px 20px 15px 10px" @click="save">保存</span>
+      <span class="listBtn cancelBtn" style="background-color: var(--listInput);margin: 10px 0 15px"
+            @click="showDialog=false">取消</span>
     </el-dialog>
     <div class="background"></div>
     <div class="top">
       <el-avatar class="left" shape="square" :size="200" :src="src"></el-avatar>
       <div class="right">
         <div style="font-size: 30px;font-weight: normal;margin-top: 40px;margin-bottom: 20px">
-          {{ listTitle }}
+          {{ list.title }}
           <el-tooltip content="编辑" placement="top">
             <span class="el-icon-edit edit" @click="edit"></span>
           </el-tooltip>
@@ -61,8 +72,9 @@
           <th align="left" style="width: 5%;"></th>
         </tr>
         <tr style="height: 20px"></tr>
-        <!--TODO 这里的右击显示菜单还没有实现。可以新建另一个Menu组件，或者通过总线传参来生成不同的菜单-->
-        <tr class="items" v-for="music in musics" @contextmenu.prevent="openMenu($event,music)">
+        <tr :id="music.id === currentPlayId ? 'light' : ''" class="items" v-for="music in musics"
+            @contextmenu.prevent="openMenu($event,music)"
+            @dblclick="dbClick(music)">
           <td style="padding-top: 5px">
             <el-avatar :src="music.avatar" shape="square"></el-avatar>
           </td>
@@ -70,20 +82,21 @@
           <td>{{ music.author }}</td>
           <td>{{ music.album }}</td>
           <td>{{ music.time }}</td>
-          <td><span class="el-icon-more" style="cursor: pointer;font-size: 20px"></span></td>
+          <td><span class="el-icon-more" style="cursor: pointer;font-size: 20px"
+                    @click.stop="openMenu($event,music)"></span></td>
         </tr>
-
       </table>
       <div v-if="musics.length === 0">
-        <div style="text-align: center;margin-top: 100px;font-size: 40px"><i class="el-icon-delete"></i></div>
+        <div style="text-align: center;margin-top: 100px;font-size: 40px"><i class="el-icon-box"></i></div>
         <div style="text-align: center;margin-top: 20px;font-size: 20px">暂 无 歌 曲</div>
         <div style="font-size: 10px;text-align: center;margin-top: 100px">通过 搜索歌曲 -> 右键点击歌曲 -> 添加到歌单 即可往歌单中添加歌曲</div>
       </div>
     </div>
   </div>
 </template>
-<!--TODO 尝试一下步骤条-->
 <script>
+import {serverIp} from "../../public/config";
+
 export default {
   name: "List",
   data() {
@@ -93,6 +106,12 @@ export default {
       author: {},
       musics: [],
       showDialog: false,
+      //是否已有显示的菜单
+      existMenu: false,
+      //IP
+      serverIp: serverIp,
+      //正在播放
+      currentPlayId: -1,
     }
   },
   computed: {
@@ -169,6 +188,96 @@ export default {
     //弹出编辑界面
     edit() {
       this.showDialog = true
+    },
+    //保存歌单信息
+    save() {
+      //保存封面
+      this.$refs.avatar.submit()
+    },
+    openMenu(e, music) {
+      if (e.x > 1200) {
+        if (e.y > 500) {
+          this.$bus.$emit('showMenu', e.x - 230, e.y - 200, true, music, this.list, this.musics, 'list')
+        } else {
+          this.$bus.$emit('showMenu', e.x - 230, e.y, true, music, this.list, this.musics, 'list')
+        }
+      } else {
+        if (e.y > 500) {
+          this.$bus.$emit('showMenu', e.x, e.y - 230, true, music, this.list, this.musics, 'list')
+        } else {
+          this.$bus.$emit('showMenu', e.x, e.y, true, music, this.list, this.musics, 'list')
+        }
+      }
+      this.existMenu = true
+    },
+    //显示上传的封面
+    handleUploadAvatar(file) {
+      const reader = new FileReader() // 创建FileReader对象
+      reader.readAsDataURL(file.raw) // 读取选择的文件的数据
+      reader.onload = () => {
+        this.list.avatar = reader.result; // 将文件的本地路径保存到data属性中
+      }
+    },
+    //上传封面
+    handleAvatarUpload(res) {
+      if (res.code !== '200') {
+        this.$notify({
+          title: '封面上传失败',
+          message: res.msg,
+          type: 'error'
+        })
+      } else {
+        this.$notify({
+          title: '封面上传成功',
+          type: 'success'
+        })
+        //将返回的封面路径存入对象
+        this.list.avatar = res.data.url
+        this.updateList()
+      }
+    },
+    updateList() {
+      //上传list所有信息
+      this.request.post('/list/updateList', this.list).then(res => {
+        if (res.code === '200') {
+          this.$notify({
+            type: 'success',
+            title: '更新成功',
+            message: '歌单信息更新成功'
+          })
+          //修改路径
+          this.$router.push('/list?listTitle=' + this.list.title)
+          //修改内存中数据
+          let user = JSON.parse(localStorage.getItem('user'))
+          let index = user.lists.findIndex((l) => l.id === this.list.id)
+          user.lists.splice(index, 1, this.list)
+          localStorage.setItem('user', JSON.stringify(user))
+          //触发左边栏刷新
+          this.$bus.$emit('changeLists', user.lists)
+          //关闭显示
+          this.showDialog = false
+        } else {
+          this.$notify({
+            type: 'error',
+            title: '更新失败',
+            message: res.msg
+          })
+        }
+      }).catch(err => {
+        this.$notify({
+          type: 'error',
+          title: '更新失败',
+          message: err
+        })
+      })
+    },
+    //获取当前正在播放的音乐
+    getCurrentMusic() {
+      this.currentPlayId = JSON.parse(localStorage.getItem('currentMusic')).id
+    },
+    //双击播放
+    dbClick(music){
+      this.$bus.$emit('play',music,this.musics)
     }
   },
   mounted() {
@@ -178,9 +287,15 @@ export default {
       //根据歌单标题获取相关内容
       this.getListData()
     })
+    //获取当前正在播放的音乐，显示正在播放的音乐
+    this.getCurrentMusic()
+    this.$bus.$on('getCurrentPlayMusic', () => {
+      this.getCurrentMusic()
+    })
   },
   beforeDestroy() {
     this.$bus.$off('changeList')
+    this.$bus.$off('getCurrentPlayMusic')
   }
 }
 </script>
@@ -370,8 +485,7 @@ tr td:last-child {
   background-color: var(--listInput);
   width: 60px;
   text-align: center;
-  padding: 2px 12px;
-  margin-top: 10px;
+  padding: 8px 12px;
   line-height: 30px;
   height: 30px;
   border-radius: 5px;
@@ -433,5 +547,9 @@ tr td:last-child {
 
 .cancelBtn:hover {
   background-color: var(--listHover) !important;
+}
+
+#light {
+  background-color: var(--listActive);
 }
 </style>

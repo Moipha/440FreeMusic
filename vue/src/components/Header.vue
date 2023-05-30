@@ -152,11 +152,16 @@ export default {
     })
     //监听滚动条事件
     window.addEventListener('scroll', this.handleScroll, true);
+    //使用快捷键打开或关闭搜索框
+    this.$bus.$on('openSearch',()=>{
+      this.showDialog = !this.showDialog
+    })
   },
   beforeDestroy() {
     this.$bus.$off('changeActiveTab')
     this.$bus.$off('changeIcon')
     window.removeEventListener('scroll', this.handleScroll)
+    this.$bus.$off('openSearch')
   }
 }
 </script>

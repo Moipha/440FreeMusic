@@ -27,7 +27,7 @@
         </div>
       </div>
     </el-card>
-    <el-tabs style="width: 80%;margin: 20px auto;color: var(--mineText)" v-model="activeName" @tab-click="changeTab">
+    <el-tabs style="width: 80%;margin: 20px auto;color: var(--mineText)" v-model="activeName">
       <el-tab-pane label="基本信息" name="data">
 
         <el-form label-position="left" label-width="80px" :model="user" style="font-weight: bold;margin-top: 20px">

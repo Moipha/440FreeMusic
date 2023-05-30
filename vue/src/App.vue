@@ -59,6 +59,7 @@ export default {
   --settingBtnText: var(--whiteText);
   --settingBtnHover: var(--mineBtnHover);
   --settingHr: var(--hr);
+  --settingBorder: #444444AA;
   /*个人中心*/
   --mineText: var(--whiteText);
   --mineCardBg: var(--leftBtnActive);
@@ -110,6 +111,7 @@ export default {
   --listBtnHover: var(--loginBtnHover);
   --listTh: rgb(134, 134, 136);
   --listInput: #55555577;
+  --listActive: #006bad;
   /*菜单*/
   --menuBg: #222222bb;
   --menuText: var(--leftText);

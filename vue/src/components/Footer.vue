@@ -1,5 +1,5 @@
 <template>
-  <el-footer class="container">
+  <el-footer id="footer" class="container">
     <!--footer-->
     <div class="footer">
       <!--左边-->
@@ -11,9 +11,9 @@
         </div>
         <div class="musicDataContainer">
           <!--歌曲名-->
-          <span class="musicName">名称</span>
+          <span class="musicName">{{ music.name }}</span>
           <!--专辑名-->
-          <span style="font-size: 10px">作者</span>
+          <span style="font-size: 10px">{{ music.album }}</span>
         </div>
       </div>
       <!--中间-->
@@ -22,10 +22,12 @@
         <audio ref="audio"
                @pause="onPause"
                @play="onPlay"
-               :src="music.src"
+               :src="music.url"
                controls="controls"
                @timeupdate="onTimeupdate"
                @loadedmetadata="onLoadedmetadata"
+               preload="auto"
+               @ended="playEnd"
         />
         <!--播放控件-->
         <div style="margin: 10px auto 0">
@@ -69,9 +71,11 @@
           <el-slider
               v-model="currentTime"
               @change="changeCurrentTime"
-              style="width: 80%;position: relative;bottom: 8px"
+              style="width: 80%;position: relative;bottom: 8px;transition: 0s"
               :show-tooltip="false"
               :max="this.maxTime"
+              @mousedown.native="isDragging=true"
+              @mouseup.native="isDragging=false"
           />
           <span style="width: 10%;line-height: 20px;text-align: right">{{ maxTime | formatSecond }}</span>
         </div>
@@ -143,7 +147,8 @@
         </svg>
         <el-slider @change="changeVolume" v-model="currentVolume" style="width: 20%;margin-right: 10%"></el-slider>
         <!--弹出侧边栏-->
-        <svg @click.stop="changeRightAside" t="1679378020715" class="iconRight" style="position: fixed;right: 20px;bottom: 30px"
+        <svg @click.stop="changeRightAside" t="1679378020715" class="iconRight"
+             style="position: fixed;right: 20px;bottom: 30px"
              viewBox="0 0 1024 1024"
              version="1.1"
              xmlns="http://www.w3.org/2000/svg"
@@ -177,8 +182,8 @@
           </div>
           <!--标题-->
           <div style="display: flex;flex-direction: column;margin-left: 28vh;margin-top: 80px">
-            <span style="padding: 5px 5px 5px 0;font-size: 22px;font-weight: bold">标题</span>
-            <span style="padding: 5px 5px 5px 0;font-size: 12px">作者</span>
+            <span style="padding: 5px 5px 5px 0;font-size: 22px;font-weight: bold">{{ music.name }}</span>
+            <span style="padding: 5px 5px 5px 0;font-size: 12px">{{ music.author }}</span>
           </div>
           <!--进度条-->
           <div style="display: flex;flex-direction: row;margin-left: 28vh;margin-top: 30px">
@@ -189,6 +194,8 @@
                 style="width: 40vh;position: relative;bottom: 8px"
                 :show-tooltip="false"
                 :max="this.maxTime"
+                @mousedown="isDragging=true"
+                @mouseup="isDragging=false"
             />
 
             <span style="width:8vh;line-height: 20px;text-align: right">{{
@@ -283,7 +290,7 @@
         </div>
         <div class="rightDiv">
           <i class="el-icon-arrow-down rightIcon" style="margin-top: 40px;" @click="bottomClass='hiddenMusic'"/>
-          <i class="el-icon-rank rightIcon"></i>
+          <i class="el-icon-rank rightIcon" @click="fullScreen"></i>
         </div>
       </div>
     </div>
@@ -336,13 +343,15 @@ export default {
       music: {
         // avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
         avatar: require('@/assets/DefaultAvatar.png'),
-        src: require('@/assets/testMusic/test2.mp3'),
+        url: require('@/assets/testMusic/test2.mp3'),
         isLike: false,
       },
       //音乐界面的类名
       bottomClass: 'hiddenMusic',
       //图片主题色
       themeColor: [],
+      //是否正在拖动进度条
+      isDragging: false,
     }
   },
   methods: {
@@ -373,7 +382,9 @@ export default {
     },
     // 当timeupdate事件大概每秒一次，用来更新音频流的当前播放时间
     onTimeupdate(res) {
-      this.currentTime = res.target.currentTime
+      if (!this.isDragging) {
+        this.currentTime = res.target.currentTime
+      }
     },
     // 当加载语音流元数据完成后，会触发该事件的回调函数
     // 语音元数据主要是语音的长度之类的数据
@@ -391,7 +402,7 @@ export default {
     },
     //改变当前音量：要将音量转成0~1的小数
     changeVolume() {
-      this.$refs.audio.volume = parseFloat(this.currentVolume) / 150
+      this.$refs.audio.volume = parseFloat(this.currentVolume) / 100
     },
     //喜欢该歌曲
     like() {
@@ -414,11 +425,6 @@ export default {
         this.playMode = 0
       }
     },
-    //当加载就绪时
-    onCanPlay() {
-      console.log("!")
-      this.canPlay = true
-    },
     //显示音乐界面
     showMusic() {
       if (this.bottomClass === 'hiddenMusic') {
@@ -428,15 +434,96 @@ export default {
       }
     },
     //打开侧边栏
-    changeRightAside(){
+    changeRightAside() {
       this.$bus.$emit('changeRightAside')
-
+    },
+    //隐藏或者显示播放栏
+    hidePlay(b) {
+      let footer = document.getElementsByClassName('footer')[0]
+      if (b) {
+        footer.style.bottom = '-100px'
+      } else {
+        footer.style.bottom = '0'
+      }
+    },
+    //获取基于封面主题色的背景
+    getBackground() {
+      if (this.music !== undefined && this.music !== null) {
+        const colorThief = new ColorThief()
+        const image = new Image()
+        // 加载图像
+        image.src = this.music.avatar + '?' + new Date().getTime();
+        image.setAttribute('crossOrigin', '');
+        image.addEventListener('load', () => {
+          // 获取图像的颜色
+          const palette = colorThief.getPalette(image, 2)
+          this.themeColor[0] = `rgb(${palette[0][0]}, ${palette[0][1]}, ${palette[0][2]})`
+          this.themeColor[1] = `rgb(${palette[1][0]}, ${palette[1][1]}, ${palette[1][2]})`
+          this.$refs.bottom.style.backgroundImage = `linear-gradient(to bottom right, ${this.themeColor[1]}, ${this.themeColor[0]})`
+        })
+      }
+    },
+    //播放结束
+    playEnd() {
+      //获取接下来要播放的音乐，将当前播放的音乐放置在数组末
+      let list = JSON.parse(localStorage.getItem('playList'))
+      list.push(list.shift())
+      this.$bus.$emit('play', list[0])
+    },
+    //开始时或者切换曲子时
+    startOrChange() {
+      //检测播放列表
+      let listIsEmpty = (JSON.parse(localStorage.getItem('playList')) === null)
+      this.hidePlay(listIsEmpty)
+      //获取要播放的音乐
+      if (!listIsEmpty) {
+        this.music = JSON.parse(localStorage.getItem('playList'))[0]
+      }
+      //获取音乐界面背景
+      this.getBackground()
+    },
+    //全屏和取消
+    fullScreen() {
+      let element = document.querySelector('#footer')
+      if (document.fullscreenElement) {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitCancelFullScreen) {
+          document.webkitCancelFullScreen();
+        } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        }
+      } else {
+        if (element.requestFullscreen) {
+          element.requestFullscreen();
+        } else if (element.webkitRequestFullScreen) {
+          element.webkitRequestFullScreen();
+        } else if (element.mozRequestFullScreen) {
+          element.mozRequestFullScreen();
+        } else if (element.msRequestFullscreen) {
+          // IE11
+          element.msRequestFullscreen();
+        }
+      }
+    },
+    //本地内存中的内容改变
+    localStorageChange() {
+      this.$bus.$emit('getCurrentPlayMusic')
+      this.$bus.$emit('getPlayList')
     }
   },
   filters: {
     // 将整数转化成时分秒
     formatSecond(second = 0) {
       return realFormatSecond(second)
+    }
+  },
+  watch: {
+    //检测播放音乐变化后改变背景
+    music() {
+      this.getBackground()
     }
   },
   computed: {
@@ -446,18 +533,78 @@ export default {
     }
   },
   mounted() {
-    const colorThief = new ColorThief()
-    const image = new Image()
-    // 加载图像
-    image.src = this.music.avatar + '?' + new Date().getTime();
-    image.setAttribute('crossOrigin', '');
-    image.addEventListener('load', () => {
-      // 获取图像的颜色
-      const palette = colorThief.getPalette(image, 2)
-      this.themeColor[0] = `rgb(${palette[0][0]}, ${palette[0][1]}, ${palette[0][2]})`
-      this.themeColor[1] = `rgb(${palette[1][0]}, ${palette[1][1]}, ${palette[1][2]})`
-      this.$refs.bottom.style.backgroundImage = `linear-gradient(to bottom right, ${this.themeColor[1]}, ${this.themeColor[0]})`
+    this.startOrChange()
+    this.changeVolume()
+    //播放
+    this.$bus.$on('play', (music, musics) => {
+      // 复制原数组以免修改原始数据
+      const list = musics.slice()
+      //获取并添加播放列表
+      if (musics[0] !== music) {
+        //按当前音乐为首的方式排序
+        // 自定义比较函数
+        list.sort((a, b) => {
+          if (a === music) {
+            return -1; // 将 music 移至数组首位
+          } else if (b === music) {
+            return 1; // 将 music 移至数组首位
+          } else {
+            return 0; // 保持原有顺序
+          }
+        })
+      } else {
+        this.changeCurrentTime(0)
+        this.play(false)
+      }
+      //在本地内存中保存列表
+      localStorage.setItem('playList', JSON.stringify(list))
+      //设置当前播放的音乐
+      localStorage.setItem('currentMusic', JSON.stringify(music))
+      //当前音乐修改，添加至历史播放中
+      const h = localStorage.getItem('historyList')
+      let history = h ? JSON.parse(h) : [music]
+      if (h) {
+        //判断，如果数组首位是相同的歌曲则直接替换而不是重复添加
+        if (history[0].id === music.id) {
+          history.shift()
+        }
+        history.unshift(music)
+      }
+      localStorage.setItem('historyList', JSON.stringify(history))
+      this.localStorageChange()
+      this.startOrChange()
+      //加载完成后播放
+      this.$refs.audio.addEventListener('canplaythrough', () => {
+        this.$refs.audio.volume = parseFloat(this.currentVolume) / 150
+        this.$refs.audio.play()
+      })
     })
+    //改变音量
+    this.$bus.$on('changeVolume', (b) => {
+      if (b !== undefined) {
+        if (b) {
+          this.currentVolume += 10
+        } else {
+          this.currentVolume -= 10
+        }
+        this.changeVolume()
+      } else {
+        if (this.isMuted) {
+          this.cancelMute()
+        } else {
+          this.mute()
+        }
+      }
+    })
+    //播放或者暂停
+    this.$bus.$on('changePlay', () => {
+      this.handlePlayOrPauseClick()
+    })
+  },
+  beforeDestroy() {
+    this.$bus.$off('play')
+    this.$bus.$off('changeVolume')
+    this.$bus.$off('changePlay')
   }
 }
 </script>

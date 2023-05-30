@@ -73,7 +73,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         //筛选用户名相同或者邮箱相同的用户
         qw.eq("username", username).or().eq("email", email);
         //如果有重复抛出异常
-        if (getOne(qw) != null) {
+        if (list(qw).size() != 0) {
             throw new ServiceException("400", "已存在相同用户名或者邮箱的用户");
         } else {
             //无重复则进行注册
@@ -97,29 +97,29 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         }
         //排除昵称过长的情况
         assert user != null;
-        if(user.getNickname().length()>50){
-            throw new ServiceException("400","昵称长度不可超过50");
+        if (user.getNickname().length() > 50) {
+            throw new ServiceException("400", "昵称长度不可超过50");
         }
 
-        if(updateById(user)){
+        if (updateById(user)) {
             return Result.success();
-        }else{
-            return Result.error("600","写入数据库的过程中失败");
+        } else {
+            return Result.error("600", "写入数据库的过程中失败");
         }
     }
 
     //获取该用户上传的music
     public Result getUploadList(Integer id) {
         QueryWrapper<Music> qw = new QueryWrapper<>();
-        qw.eq("uploader",id);
+        qw.eq("uploader", id);
         List<Music> musicList = musicService.list(qw);
         return Result.success(musicList);
     }
 
     //获取该用户创建的歌单
-    public List<com.test.pojo.List> getLists(Integer userId){
+    public List<com.test.pojo.List> getLists(Integer userId) {
         //获取该用户相关的所有UserList对象
-        List<UserList> userLists = userListService.list(new QueryWrapper<UserList>().eq("user_id", userId).eq("type",1));
+        List<UserList> userLists = userListService.list(new QueryWrapper<UserList>().eq("user_id", userId).eq("type", 1));
         //获取list的id数组
         List<Integer> listIds = new ArrayList<>();
         for (UserList userList : userLists) {
@@ -128,7 +128,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         //通过listId获取list对象集合
         List<com.test.pojo.List> result = new ArrayList<>();
         for (Integer id : listIds) {
-            result.add(listMapper.selectOne(new QueryWrapper<com.test.pojo.List>().eq("id",id)));
+            result.add(listMapper.selectOne(new QueryWrapper<com.test.pojo.List>().eq("id", id)));
         }
         return result;
     }

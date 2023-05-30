@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
@@ -44,8 +46,8 @@ public class MusicController {
 
     //下载指定音乐
     @GetMapping("/{fileUuid}")
-    public void download(@PathVariable String fileUuid, HttpServletResponse response) throws IOException {
-        musicService.download(fileUuid, response);
+    public void download(@PathVariable String fileUuid, HttpServletResponse response, HttpServletRequest request) throws IOException, ServletException {
+        musicService.download(fileUuid, response,request);
     }
 
     //查询

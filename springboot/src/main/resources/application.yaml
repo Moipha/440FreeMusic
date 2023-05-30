@@ -13,6 +13,16 @@ spring:
 
 server:
   port: 8080
+#  servlet:
+#    session:
+#      persistent: true # 开启session持久化
+#  compression:
+#    enabled: true # 开启压缩
+#    mime-types: audio/*,video/* # 需要压缩的媒体类型
+#  http:
+#    cache:
+#      enabled: true
+#      time-to-live: 86400 # 缓存时间（秒）
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml

@@ -3,7 +3,7 @@
             @mouseenter.native="showScrollbar"
             @mouseleave.native="hideScrollbar"
   >
-    <div ref="test" class="right">
+    <div id="test" class="right">
       <div style="flex-direction: row;display: flex">
         <div class="tabContainer">
           <span ref="tab1" @click="change1" class="tabChoice"
@@ -43,7 +43,14 @@
         </div>
         <!--播放历史-->
         <div ref="content2" class="content" style="display: none">
-          播放历史
+          <div v-for="item in history" class="item">
+            <el-avatar style="margin-right: 10px" size="medium" shape="square" :src="item.avatar"/>
+            <div style="display: flex;flex-direction: column">
+              <span style="line-height: 18px;height: 18px;font-weight: bold;font-size: 15px">{{ item.name }}</span>
+              <span style="line-height: 18px;height: 18px;font-size: 13px">{{ item.author }} - {{ item.album }}</span>
+            </div>
+            <span class="el-icon-more more"></span>
+          </div>
         </div>
       </div>
     </div>
@@ -55,169 +62,43 @@ export default {
   name: "RightAside",
   data() {
     return {
-      tableData: [
-        {
-          avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
-          name: 'testName',
-          album: 'testAlbum',
-          author: 'testAuthor'
-        },
-        {
-          avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
-          name: 'testName',
-          album: 'testAlbum',
-          author: 'testAuthor'
-        },
-        {
-          avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
-          name: 'testName',
-          album: 'testAlbum',
-          author: 'testAuthor'
-        },
-        {
-          avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
-          name: 'testName',
-          album: 'testAlbum',
-          author: 'testAuthor'
-        },
-        {
-          avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
-          name: 'testName',
-          album: 'testAlbum',
-          author: 'testAuthor'
-        },
-        {
-          avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
-          name: 'testName',
-          album: 'testAlbum',
-          author: 'testAuthor'
-        },
-        {
-          avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
-          name: 'testName',
-          album: 'testAlbum',
-          author: 'testAuthor'
-        },
-        {
-          avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
-          name: 'testName',
-          album: 'testAlbum',
-          author: 'testAuthor'
-        },
-        {
-          avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
-          name: 'testName',
-          album: 'testAlbum',
-          author: 'testAuthor'
-        },
-        {
-          avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
-          name: 'testName',
-          album: 'testAlbum',
-          author: 'testAuthor'
-        },
-        {
-          avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
-          name: 'testName',
-          album: 'testAlbum',
-          author: 'testAuthor'
-        },
-        {
-          avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
-          name: 'testName',
-          album: 'testAlbum',
-          author: 'testAuthor'
-        },
-        {
-          avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
-          name: 'testName',
-          album: 'testAlbum',
-          author: 'testAuthor'
-        },
-        {
-          avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
-          name: 'testName',
-          album: 'testAlbum',
-          author: 'testAuthor'
-        },
-        {
-          avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
-          name: 'testName',
-          album: 'testAlbum',
-          author: 'testAuthor'
-        },
-        {
-          avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
-          name: 'testName',
-          album: 'testAlbum',
-          author: 'testAuthor'
-        },
-        {
-          avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
-          name: 'testName',
-          album: 'testAlbum',
-          author: 'testAuthor'
-        },
-        {
-          avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
-          name: 'testName',
-          album: 'testAlbum',
-          author: 'testAuthor'
-        },
-        {
-          avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
-          name: 'testName',
-          album: 'testAlbum',
-          author: 'testAuthor'
-        },
-        {
-          avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
-          name: 'testName',
-          album: 'testAlbum',
-          author: 'testAuthor'
-        },
-        {
-          avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
-          name: 'testName',
-          album: 'testAlbum',
-          author: 'testAuthor'
-        },
-        {
-          avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
-          name: 'testName',
-          album: 'testAlbum',
-          author: 'testAuthor'
-        },
-        {
-          avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
-          name: 'testName',
-          album: 'testAlbum',
-          author: 'testAuthor'
-        },
-      ],
+      tableData: [],
       dialogVisible: false,
+      history: [],
+      //当前是播放列表还是播放历史
+      isList: true,
     }
   },
   mounted() {
     this.$bus.$on('changeRightAside', () => {
       this.$nextTick(() => {
         //弹出和隐藏右边栏
-        if (this.$refs.test.style.right === '0%') {
-          this.$refs.test.style.right = '-400px'
+        if (document.getElementById('test').style.right === '0%') {
+          document.getElementById('test').style.right = '-400px'
         } else {
-          this.$refs.test.style.right = '0%'
+          document.getElementById('test').style.right = '0%'
         }
       })
     })
     //点击其他区域关闭右边栏
     document.addEventListener('click', e => {
       if (!this.$el.contains(e.target)) {
-        this.$refs.test.style.right = '-400px'
+        document.getElementById('test').style.right = '-400px'
       }
     })
+    //获取表格数据
+    this.$bus.$on('getPlayList', () => {
+      const list = localStorage.getItem('playList')
+      this.tableData = list ? JSON.parse(list) : []
+      const h = localStorage.getItem('historyList')
+      this.history = h ? JSON.parse(h) : []
+    })
+    this.$bus.$emit('getPlayList')
   },
   beforeDestroy() {
     this.$bus.$off('changeRightAside')
+    this.$bus.$off('getPlayList')
+
   },
   methods: {
     //切换为当前播放列表
@@ -226,6 +107,7 @@ export default {
       this.$refs.tab2.style.backgroundColor = 'var(--rightTabBg)'
       this.$refs.content1.style.display = 'block'
       this.$refs.content2.style.display = 'none'
+      this.isList = true
     },
     //切换为播放历史列表
     change2() {
@@ -233,10 +115,11 @@ export default {
       this.$refs.tab1.style.backgroundColor = 'var(--rightTabBg)'
       this.$refs.content2.style.display = 'block'
       this.$refs.content1.style.display = 'none'
+      this.isList = false
     },
     //关闭右边栏
     closeRight() {
-      this.$refs.test.style.right = '-400px'
+      document.getElementById('test').style.right = '-400px'
     },
     //滚动条相关
     showScrollbar() {
@@ -247,8 +130,15 @@ export default {
     },
     //清除记录
     clear() {
-      this.tableData = []
-
+      if (this.isList) {
+        //清除列表数据
+        this.tableData = []
+        localStorage.removeItem('playList')
+      } else {
+        //清除历史数据
+        this.history = []
+        localStorage.removeItem('historyList')
+      }
       this.dialogVisible = false
     }
   }
@@ -259,6 +149,10 @@ export default {
 .container {
   width: 0 !important;
   height: 0;
+}
+
+.container * {
+  letter-spacing: normal;
 }
 
 .right {
@@ -421,13 +315,14 @@ export default {
 
 /deep/ .el-dialog {
   background-color: var(--dialogBg);
-  height: 72px;
-  width: 150px;
+  height: 75px;
+  width: 160px;
   position: absolute;
   right: 50px;
   display: flex;
   flex-direction: column;
   padding: 10px 10px 0;
+  border-radius: 10px;
 }
 
 /deep/ .el-dialog__body {

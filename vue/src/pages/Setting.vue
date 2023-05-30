@@ -26,6 +26,68 @@
       </div>
     </div>
     <el-divider></el-divider>
+    <div class="optionContainer">
+      <div class="container">
+        <span class="title">快捷键</span><br>
+      </div>
+      <div class="rightContainer">
+        <div class="option">
+          <span class="smallerTitle">播放/暂停</span>
+          <div class="keySet">
+            <span class="keys">Space</span>
+          </div>
+        </div>
+        <div class="option">
+          <span class="smallerTitle">上一首</span>
+          <div class="keySet">
+            <span class="keys">⌘/Ctrl</span>
+            <span class="keys">←</span>
+          </div>
+        </div>
+        <div class="option">
+          <span class="smallerTitle">下一首</span>
+          <div class="keySet">
+            <span class="keys">⌘/Ctrl</span>
+            <span class="keys">→</span>
+          </div>
+        </div>
+        <div class="option">
+          <span class="smallerTitle">增加音量</span>
+          <div class="keySet">
+            <span class="keys">⌘/Ctrl</span>
+            <span class="keys">↑</span>
+          </div>
+        </div>
+        <div class="option">
+          <span class="smallerTitle">减少音量</span>
+          <div class="keySet">
+            <span class="keys">⌘/Ctrl</span>
+            <span class="keys">↓</span>
+          </div>
+        </div>
+        <div class="option">
+          <span class="smallerTitle">静音/取消</span>
+          <div class="keySet">
+            <span class="keys">⌘/Ctrl</span>
+            <span class="keys">M</span>
+          </div>
+        </div>
+        <div class="option">
+          <span class="smallerTitle">打开搜索</span>
+          <div class="keySet">
+            <span class="keys">Alt</span>
+            <span class="keys">S</span>
+          </div>
+        </div>
+        <div class="option">
+          <span class="smallerTitle">关闭窗口</span>
+          <div class="keySet">
+            <span class="keys">Esc</span>
+          </div>
+        </div>
+      </div>
+      <el-divider></el-divider>
+    </div>
   </div>
 </template>
 
@@ -43,24 +105,24 @@ export default {
       const themeName = 'Light'
       this.$bus.$emit('changeTheme', themeName)
       this.$store.commit('setTheme', themeName)
-      this.$bus.$emit('changeIcon',themeName)
-      localStorage.setItem('theme',themeName)
+      this.$bus.$emit('changeIcon', themeName)
+      localStorage.setItem('theme', themeName)
     },
     btnClick2() {
       const themeName = 'Dark'
       this.$bus.$emit('changeTheme', themeName)
       this.$store.commit('setTheme', themeName)
-      this.$bus.$emit('changeIcon',themeName)
-      localStorage.setItem('theme',themeName)
+      this.$bus.$emit('changeIcon', themeName)
+      localStorage.setItem('theme', themeName)
     },
     btnClick3() {
       const themeName = 'Orange'
       this.$bus.$emit('changeTheme', themeName)
       this.$store.commit('setTheme', themeName)
-      this.$bus.$emit('changeIcon',themeName)
-      localStorage.setItem('theme',themeName)
+      this.$bus.$emit('changeIcon', themeName)
+      localStorage.setItem('theme', themeName)
     },
-    logout(){
+    logout() {
       localStorage.removeItem('user')
       this.$bus.$emit('logout')
       this.$notify({
@@ -69,7 +131,7 @@ export default {
         type: 'success'
       });
       this.existUser = false
-      this.$bus.$emit('changeLists',[])
+      this.$bus.$emit('changeLists', [])
     }
   },
   mounted() {
@@ -145,6 +207,36 @@ export default {
 .btnInGroup {
   border-right: 2px solid var(--rightBg);
   margin: 0;
+}
+
+.smallerTitle {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--settingText);
+
+}
+
+.keys {
+  float: left;
+  letter-spacing: normal;
+  color: var(--settingLightText);
+  border: var(--settingBorder) solid;
+  border-width: 1px 1px 2px 1px;
+  padding: 2px 4px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.option {
+  width: 240px;
+  margin-bottom: 10px;
+}
+
+.keySet {
+  width: 90px;
+  float: right;
 }
 
 </style>

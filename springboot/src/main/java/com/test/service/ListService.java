@@ -88,17 +88,41 @@ public class ListService extends ServiceImpl<ListMapper, List> {
     public Result saveMusic(ListMusic listMusic) {
         //先检查是否已存在该曲
         QueryWrapper<ListMusic> qw = new QueryWrapper<>();
-        qw.eq("list_id",listMusic.getListId());
-        qw.eq("music_id",listMusic.getMusicId());
+        qw.eq("list_id", listMusic.getListId());
+        qw.eq("music_id", listMusic.getMusicId());
         ListMusic lm = listMusicMapper.selectOne(qw);
-        if(lm == null){
+        if (lm == null) {
             //不存在，保存
             listMusicMapper.insert(listMusic);
-        }else{
-            throw new ServiceException("400","该歌单中已存在该歌曲");
+        } else {
+            throw new ServiceException("400", "该歌单中已存在该歌曲");
         }
         return Result.success();
     }
 
+    //更新歌单信息
+    public Result updateList(List list) {
+        //检测歌单名是否为空
+        if (list.getTitle().equals("") || list.getTitle() == null) {
+            throw new ServiceException("400", "歌单名不能为空");
+        }else{
+            updateById(list);
+        }
+        return Result.success();
+    }
 
+    public Result deleteMusic(ListMusic listMusic) {
+        //先检查是否已存在该曲
+        QueryWrapper<ListMusic> qw = new QueryWrapper<>();
+        qw.eq("list_id", listMusic.getListId());
+        qw.eq("music_id", listMusic.getMusicId());
+        ListMusic lm = listMusicMapper.selectOne(qw);
+        if (lm != null) {
+            //存在，删除
+            listMusicMapper.delete(qw);
+        } else {
+            throw new ServiceException("400", "无法删除不存在的歌曲");
+        }
+        return Result.success();
+    }
 }

@@ -12,28 +12,32 @@ import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.UnsupportedTagException;
 import com.test.common.Result;
 import com.test.mapper.MusicMapper;
-import com.test.pojo.Avatar;
 import com.test.pojo.Music;
 import com.test.utils.IntToTimeString;
+import com.test.utils.MediaHttpRequestHandler;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.audio.flac.FlacFileReader;
-import org.jaudiotagger.audio.flac.FlacInfoReader;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.sql.Date;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,6 +49,9 @@ public class MusicService extends ServiceImpl<MusicMapper, Music> {
 
     @Resource
     private MusicMapper musicMapper;
+
+    @Resource
+    private MediaHttpRequestHandler mediaHttpRequestHandler;
 
     //获取上传音乐的信息
     public Result getData(MultipartFile multipartFile) throws InvalidDataException, UnsupportedTagException, IOException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException {
@@ -143,13 +150,21 @@ public class MusicService extends ServiceImpl<MusicMapper, Music> {
      * @param response http响应流
      * @throws IOException 抛出获取输出流和操作流时的异常
      */
-    public void download(String fileUuid, HttpServletResponse response) throws IOException {
+    public void download(String fileUuid, HttpServletResponse response, HttpServletRequest request) throws IOException, ServletException {
         //根据文件的唯一标识码来获取文件
         File uploadFile = new File(fileUploadPath + fileUuid);
         //设置输出流的格式
         ServletOutputStream outputStream = response.getOutputStream();
-        response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode((fileUuid), "UTF-8"));
+        // 设置响应头
+        response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileUuid, "UTF-8"));
         response.setContentType("application/octet-stream");
+        response.setHeader(HttpHeaders.CACHE_CONTROL, CacheControl.noCache().getHeaderValue());
+        response.setHeader(HttpHeaders.PRAGMA, "");
+        response.addHeader("Content-Length", String.valueOf(uploadFile.length()));
+        response.setDateHeader(HttpHeaders.EXPIRES, 0);
+        Path path = Paths.get(fileUploadPath + fileUuid);
+        request.setAttribute(MediaHttpRequestHandler.ATTR_FILE, path);
+        mediaHttpRequestHandler.handleRequest(request, response);
         //读取文件的字节流
         outputStream.write(FileUtil.readBytes(uploadFile));
         outputStream.flush();
@@ -167,9 +182,9 @@ public class MusicService extends ServiceImpl<MusicMapper, Music> {
     public Result searchByName(String keyword) {
         //通过标题模糊查询
         QueryWrapper<Music> qw = new QueryWrapper<>();
-        qw.like("name",keyword);
-        qw.eq("enable",true);
-        qw.eq("is_delete",false);
+        qw.like("name", keyword);
+        qw.eq("enable", true);
+        qw.eq("is_delete", false);
         List<Music> list = list(qw);
         return Result.success(list);
     }

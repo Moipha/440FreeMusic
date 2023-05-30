@@ -1,6 +1,7 @@
 import Vuex from 'vuex'
 import Vue from 'vue';
 import router from "@/router";
+
 //使用插件
 Vue.use(Vuex)
 //actions，用于响应组件中的动作
@@ -23,7 +24,7 @@ const mutations = {
         state.theme = theme
     },
     //在数组中新增元素
-    addVisited(state,path){
+    addVisited(state, path) {
         //只要新增元素，删除索引所在位置之后的所有元素，然后添加新元素
         state.visitedRoutes.splice(state.index + 1)
         state.visitedRoutes.push(path)
@@ -31,9 +32,9 @@ const mutations = {
         state.index++
     },
     //前进
-    goForward(state){
+    goForward(state) {
         //只要索引不是最右端即可前进一位
-        if(state.index!==state.visitedRoutes.length-1){
+        if (state.index !== state.visitedRoutes.length - 1) {
             //前进和后退不通过路由守卫
             state.need = false
             state.index++
@@ -41,9 +42,9 @@ const mutations = {
         }
     },
     //后退
-    goBack(state){
+    goBack(state) {
         //只要索引不是最左端即可后退一位
-        if(state.index!==0){
+        if (state.index !== 0) {
             //前进和后退不通过路由守卫
             state.need = false
             state.index--

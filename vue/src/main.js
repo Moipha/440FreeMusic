@@ -25,6 +25,40 @@ Vue.use(ElementUI, {size: "small", theme: 'normal'})
 //设置配置后的axios
 Vue.prototype.request = request
 
+//设置全局快捷键
+document.addEventListener('keydown', (event) => {
+    //1.打开搜索栏
+    if (event.altKey && event.key === 's') {
+        v.$bus.$emit('openSearch')
+    }
+
+    //2.调节音量
+    if (event.ctrlKey && event.key === 'ArrowUp') {
+        v.$bus.$emit('changeVolume', true)
+    }
+    if (event.ctrlKey && event.key === 'ArrowDown') {
+        v.$bus.$emit('changeVolume', false)
+    }
+    if (event.ctrlKey && event.key === 'm') {
+        v.$bus.$emit('changeVolume')
+    }
+    //3.播放或暂停
+    if(event.key === ' '){
+        v.$bus.$emit('changePlay')
+    }
+})
+
+
+//点击其他区域关闭菜单
+document.addEventListener('click', e => {
+    e.stopPropagation();
+    const menu = document.querySelector('.menu');
+    if (!menu.contains(e.target)) {
+        v.$bus.$emit('showMenu', 0, 0, false, {}, '')
+    }
+})
+
+
 const v = new Vue({
     render: h => h(App),
     router,
