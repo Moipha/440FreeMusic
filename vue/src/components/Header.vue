@@ -41,13 +41,36 @@
         <span class="el-icon-search"
               style="line-height: 10px;margin: 20px 5px 20px 20px;color: var(--headerInputText)!important"/>
         <el-input
-            style="width: 80%;user-select: auto;font-size: 16px"
+            style="width: 55%;user-select: auto;font-size: 16px"
             placeholder=" 搜索"
             ref="input"
             v-model="searchString"
-            @keydown.enter.native="jumpToSearch"/>
+            @keydown.enter.native="jumpToSearch"
+            clearable/>
+        <span class="word">打开搜索</span>
+        <span class="keys">Alt S</span>
+        <span class="word" style="margin-left: 10px">退出</span>
+        <span class="keys">Esc</span>
       </div>
       <hr style="border: var(--hr) 1px solid;width: 100%;padding: 0;margin: 0">
+      <div style="margin-left: 30px;margin-top: 20px;color: var(--searchText)">
+        <span style="font-size: 17px;margin-right: 15px;">历史搜索</span>
+        <el-popconfirm
+            title="确定删除搜索记录吗？"
+            confirm-button-type="danger"
+            cancel-button-type="primary"
+            icon-color="red"
+            @confirm="deleteHistory"
+        >
+          <span slot="reference" class="el-icon-delete deleteIcon"></span>
+        </el-popconfirm>
+        <div v-if="keywordList.length!==0" v-for="word in keywordList" class="searchItem" @click="searchString=word">
+          <span>{{ word }}</span>
+        </div>
+        <div v-if="keywordList.length===0" style="margin: 100px 160px;width: 200px">
+          <span style="font-size: 14px">暂无搜索记录</span>
+        </div>
+      </div>
     </el-dialog>
 
   </el-header>
@@ -69,6 +92,8 @@ export default {
       activeTab: this.$router.currentRoute.fullPath,
       //搜索的内容
       searchString: '',
+      //搜索记录
+      keywordList: localStorage.getItem('searchHistory') ? JSON.parse(localStorage.getItem('searchHistory')) : []
     }
   },
   computed: {
@@ -116,32 +141,38 @@ export default {
     },
     //搜索
     jumpToSearch() {
-
+      //添加搜索记录
+      this.keywordList.unshift(this.searchString)
+      localStorage.setItem('searchHistory', JSON.stringify(this.keywordList))
       //跳转并传参
       this.showDialog = false
       this.$router.push({path: '/search', query: {searchStr: this.searchString}})
       this.$bus.$emit('changeSearchStr', this.searchString)
       this.searchString = ''
     },
-    //滚动条
-    handleScroll(e) {
-      console.log()
-      if (e.target.__vue__._uid === '22') {
-        const header = document.getElementsByClassName('header')[0]
-        if (header) {
-          header.style.borderBottomColor = `rgba(64,64,64,${e.target.scrollTop})`
-          if (e.target.scrollTop !== 0) {
-            header.style.backgroundColor = 'var(--rightBg)'
-          } else {
-            header.style.backgroundColor = 'var(--headerBg)'
-
-          }
-        }
-      }
-    },
+    // //滚动条
+    // handleScroll(e) {
+    //   if (e.target.__vue__._uid === '22') {
+    //     const header = document.getElementsByClassName('header')[0]
+    //     if (header) {
+    //       header.style.borderBottomColor = `rgba(64,64,64,${e.target.scrollTop})`
+    //       if (e.target.scrollTop !== 0) {
+    //         header.style.backgroundColor = 'var(--rightBg)'
+    //       } else {
+    //         header.style.backgroundColor = 'var(--headerBg)'
+    //
+    //       }
+    //     }
+    //   }
+    // },
     openD() {
       this.showDialog = true
     },
+    //清除搜索记录
+    deleteHistory() {
+      localStorage.removeItem('searchHistory')
+      this.keywordList = []
+    }
   },
   mounted() {
     this.$bus.$on('changeActiveTab', (path) => {
@@ -151,16 +182,16 @@ export default {
       this.currentIcon = icon
     })
     //监听滚动条事件
-    window.addEventListener('scroll', this.handleScroll, true);
+    // window.addEventListener('scroll', this.handleScroll, true);
     //使用快捷键打开或关闭搜索框
-    this.$bus.$on('openSearch',()=>{
+    this.$bus.$on('openSearch', () => {
       this.showDialog = !this.showDialog
     })
   },
   beforeDestroy() {
     this.$bus.$off('changeActiveTab')
     this.$bus.$off('changeIcon')
-    window.removeEventListener('scroll', this.handleScroll)
+    // window.removeEventListener('scroll', this.handleScroll)
     this.$bus.$off('openSearch')
   }
 }
@@ -204,7 +235,7 @@ export default {
 
 /deep/ .el-dialog {
   background-color: var(--dialogBg);
-  border-radius: 20px;
+  border-radius: 10px;
   height: 450px;
   width: 500px;
 }
@@ -322,4 +353,46 @@ export default {
   }
 }
 
+.keys {
+  letter-spacing: normal;
+  color: var(--settingLightText);
+  border: #555555 solid;
+  border-width: 1px 1px 2px 1px;
+  padding: 2px 4px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-right: 5px;
+  background-color: #111111;
+  margin-left: 5px;
+}
+
+.word {
+  font-size: 10px;
+  letter-spacing: normal;
+  color: var(--headerInputText);
+  font-weight: bold;
+}
+
+.searchItem {
+  margin: 10px 30px 10px 0;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 3px;
+}
+
+.searchItem:hover {
+  background-color: var(--searchHover);
+}
+
+.deleteIcon {
+  font-size: 17px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 3px;
+}
+
+.deleteIcon:hover {
+  background-color: var(--searchHover);
+}
 </style>

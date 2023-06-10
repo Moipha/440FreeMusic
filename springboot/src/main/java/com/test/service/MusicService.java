@@ -61,15 +61,20 @@ public class MusicService extends ServiceImpl<MusicMapper, Music> {
         multipartFile.transferTo(file);
         //创建music对象
         Music music = new Music();
-        //创建Mp3File对象
-        Mp3File mp3File = new Mp3File(file);
         //设置名称、作者、专辑、文件大小、时长
         music.setSize((int) (file.length() / 1024));  //单位为kb
-        if (mp3File.hasId3v2Tag()) {
-            ID3v2 id3v2Tag = mp3File.getId3v2Tag();
-            music.setName(id3v2Tag.getTitle());
-            music.setAuthor(id3v2Tag.getArtist());
-            music.setAlbum(id3v2Tag.getAlbum());
+        //获取文件后缀
+        String originalFilename = multipartFile.getOriginalFilename();
+        if (originalFilename != null && originalFilename.endsWith(".mp3")) {
+            //创建Mp3File对象
+            Mp3File mp3File = new Mp3File(file);
+            //处理MP3文件的逻辑
+            if (mp3File.hasId3v2Tag()) {
+                ID3v2 id3v2Tag = mp3File.getId3v2Tag();
+                music.setName(id3v2Tag.getTitle());
+                music.setAuthor(id3v2Tag.getArtist());
+                music.setAlbum(id3v2Tag.getAlbum());
+            }
             music.setTime(IntToTimeString.Method((int) mp3File.getLengthInSeconds()));   //单位为秒
         } else {
             //如果是FLAC格式
@@ -82,6 +87,7 @@ public class MusicService extends ServiceImpl<MusicMapper, Music> {
             music.setTime(IntToTimeString.Method(audioFile.getAudioHeader().getTrackLength())); //单位为秒
         }
 
+
         return Result.success(music);
     }
 
@@ -91,8 +97,6 @@ public class MusicService extends ServiceImpl<MusicMapper, Music> {
         boolean needSaveDB;
         //要返回的结果
         Music result = new Music();
-
-        //TODO 需要在返回的对象中封装src和md5两个属性
         //使用hutool获取文件类型
         String originalFilename = file.getOriginalFilename();
         String type = FileUtil.extName(originalFilename);

@@ -1,5 +1,5 @@
 <template>
-  <div style="display: flex;flex-direction: column">
+  <div style="display: flex;flex-direction: column;">
     <el-input
         class="input"
         suffix-icon="el-icon-search"
@@ -13,38 +13,42 @@
       <el-tab-pane label="专辑" name="album"/>
       <el-tab-pane label="歌手" name="author"/>
     </el-tabs>
-    <table>
-      <tr style="color: var(--listTh);font-size: 14px">
-        <th style="width: 5%" align="center"></th>
-        <th align="left" style="width: 40%;">音乐标题</th>
-        <th align="left" style="width: 20%">歌手</th>
-        <th align="left" style="width: 20%">专辑</th>
-        <th align="left" style="width: 5%">时长</th>
-        <th align="left" style="width: 5%;"></th>
-      </tr>
-      <tr style="height: 20px"></tr>
-      <tr :id="music.id === currentPlayId ? 'light' : ''" class="items" v-for="music in tableData"
-          @contextmenu.prevent="openMenu($event,music)"
-          @dblclick="dbClick(music)">
+    <div style="overflow-y: scroll;height: 514px"
+         @mouseenter="showScrollbar"
+         @mouseleave="hideScrollbar">
+      <table>
+        <tr style="color: var(--listTh);font-size: 14px">
+          <th style="width: 5%" align="center"></th>
+          <th align="left" style="width: 40%;">音乐标题</th>
+          <th align="left" style="width: 20%">歌手</th>
+          <th align="left" style="width: 20%">专辑</th>
+          <th align="left" style="width: 5%">时长</th>
+          <th align="left" style="width: 5%;"></th>
+        </tr>
+        <tr style="height: 20px"></tr>
+        <tr :id="music.id === currentPlayId ? 'light' : ''" class="items" v-for="music in tableData"
+            @contextmenu.prevent="openMenu($event,music)"
+            @dblclick="dbClick(music)">
 
-        <td style="padding-top: 5px">
-          <el-avatar :src="music.avatar" shape="square"></el-avatar>
-        </td>
-        <td>{{ music.name }}</td>
-        <td>{{ music.author }}</td>
-        <td>{{ music.album }}</td>
-        <td>{{ music.time }}</td>
-        <td>
+          <td style="padding-top: 5px">
+            <el-avatar :src="music.avatar" shape="square"></el-avatar>
+          </td>
+          <td>{{ music.name }}</td>
+          <td>{{ music.author }}</td>
+          <td>{{ music.album }}</td>
+          <td>{{ music.time }}</td>
+          <td>
           <span @click.stop="openMenu($event,music)" class="el-icon-more"
                 style="cursor: pointer;font-size: 20px"></span>
-        </td>
-      </tr>
-    </table>
+          </td>
+        </tr>
+      </table>
+    </div>
+
   </div>
 </template>
 
 <script>
-import router from "@/router";
 
 export default {
   name: "Search",
@@ -114,8 +118,15 @@ export default {
       this.currentPlayId = JSON.parse(localStorage.getItem('currentMusic')).id
     },
     //双击播放
-    dbClick(music){
-      this.$bus.$emit('play',music,this.tableData)
+    dbClick(music) {
+      this.$bus.$emit('play', music, this.tableData)
+    },
+    //切换滚动条状态
+    showScrollbar() {
+      document.documentElement.style.setProperty('--test3', 'visible');
+    },
+    hideScrollbar() {
+      document.documentElement.style.setProperty('--test3', 'hidden');
     }
   },
   mounted() {
@@ -242,5 +253,33 @@ tr td:last-child {
 
 #light {
   background-color: var(--listActive);
+}
+
+/*滚动条*/
+
+.test3 {
+  --test3: visible;
+}
+
+::-webkit-scrollbar {
+  overflow: auto;
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar);
+  border-radius: 5px;
+  visibility: var(--test3);
+
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbarHover);
+}
+
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background-color: var(--rightBg);
+  border-radius: 5px;
 }
 </style>

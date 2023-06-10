@@ -38,6 +38,7 @@ request.interceptors.response.use(
         //当权限验证不通过时直接弹出
         if(res.code === '401'){
             localStorage.removeItem('user')
+            localStorage.removeItem('lists')
             router.push('/login')
         }
 

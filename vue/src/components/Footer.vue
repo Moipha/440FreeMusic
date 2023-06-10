@@ -32,7 +32,8 @@
         <!--播放控件-->
         <div style="margin: 10px auto 0">
           <!--上一首-->
-          <svg style="padding: 10px 10px 13px;" t="1679312986751" class="icon" viewBox="0 0 1024 1024"
+          <svg @click="lastMusic" style="padding: 10px 10px 13px;" t="1679312986751" class="icon"
+               viewBox="0 0 1024 1024"
                version="1.1"
                xmlns="http://www.w3.org/2000/svg" p-id="8273" width="30px" height="30px">
             <path
@@ -58,7 +59,8 @@
                 fill="#ffffff" p-id="19675"></path>
           </svg>
           <!--下一首-->
-          <svg style="padding: 10px 10px 13px;" t="1679312946491" class="icon" viewBox="0 0 1024 1024" version="1.1"
+          <svg @click="nextMusic" style="padding: 10px 10px 13px;" t="1679312946491" class="icon"
+               viewBox="0 0 1024 1024" version="1.1"
                xmlns="http://www.w3.org/2000/svg" p-id="7439" width="30px" height="30px">
             <path
                 d="M817 160h38c30.928 0 56 25.072 56 56v593c0 30.928-25.072 56-56 56h-38c-30.928 0-56-25.072-56-56V216c0-30.928 25.072-56 56-56zM648.314 546.191l-422.304 303.4c-32.294 23.201-77.282 15.83-100.484-16.464A72 72 0 0 1 112 791.117V232.064c0-39.764 32.235-72 72-72a72 72 0 0 1 39.95 12.1l422.762 281.959c25.73 17.16 32.677 51.93 15.517 77.66a56 56 0 0 1-13.915 14.408z"
@@ -232,7 +234,8 @@
               </el-tooltip>
             </div>
             <!--上一首-->
-            <svg style="padding: 10px;margin: 5px 10px" t="1679312986751" class="icon" viewBox="0 0 1024 1024"
+            <svg @click="lastMusic" style="padding: 10px;margin: 5px 10px" t="1679312986751" class="icon"
+                 viewBox="0 0 1024 1024"
                  version="1.1"
                  xmlns="http://www.w3.org/2000/svg" p-id="8273" width="30px" height="30px">
               <path
@@ -258,7 +261,8 @@
                   fill="#ffffff" p-id="19675"></path>
             </svg>
             <!--下一首-->
-            <svg t="1679312946491" class="icon" style="padding: 10px;margin: auto 10px" viewBox="0 0 1024 1024"
+            <svg @click="nextMusic" t="1679312946491" class="icon" style="padding: 10px;margin: auto 10px"
+                 viewBox="0 0 1024 1024"
                  version="1.1"
                  xmlns="http://www.w3.org/2000/svg" p-id="7439" width="30px" height="30px">
               <path
@@ -286,7 +290,7 @@
           </div>
         </div>
         <div class="midDiv">
-
+          <span style="color: var(--footerText);font-size: 22px;font-weight: bold;margin: auto">暂无歌词</span>
         </div>
         <div class="rightDiv">
           <i class="el-icon-arrow-down rightIcon" style="margin-top: 40px;" @click="bottomClass='hiddenMusic'"/>
@@ -463,12 +467,12 @@ export default {
         })
       }
     },
-    //播放结束
+    //播放结束，播放下一首
     playEnd() {
       //获取接下来要播放的音乐，将当前播放的音乐放置在数组末
       let list = JSON.parse(localStorage.getItem('playList'))
       list.push(list.shift())
-      this.$bus.$emit('play', list[0])
+      this.$bus.$emit('play', list[0], list)
     },
     //开始时或者切换曲子时
     startOrChange() {
@@ -512,6 +516,17 @@ export default {
     localStorageChange() {
       this.$bus.$emit('getCurrentPlayMusic')
       this.$bus.$emit('getPlayList')
+    },
+    //上一首
+    lastMusic() {
+      //获取播放列表末尾的音乐，放置到列表首位
+      let list = JSON.parse(localStorage.getItem('playList'))
+      list.unshift(list.pop())
+      this.$bus.$emit('play', list[0], list)
+    },
+    //下一首
+    nextMusic() {
+      this.playEnd()
     }
   },
   filters: {
@@ -553,6 +568,7 @@ export default {
           }
         })
       } else {
+        //播放同一首音乐
         this.changeCurrentTime(0)
         this.play(false)
       }
@@ -600,11 +616,20 @@ export default {
     this.$bus.$on('changePlay', () => {
       this.handlePlayOrPauseClick()
     })
+    //上一首和下一首
+    this.$bus.$on('lastMusic', ()=>{
+      this.lastMusic()
+    })
+    this.$bus.$on('nextMusic', ()=>{
+      this.nextMusic()
+    })
   },
   beforeDestroy() {
     this.$bus.$off('play')
     this.$bus.$off('changeVolume')
     this.$bus.$off('changePlay')
+    this.$bus.$off('lastMusic')
+    this.$bus.$off('nextMusic')
   }
 }
 </script>
@@ -765,8 +790,10 @@ export default {
 }
 
 .midDiv {
-  width: 50%;
+  width: 42%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .rightDiv {

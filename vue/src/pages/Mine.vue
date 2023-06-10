@@ -500,6 +500,9 @@ export default {
     saveMusic() {
       //最后再上传前收拾一下对象
       this.newMusic.uploader = JSON.parse(localStorage.getItem('user')).id
+      if(this.newMusic.album === ''){
+        this.newMusic.album = '未知专辑'
+      }
       //然后，到这里封面和音频都上传成功了，此时将完整的Music对象存入数据库
       this.request.post('/music/saveDB', this.newMusic).then(res => {
         if (res.code !== '200') {
@@ -521,7 +524,6 @@ export default {
               type: 'success'
             })
           }
-          //TODO 更新上传后的列表数据
           this.getUploadList()
           //最后，清除各种信息并关闭窗口
           this.cancelUpload()

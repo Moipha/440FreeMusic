@@ -46,6 +46,13 @@ document.addEventListener('keydown', (event) => {
     if(event.key === ' '){
         v.$bus.$emit('changePlay')
     }
+    //4. 上一首、下一首
+    if (event.ctrlKey && event.key === 'ArrowLeft') {
+        v.$bus.$emit('lastMusic')
+    }
+    if (event.ctrlKey && event.key === 'ArrowRight') {
+        v.$bus.$emit('nextMusic')
+    }
 })
 
 

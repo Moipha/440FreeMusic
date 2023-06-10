@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="overflow-y: scroll;height: calc(100% - 100px)">
     <div class="optionContainer" v-if="existUser">
       <div class="container">
         <span class="title">账号</span>
@@ -86,7 +86,18 @@
           </div>
         </div>
       </div>
-      <el-divider></el-divider>
+    </div>
+    <el-divider></el-divider>
+    <div class="optionContainer" style="flex-direction: column;display: flex">
+      <div class="container" style="width: 300px;margin-bottom: 10px">
+        <span class="title" style="font-size: 14px">node: 8.11.0</span>
+      </div>
+      <div class="container" style="width: 300px;margin-bottom: 10px">
+        <span class="title" style="font-size: 14px">vue: 5.0.8</span>
+      </div>
+      <div class="container" style="width: 300px;">
+        <span class="title" style="font-size: 14px">spring starter: 2.7.7</span>
+      </div>
     </div>
   </div>
 </template>
