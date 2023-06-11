@@ -14,14 +14,14 @@
           </div>
         </div>
         <div class="inlineContainer">
-          <div class="flexContainer">
+          <div class="flexContainer" @click="$router.push('/likes')">
             <span style="height: 25px">{{ starCount }}</span>
             <span>收藏</span>
           </div>
         </div>
         <div class="inlineContainer">
           <div class="flexContainer">
-            <span style="height: 25px">1</span>
+            <span style="height: 25px">0</span>
             <span>动态</span>
           </div>
         </div>
