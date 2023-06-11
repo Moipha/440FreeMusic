@@ -38,8 +38,10 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 @Service
 public class MusicService extends ServiceImpl<MusicMapper, Music> {
@@ -191,5 +193,27 @@ public class MusicService extends ServiceImpl<MusicMapper, Music> {
         qw.eq("is_delete", false);
         List<Music> list = list(qw);
         return Result.success(list);
+    }
+
+    //获取随机七首曲子
+    public Result getRandom() {
+        //先获取所有曲子
+        List<Music> all = list();
+        if (all.size() <= 7) {
+            //如果所有上传的曲子加一块都没七个，那就直接返回
+            return Result.success(all);
+        } else {
+            //否则开始随机获取
+            List<Music> randomSongs = new ArrayList<>();
+            Random random = new Random();
+            while (randomSongs.size() < 7) {
+                int randomIndex = random.nextInt(all.size());
+                Music randomSong = all.get(randomIndex);
+                if (!randomSongs.contains(randomSong)) {
+                    randomSongs.add(randomSong);
+                }
+            }
+            return Result.success(randomSongs);
+        }
     }
 }

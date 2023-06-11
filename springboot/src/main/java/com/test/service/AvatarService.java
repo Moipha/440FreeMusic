@@ -29,7 +29,6 @@ public class AvatarService extends ServiceImpl<AvatarMapper, Avatar> {
 
     //保存封面文件
     public Result saveAvatar(MultipartFile file) throws IOException {
-        //TODO 需要在返回的对象中封装src和md5两个属性
         //使用hutool获取文件类型
         String originalFilename = file.getOriginalFilename();
         String type = FileUtil.extName(originalFilename);

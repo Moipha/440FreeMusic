@@ -1,10 +1,9 @@
 import axios from 'axios'
-import ElementUI from "element-ui";
 import {serverIp} from "../../public/config";
 import router from "@/router";
 
 const request = axios.create({
-    baseURL: 'http://'+serverIp,  // 注意！！ 这里是全局统一加上了 后端接口前缀 前缀，后端必须进行跨域配置！
+    baseURL: 'http://' + serverIp,  // 注意！！ 这里是全局统一加上了 后端接口前缀 前缀，后端必须进行跨域配置！
     timeout: 5000
 })
 // request 拦截器
@@ -14,7 +13,7 @@ request.interceptors.request.use(config => {
     config.headers['Content-Type'] = 'application/json;charset=utf-8';
     let user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null
     //如果user存在就在请求头中设置token
-    if(user){
+    if (user) {
         config.headers['token'] = user.token;  // 设置请求头
     }
     return config
@@ -36,10 +35,11 @@ request.interceptors.response.use(
             res = res ? JSON.parse(res) : res
         }
         //当权限验证不通过时直接弹出
-        if(res.code === '401'){
+        if (res.code === '401') {
             localStorage.removeItem('user')
             localStorage.removeItem('lists')
             router.push('/login')
+            location.reload()
         }
 
         return res;

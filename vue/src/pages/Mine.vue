@@ -9,13 +9,13 @@
           style="color: var(--mineText);display: inline-block;float: right;height: 100px;line-height: 80px;font-weight: bold">
         <div class="inlineContainer">
           <div class="flexContainer" @click="activeName = 'music'">
-            <span style="height: 25px">{{tableData.length}}</span>
+            <span style="height: 25px">{{ tableData.length }}</span>
             <span>上传</span>
           </div>
         </div>
         <div class="inlineContainer">
           <div class="flexContainer">
-            <span style="height: 25px">2</span>
+            <span style="height: 25px">{{ starCount }}</span>
             <span>收藏</span>
           </div>
         </div>
@@ -172,8 +172,9 @@
           <el-table-column
               width="70">
             <template slot-scope="scope">
-              <el-avatar shape="square" size="medium" style="background-color: #00000000" :src="scope.row.avatar"></el-avatar>
-<!--              <img :src="scope.row.avatar" alt="" style="width: 100%;height: 50px">-->
+              <el-avatar shape="square" size="medium" style="background-color: #00000000"
+                         :src="scope.row.avatar"></el-avatar>
+              <!--              <img :src="scope.row.avatar" alt="" style="width: 100%;height: 50px">-->
             </template>
           </el-table-column>
           <el-table-column
@@ -256,7 +257,9 @@ export default {
       //是否需要传入数据库
       needSaveDB: true,
       //tableLoading
-      loadingTable: true
+      loadingTable: true,
+      //收藏数
+      starCount: 0,
     }
   },
   mounted() {
@@ -500,7 +503,7 @@ export default {
     saveMusic() {
       //最后再上传前收拾一下对象
       this.newMusic.uploader = JSON.parse(localStorage.getItem('user')).id
-      if(this.newMusic.album === ''){
+      if (this.newMusic.album === '') {
         this.newMusic.album = '未知专辑'
       }
       //然后，到这里封面和音频都上传成功了，此时将完整的Music对象存入数据库
@@ -545,6 +548,24 @@ export default {
         }
       })
       this.loadingTable = false
+      //顺便获取一下收藏数
+      this.request.get('/user/getStarCount/' + this.user.id.toString()).then(res => {
+        if (res.code !== '200') {
+          this.$notify({
+            title: '获取数据失败',
+            message: res.msg,
+            type: 'error'
+          })
+        } else {
+          this.starCount = res.data
+        }
+      }).catch(err => {
+        this.$notify({
+          title: '获取数据失败',
+          message: err,
+          type: 'error'
+        })
+      })
     },
     //切换滚动条状态
     showScrollbar() {

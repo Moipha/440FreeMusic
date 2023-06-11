@@ -10,6 +10,35 @@
     </div>
     <hr class="hr">
     <!--不同部分-->
+    <template v-if="mode==='star'">
+      <div class="item" @mouseenter="hideSecond" @click="play">
+        <i class="el-icon-caret-right icon"></i>
+        <span>播放</span>
+      </div>
+      <div class="item" @mouseenter="hideSecond" @click="nextPlay">
+        <i class="el-icon-d-arrow-right icon"></i>
+        <span>下一首播放</span>
+      </div>
+      <hr class="hr" @mouseenter="hideSecond">
+      <div class="item" @mouseenter="showSecond">
+        <i class="el-icon-star-off icon"></i>
+        <span>收藏到歌单</span>
+        <span style="float: right"> <i class="el-icon-arrow-right" style="font-weight: bold"></i> </span>
+        <div class="secondMenu" @mouseenter="showSecond">
+          <div class="listItem" v-for="list in lists" @click="star(list)">
+            {{ list.title }}
+          </div>
+        </div>
+      </div>
+      <div class="item" @mouseenter="hideSecond" @click="copy">
+        <i class="el-icon-copy-document icon"></i>
+        <span>复制歌名</span>
+      </div>
+      <div class="item" @mouseenter="hideSecond" @click="download">
+        <i class="el-icon-download icon"></i>
+        <span>下载</span>
+      </div>
+    </template>
     <template v-if="mode==='search'">
       <div class="item" @mouseenter="hideSecond" @click="play">
         <i class="el-icon-caret-right icon"></i>

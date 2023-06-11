@@ -60,4 +60,10 @@ public class ListController {
     public Result updateList(@RequestBody List list){
         return listService.updateList(list);
     }
+
+    //获取所有歌单信息
+    @GetMapping("/getAll")
+    public Result getAll(){
+        return Result.success(listService.list());
+    }
 }

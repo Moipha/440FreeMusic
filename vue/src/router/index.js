@@ -72,7 +72,7 @@ export const router = new VueRouter({
         {
             path: '/404',
             name: 'NotFound',
-            component: () => import('@/components/404')
+            component: () => import('@/pages/404')
         },
     ],
     mode: 'history'

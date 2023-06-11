@@ -86,7 +86,7 @@
       <div class="rightContainer">
         <!--like-->
         <div @click="like" style="margin-left: 25%;margin-bottom: 22px;margin-right: 10px">
-          <svg t="1679376624033" v-if="!music.isLike" class="iconRight" viewBox="0 0 1024 1024" version="1.1"
+          <svg t="1679376624033" v-if="!star" class="iconRight" viewBox="0 0 1024 1024" version="1.1"
                xmlns="http://www.w3.org/2000/svg"
                p-id="4392" width="30" height="30">
             <path
@@ -271,7 +271,7 @@
             </svg>
             <!--like-->
             <div @click="like">
-              <svg t="1679376624033" style="margin: 5px 5px 0 5px" v-if="!music.isLike" class="iconRight"
+              <svg t="1679376624033" style="margin: 5px 5px 0 5px" v-if="!star" class="iconRight"
                    viewBox="0 0 1024 1024" version="1.1"
                    xmlns="http://www.w3.org/2000/svg"
                    p-id="4392" width="35" height="35">
@@ -345,10 +345,8 @@ export default {
       isLoaded: false,
       //音乐对象
       music: {
-        // avatar: 'http://localhost:8080/avatar/72f648610357499382b34899ceb65d02.jpg',
         avatar: require('@/assets/DefaultAvatar.png'),
         url: require('@/assets/testMusic/test2.mp3'),
-        isLike: false,
       },
       //音乐界面的类名
       bottomClass: 'hiddenMusic',
@@ -356,6 +354,8 @@ export default {
       themeColor: [],
       //是否正在拖动进度条
       isDragging: false,
+      //是否收藏
+      star: false
     }
   },
   methods: {
@@ -410,7 +410,42 @@ export default {
     },
     //喜欢该歌曲
     like() {
-      this.music.isLike = !this.music.isLike
+      this.request.post('/music/starMusic',{
+        userId: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).id.toString() : '',
+        musicId: this.music.id
+      }).then(res=>{
+        if(res.code === '200'){
+          if(res.data){
+            this.$notify({
+              type: 'success',
+              message: "歌曲收藏成功",
+              title: '成功'
+            })
+            this.star = true
+          }else{
+            this.$notify({
+              type: 'info',
+              message: "歌曲已取消收藏",
+              title: '成功'
+            })
+            this.star = false
+          }
+          //通过总线通知收藏页面更新
+          this.$bus.$emit('changeStar')
+        }else{
+          this.$notify({
+            type: 'error',
+            message: res.msg,
+            title: '操作失败'
+          })
+        }
+      }).catch(err=>{
+        this.$notify({
+          type: 'error',
+          message: err,
+          title: '操作失败'
+        })
+      })
     },
     //静音和取消
     mute() {
@@ -485,6 +520,8 @@ export default {
       }
       //获取音乐界面背景
       this.getBackground()
+      //查询是否收藏
+      this.searchStar()
     },
     //全屏和取消
     fullScreen() {
@@ -527,6 +564,29 @@ export default {
     //下一首
     nextMusic() {
       this.playEnd()
+    },
+    //查询该音乐是否被收藏
+    searchStar(){
+      this.request.post('/music/searchStar',{
+        userId: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).id.toString() : '',
+        musicId: this.music.id
+      }).then(res=>{
+        if(res.code === '200'){
+          this.star = res.data
+        }else{
+          this.$notify({
+            type: 'error',
+            message: res.msg,
+            title: '查询音乐是否被收藏错误'
+          })
+        }
+      }).catch(err=>{
+        this.$notify({
+          type: 'error',
+          message: err,
+          title: '查询音乐是否被收藏错误'
+        })
+      })
     }
   },
   filters: {

@@ -13,7 +13,7 @@
         <div class="close" @click="closeRight"><i class="el-icon-close"></i></div>
       </div>
       <div style="padding: 5px;font-size: 13px;font-weight: bold;color: var(--rightLightText)">
-        <span style="padding: 5px 10px;float: left">总 {{ tableData.length }} 首</span>
+        <span style="padding: 5px 10px;float: left">总 {{ count }} 首</span>
         <span slot="reference" class="clear" @click="dialogVisible=true">清空列表</span>
         <el-dialog :visible.sync="dialogVisible"
                    :show-close="false"
@@ -67,6 +67,15 @@ export default {
       history: [],
       //当前是播放列表还是播放历史
       isList: true,
+    }
+  },
+  computed: {
+    count() {
+      if (this.isList) {
+        return this.tableData.length
+      } else {
+        return this.history.length
+      }
     }
   },
   mounted() {

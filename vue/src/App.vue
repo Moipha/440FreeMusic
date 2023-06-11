@@ -27,7 +27,8 @@ export default {
   --scrollbar: #666666;
   --scrollbarHover: #999999;
   --maskBg: #333333DD;
-
+  /*主页*/
+  --homeText: var(--whiteText);
   /*右部背景*/
   --rightBg: rgb(23, 23, 26);
   /*左边栏*/

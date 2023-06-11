@@ -4,7 +4,9 @@ import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.UnsupportedTagException;
 import com.test.common.Result;
 import com.test.pojo.Music;
+import com.test.pojo.Star;
 import com.test.service.MusicService;
+import com.test.service.StarService;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
@@ -24,6 +26,8 @@ import java.io.IOException;
 public class MusicController {
     @Resource
     MusicService musicService;
+    @Resource
+    StarService starService;
 
     //获取音频文件的元数据
     @PostMapping("/getData")
@@ -47,13 +51,36 @@ public class MusicController {
     //下载指定音乐
     @GetMapping("/{fileUuid}")
     public void download(@PathVariable String fileUuid, HttpServletResponse response, HttpServletRequest request) throws IOException, ServletException {
-        musicService.download(fileUuid, response,request);
+        musicService.download(fileUuid, response, request);
     }
 
     //查询
     @PostMapping("/searchByName")
-    public Result searchByName(@RequestBody Music music){
+    public Result searchByName(@RequestBody Music music) {
         return musicService.searchByName(music.getName());
     }
 
+    //获取所有歌曲
+    @GetMapping("/getAll")
+    public Result getAll() {
+        return Result.success(musicService.list());
+    }
+
+    //收藏歌曲
+    @PostMapping("/starMusic")
+    public Result starMusic(@RequestBody Star star){
+        return starService.starMusic(star);
+    }
+
+    //查询指定音乐是否被用户收藏
+    @PostMapping("/searchStar")
+    public Result searchStar(@RequestBody Star star){
+        return starService.searchStar(star);
+    }
+
+    //获取随机的7首曲子
+    @GetMapping("/getRandom")
+    public Result getRandom(){
+        return musicService.getRandom();
+    }
 }

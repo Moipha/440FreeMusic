@@ -10,7 +10,7 @@
     <!--标签页-->
     <el-tabs @tab-click="handleClick" v-model="activeTab" style="line-height: 50px;margin-left: 20px">
       <el-tab-pane v-if="activeTab === '/home'|| activeTab === '/home/recent'" label="推荐" name="/home"/>
-      <el-tab-pane v-if="activeTab === '/home'|| activeTab === '/home/recent'" label="最近上传" name="/home/recent"/>
+      <el-tab-pane v-if="activeTab === '/home'|| activeTab === '/home/recent'" label="最新上传" name="/home/recent"/>
     </el-tabs>
     <!--假搜索框-->
     <span style="width: 240px;height: 40px;background-color: var(--headerSearchBg);
