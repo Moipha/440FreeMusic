@@ -64,8 +64,9 @@ public class AvatarService extends ServiceImpl<AvatarMapper, Avatar> {
             uploadFile.delete();
         } else {
             //不存在，那就在服务器中保存
-            url = "http://localhost:8080/avatar/" + fileUuid;
             //TODO 此处在部署时需要修改
+//            url = "http://47.94.161.201:8080/avatar/" + fileUuid;
+            url = "http://localhost:8080/avatar/" + fileUuid;
 
             //将封面存入数据库
             Avatar dbData = new Avatar();

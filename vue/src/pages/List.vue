@@ -45,7 +45,7 @@
       <div class="right">
         <div style="font-size: 30px;font-weight: normal;margin-top: 40px;margin-bottom: 20px">
           {{ list.title }}
-          <el-tooltip content="编辑" placement="top">
+          <el-tooltip content="编辑" placement="top" v-if="isMine">
             <span class="el-icon-edit edit" @click="edit"></span>
           </el-tooltip>
         </div>
@@ -102,6 +102,7 @@ export default {
   data() {
     return {
       listTitle: this.$route.query.listTitle,
+      listAuthor: this.$route.query.listAuthor,
       list: {},
       author: {},
       musics: [],
@@ -117,6 +118,15 @@ export default {
   computed: {
     src() {
       return this.list.avatar ? this.list.avatar : require('@/assets/DefaultAvatar.png')
+    },
+    //判断该歌单是不是自己的
+    isMine(){
+      if(!localStorage.getItem('user')){
+        //未登录直接返回否
+        return false
+      }
+      //如果内存中的用户和该歌单用户一致则判断为自己的歌单
+      return JSON.parse(localStorage.getItem('user')).id.toString() === this.listAuthor
     }
   },
   methods: {
@@ -124,7 +134,7 @@ export default {
     getListData() {
       this.request.post('/list/getData', {
         "title": this.listTitle,
-        "userId": JSON.parse(localStorage.getItem('user')).id.toString()
+        "userId": this.listAuthor
       }).then(res => {
         if (res.code === '200') {
           this.list = res.data
@@ -284,6 +294,7 @@ export default {
     this.getListData()
     this.$bus.$on('changeList', () => {
       this.listTitle = this.$route.query.listTitle
+      this.listAuthor = this.$route.query.listAuthor
       //根据歌单标题获取相关内容
       this.getListData()
     })

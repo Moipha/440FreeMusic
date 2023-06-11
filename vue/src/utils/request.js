@@ -39,7 +39,6 @@ request.interceptors.response.use(
             localStorage.removeItem('user')
             localStorage.removeItem('lists')
             router.push('/login')
-            location.reload()
         }
 
         return res;

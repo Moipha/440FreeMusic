@@ -2,8 +2,9 @@ spring:
   datasource:
     username: root
     password: dir99
+    #TODO 此处在部署时需要修改
     url: jdbc:mysql://localhost:3306/music?useSSL=false&serverTimezone=GMT%2d8
-    #    url: jdbc:mysql://39.107.102.145:3306/music?useSSL=false&serverTimezone=GMT%2d8
+#    url: jdbc:mysql://47.94.161.201:3306/music?useSSL=false&serverTimezone=GMT%2d8
     driver-class-name: com.mysql.cj.jdbc.Driver
   servlet:
     multipart:
@@ -13,16 +14,6 @@ spring:
 
 server:
   port: 8080
-#  servlet:
-#    session:
-#      persistent: true # 开启session持久化
-#  compression:
-#    enabled: true # 开启压缩
-#    mime-types: audio/*,video/* # 需要压缩的媒体类型
-#  http:
-#    cache:
-#      enabled: true
-#      time-to-live: 86400 # 缓存时间（秒）
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
@@ -33,5 +24,6 @@ mybatis-plus:
 
 files:
   upload:
-    path: C:/Users/Young/Desktop/Works/daerxia/软件工程/Project/files/
-  #    path: /home/files/
+    #TODO 此处在部署时需要修改
+        path: C:/Users/Young/Desktop/Works/daerxia/软件工程/Project/files/
+#    path: /home/files/

@@ -138,8 +138,9 @@ public class MusicService extends ServiceImpl<MusicMapper, Music> {
         } else {
             //不存在，那就在服务器中保存
             needSaveDB = true;
-            url = "http://localhost:8080/music/" + fileUuid;
             //TODO 此处在部署时需要修改
+//            url = "http://47.94.161.201:8080/music/" + fileUuid;
+            url = "http://localhost:8080/music/" + fileUuid;
         }
         //然后封装对象返回即可
 

@@ -2,12 +2,15 @@
   <div>
     <div v-if="!$route.path.endsWith('recent')" style="color: var(--homeText);font-family: 华文宋体,serif">
       <div>
-        <h1 style="font-size: 25px">歌单推荐</h1>
+        <h1 style="font-size: 25px">歌单推荐 <span class="el-icon-present"></span></h1>
         <div style="display: flex;flex-direction: row">
           <div v-for="l in lists" style="display: flex;flex-direction: column;margin-right: 20px">
-            <el-avatar :src="l.avatar?l.avatar:require('@/assets/DefaultAvatar.png')" shape="square"
-                       style="height: 150px;width: 150px;margin-bottom: 10px"></el-avatar>
-            <span style="font-weight: bold;font-size: 20px">{{ l.title }}</span>
+            <div @click="jumpToList(l)" class="avatarContainer">
+              <el-avatar :src="l.avatar?l.avatar:require('@/assets/DefaultAvatar.png')" shape="square"
+                         style="height: 150px;width: 150px;transition: 0.4s"></el-avatar>
+              <i class="el-icon-video-play avatarIcon"></i>
+            </div>
+            <span style="font-weight: bold;font-size: 20px;margin-top: -18px">{{ l.title }}</span>
             <span>创建于 {{ l.createTime }}</span>
           </div>
         </div>
@@ -15,7 +18,7 @@
       <el-divider></el-divider>
       <div style="display: flex;flex-direction: row">
         <div style="width: 48%;margin-right: 4%">
-          <h1 style="font-size: 25px">单曲推荐</h1>
+          <h1 style="font-size: 25px">单曲推荐 <span class="el-icon-headset"></span></h1>
           <table>
             <tr style="color: var(--listTh);font-size: 14px">
               <th style="width: 10%" align="center"></th>
@@ -206,7 +209,17 @@ export default {
           })
           this.loading = false
         } else {
-          this.lists = res.data
+          //复制数据数组
+          const dataArray = [...res.data];
+          const randomLists = [];
+          //生成随机索引，将唯一元素添加到randomLists，直到它包含7个元素
+          while (randomLists.length < 7 && dataArray.length > 0) {
+            const randomIndex = Math.floor(Math.random() * dataArray.length);
+            const randomElement = dataArray.splice(randomIndex, 1)[0];
+            randomLists.push(randomElement);
+          }
+          this.lists = randomLists;
+
           this.loading = false
         }
       }).catch(err => {
@@ -218,6 +231,11 @@ export default {
         this.loading = false
       })
     },
+    //跳转至歌单
+    jumpToList(list){
+      this.$router.push({path: '/list', query: {listTitle: list.title,listAuthor: list.authorId}})
+      this.$bus.$emit('changeList')
+    }
   }
 }
 </script>
@@ -258,4 +276,29 @@ tr td:last-child {
 .items:hover {
   background: var(--searchHover);
 }
+
+
+.avatarContainer {
+  cursor: pointer;
+}
+
+.avatarContainer:hover i {
+  opacity: 1;
+}
+.avatarContainer:hover .el-avatar{
+  filter: brightness(0.5) ;
+}
+
+.avatarIcon {
+  margin: -50px 0;
+  font-size: 70px;
+  opacity: 0;
+  transition: 0.4s;
+  color: white;
+  position: relative;
+  bottom: 69px;
+  left: 40px;
+}
+
+
 </style>

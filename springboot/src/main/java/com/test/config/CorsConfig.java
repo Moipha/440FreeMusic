@@ -16,8 +16,9 @@ public class CorsConfig{
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration corsConfiguration = new CorsConfiguration();
+        //TODO 此处在部署时需要修改
         corsConfiguration.addAllowedOrigin("http://localhost"); // 1 设置访问源地址
-//        corsConfiguration.addAllowedOrigin("http://39.107.102.145"); // 1 设置访问源地址
+//        corsConfiguration.addAllowedOrigin("http://47.94.161.201"); // 1 设置访问源地址
         corsConfiguration.addAllowedHeader("*"); // 2 设置访问源请求头
         corsConfiguration.addAllowedMethod("*"); // 3 设置访问源请求方法
         corsConfiguration.addExposedHeader("Access-Control-Allow-Origin"); // 添加需要暴露的头信息

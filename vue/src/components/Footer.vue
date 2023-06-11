@@ -302,7 +302,6 @@
 </template>
 
 <script>
-import router from "@/router";
 import ColorThief from "colorthief"
 
 /**

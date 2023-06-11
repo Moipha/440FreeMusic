@@ -178,7 +178,7 @@ export default {
     //跳转至歌单页面
     jumpToList(title) {
       event.stopPropagation()
-      this.$router.push({path: '/list', query: {listTitle: title}})
+      this.$router.push({path: '/list', query: {listTitle: title, listAuthor: JSON.parse(localStorage.getItem('user')).id.toString()}})
       this.$bus.$emit('changeList')
     }
   },
