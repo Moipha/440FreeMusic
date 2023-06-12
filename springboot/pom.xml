@@ -8,6 +8,7 @@
         <version>2.7.7</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+    <packaging>jar</packaging>
     <groupId>com.test</groupId>
     <artifactId>springboot</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -100,6 +101,14 @@
             <version>2.0.3</version>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 
 </project>

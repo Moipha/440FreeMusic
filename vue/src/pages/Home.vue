@@ -7,10 +7,10 @@
           <div v-for="l in lists" style="display: flex;flex-direction: column;margin-right: 20px">
             <div @click="jumpToList(l)" class="avatarContainer">
               <el-avatar :src="l.avatar?l.avatar:require('@/assets/DefaultAvatar.png')" shape="square"
-                         style="height: 150px;width: 150px;transition: 0.4s"></el-avatar>
+                         style="height: 150px;width: 150px;transition: 0.4s;margin-bottom: -75px"></el-avatar>
               <i class="el-icon-video-play avatarIcon"></i>
             </div>
-            <span style="font-weight: bold;font-size: 20px;margin-top: -18px">{{ l.title }}</span>
+            <span style="font-weight: bold;font-size: 20px;margin-top: 10px">{{ l.title }}</span>
             <span>创建于 {{ l.createTime }}</span>
           </div>
         </div>
@@ -87,6 +87,9 @@
         <h3>更新日志</h3>
         <h5>2023/6/11</h5>
         <h6>基本实现目前所有功能，即将正式上线</h6>
+        <h5>2023/6/12</h5>
+        <h6>修复了首页推荐歌单少于7个时悬浮图标显示错位的问题；修复了歌单信息修改出错的问题</h6>
+        <h6>实现了收藏和歌单页面添加歌曲至播放列表的功能；修正了播放和添加按钮稍微错位的样式错误</h6>
       </div>
     </div>
     <router-view></router-view>
@@ -232,8 +235,8 @@ export default {
       })
     },
     //跳转至歌单
-    jumpToList(list){
-      this.$router.push({path: '/list', query: {listTitle: list.title,listAuthor: list.authorId}})
+    jumpToList(list) {
+      this.$router.push({path: '/list', query: {listTitle: list.title, listAuthor: list.authorId}})
       this.$bus.$emit('changeList')
     }
   }
@@ -280,24 +283,26 @@ tr td:last-child {
 
 .avatarContainer {
   cursor: pointer;
+  height: 150px;
+  width: 150px;
 }
 
 .avatarContainer:hover i {
   opacity: 1;
 }
-.avatarContainer:hover .el-avatar{
-  filter: brightness(0.5) ;
+
+.avatarContainer:hover .el-avatar {
+  filter: brightness(0.5);
 }
 
 .avatarIcon {
-  margin: -50px 0;
   font-size: 70px;
   opacity: 0;
   transition: 0.4s;
   color: white;
   position: relative;
-  bottom: 69px;
   left: 40px;
+  bottom: 40px;
 }
 
 

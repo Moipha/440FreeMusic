@@ -9,13 +9,13 @@
           <span class="el-icon-headset"></span>
         </div>
         <div style="font-size: 15px;margin-left: 10px">共{{ musics.length }}首 · 创建于{{user.createTime}}</div>
-        <div style="margin-top: 20px">
-          <el-button class="btn"
+        <div style="margin-top: 18px">
+          <el-button @click="playAll" class="btn"
                      style="width: 130px;height: 36px;border-radius: 18px 0 0 18px;font-size: 15px;line-height: 15px">
             <i style="margin-right: 5px;padding: 0;" class="el-icon-video-play"/> 播放全部
           </el-button>
-          <el-button class="btn" style="width: 45px;height: 36px;border-radius: 0 18px 18px 0">
-            <i style="font-size: 16px" class="el-icon-plus"/>
+          <el-button @click="addAll" class="btn" style="width: 45px;height: 36px;border-radius: 0 18px 18px 0">
+            <i style="font-size: 15px" class="el-icon-plus"/>
           </el-button>
         </div>
       </div>
@@ -125,6 +125,27 @@ export default {
     //双击播放
     dbClick(music) {
       this.$bus.$emit('play', music, this.musics)
+    },
+    //播放全部
+    playAll() {
+      this.dbClick(this.musics[0])
+    },
+    //将歌单添加至播放列表
+    addAll() {
+      //获取内存中的播放列表并更新
+      let playList = JSON.parse(localStorage.getItem('playList'))
+      //将歌单中的内容与播放列表进行拼接
+      playList = playList.concat(this.musics)
+      //保存播放列表
+      localStorage.setItem('playList', JSON.stringify(playList))
+      //通知播放列表更新
+      this.$bus.$emit('getPlayList')
+      //提示一下
+      this.$notify({
+        type: 'success',
+        title: '添加成功',
+        message: '已将歌单中的内容添加至播放列表'
+      })
     }
   },
   mounted() {

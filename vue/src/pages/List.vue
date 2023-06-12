@@ -51,12 +51,12 @@
         </div>
         <div style="font-size: 15px">{{ author.username }} · 创建于 {{ list.createTime }}</div>
         <div style="margin-top: 15px">
-          <el-button class="btn"
+          <el-button @click="playAll" class="btn"
                      style="width: 130px;height: 36px;border-radius: 18px 0 0 18px;font-size: 15px;line-height: 15px">
             <i style="margin-right: 5px;padding: 0;" class="el-icon-video-play"/> 播放全部
           </el-button>
-          <el-button class="btn" style="width: 45px;height: 36px;border-radius: 0 18px 18px 0">
-            <i style="font-size: 16px" class="el-icon-plus"/>
+          <el-button @click="addAll" class="btn" style="width: 45px;height: 36px;border-radius: 0 18px 18px 0">
+            <i style="font-size: 15px" class="el-icon-plus"/>
           </el-button>
         </div>
       </div>
@@ -120,8 +120,8 @@ export default {
       return this.list.avatar ? this.list.avatar : require('@/assets/DefaultAvatar.png')
     },
     //判断该歌单是不是自己的
-    isMine(){
-      if(!localStorage.getItem('user')){
+    isMine() {
+      if (!localStorage.getItem('user')) {
         //未登录直接返回否
         return false
       }
@@ -201,8 +201,13 @@ export default {
     },
     //保存歌单信息
     save() {
-      //保存封面
-      this.$refs.avatar.submit()
+      if (this.list.avatar.length > 100) {
+        //如果list的avatar长度很长的话，那就是保存了本地图片的路径，说明已经预上传了封面，此时需要提交封面
+        this.$refs.avatar.submit()
+      } else {
+        //如果list的avatar长度正常，则说明未更改封面，直接提交更新即可
+        this.updateList()
+      }
     },
     openMenu(e, music) {
       if (e.x > 1200) {
@@ -256,7 +261,7 @@ export default {
             message: '歌单信息更新成功'
           })
           //修改路径
-          this.$router.push('/list?listTitle=' + this.list.title)
+          this.$router.push('/list?listTitle=' + this.list.title + '&listAuthor=' + this.author.id)
           //修改内存中数据
           let user = JSON.parse(localStorage.getItem('user'))
           let index = user.lists.findIndex((l) => l.id === this.list.id)
@@ -286,8 +291,29 @@ export default {
       this.currentPlayId = JSON.parse(localStorage.getItem('currentMusic')).id
     },
     //双击播放
-    dbClick(music){
-      this.$bus.$emit('play',music,this.musics)
+    dbClick(music) {
+      this.$bus.$emit('play', music, this.musics)
+    },
+    //播放全部
+    playAll() {
+      this.dbClick(this.musics[0])
+    },
+    //将歌单添加至播放列表
+    addAll() {
+      //获取内存中的播放列表并更新
+      let playList = JSON.parse(localStorage.getItem('playList'))
+      //将歌单中的内容与播放列表进行拼接
+      playList = playList.concat(this.musics)
+      //保存播放列表
+      localStorage.setItem('playList', JSON.stringify(playList))
+      //通知播放列表更新
+      this.$bus.$emit('getPlayList')
+      //提示一下
+      this.$notify({
+        type: 'success',
+        title: '添加成功',
+        message: '已将歌单中的内容添加至播放列表'
+      })
     }
   },
   mounted() {
