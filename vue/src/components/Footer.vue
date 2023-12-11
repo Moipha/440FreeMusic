@@ -85,7 +85,7 @@
       <!--右边-->
       <div class="rightContainer">
         <!--like-->
-        <div @click="like" style="margin-left: 25%;margin-bottom: 22px;margin-right: 10px">
+        <div @click="like" style="margin-left: 40px;margin-bottom: 22px;margin-right: 10px">
           <svg t="1679376624033" v-if="!star" class="iconRight" viewBox="0 0 1024 1024" version="1.1"
                xmlns="http://www.w3.org/2000/svg"
                p-id="4392" width="30" height="30">
@@ -147,10 +147,9 @@
               d="M128 420.576v200.864h149.12l175.456 140.064V284.288l-169.792 136.288H128z m132.256-64l204.288-163.968a32 32 0 0 1 52.032 24.96v610.432a32 32 0 0 1-51.968 24.992l-209.92-167.552H96a32 32 0 0 1-32-32v-264.864a32 32 0 0 1 32-32h164.256zM670.784 720.128a32 32 0 0 1-44.832-45.664 214.08 214.08 0 0 0 64.32-153.312 213.92 213.92 0 0 0-55.776-144.448 32 32 0 1 1 47.36-43.04 277.92 277.92 0 0 1 72.416 187.488 278.08 278.08 0 0 1-83.488 198.976zM822.912 858.88a32 32 0 1 1-45.888-44.608A419.008 419.008 0 0 0 896 521.152c0-108.704-41.376-210.848-114.432-288.384a32 32 0 0 1 46.592-43.872c84.16 89.28 131.84 207.04 131.84 332.256 0 127.84-49.76 247.904-137.088 337.728z"
               fill="#ffffff" p-id="9153"></path>
         </svg>
-        <el-slider @change="changeVolume" v-model="currentVolume" style="width: 20%;margin-right: 10%"></el-slider>
+        <el-slider @change="changeVolume" v-model="currentVolume" style="width: 100px;margin-right: 20px"></el-slider>
         <!--弹出侧边栏-->
-        <svg @click.stop="changeRightAside" t="1679378020715" class="iconRight"
-             style="position: fixed;right: 20px;bottom: 30px"
+        <svg @click.stop="changeRightAside" t="1679378020715" class="iconRight" style="margin-right: 10px"
              viewBox="0 0 1024 1024"
              version="1.1"
              xmlns="http://www.w3.org/2000/svg"
@@ -165,6 +164,14 @@
                 p-id="4072" fill="#ffffff"></path>
           <path d="M912 902H112c-16.57 0-30-13.44-30-30s13.43-30 30-30h800c16.56 0 30 13.44 30 30s-13.44 30-30 30z"
                 p-id="4073" fill="#ffffff"></path>
+        </svg>
+        <!--收起底栏-->
+        <svg @click.stop="hidePlay(true)" t="1702263137737" class="icon iconRight" viewBox="0 0 1024 1024" version="1.1"
+             xmlns="http://www.w3.org/2000/svg"
+             p-id="5857" width="25" height="25">
+          <path
+              d="M511.609097 961.619254M511.906879 662.759609 511.906879 662.759609 129.831974 280.679587c-14.788821-14.762215-38.777165-14.762215-53.585429 0-14.788821 14.812357-14.788821 38.799678 0 53.607942l405.851425 405.805376c0.867764 1.107217 1.824555 2.190899 2.843768 3.206018 14.808264 14.788821 38.795585 14.788821 53.585429 0l408.230612-408.226518c14.807241-14.808264 14.807241-38.795585 0-53.584406-14.767332-14.785751-38.754652-14.785751-53.562916 0L511.906879 662.759609 511.906879 662.759609zM511.906879 662.759609"
+              fill="#ffffff" p-id="5858"></path>
         </svg>
       </div>
     </div>
@@ -409,19 +416,19 @@ export default {
     },
     //喜欢该歌曲
     like() {
-      this.request.post('/music/starMusic',{
+      this.request.post('/music/starMusic', {
         userId: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).id.toString() : '',
         musicId: this.music.id
-      }).then(res=>{
-        if(res.code === '200'){
-          if(res.data){
+      }).then(res => {
+        if (res.code === '200') {
+          if (res.data) {
             this.$notify({
               type: 'success',
               message: "歌曲收藏成功",
               title: '成功'
             })
             this.star = true
-          }else{
+          } else {
             this.$notify({
               type: 'info',
               message: "歌曲已取消收藏",
@@ -431,14 +438,14 @@ export default {
           }
           //通过总线通知收藏页面更新
           this.$bus.$emit('changeStar')
-        }else{
+        } else {
           this.$notify({
             type: 'error',
             message: res.msg,
             title: '操作失败'
           })
         }
-      }).catch(err=>{
+      }).catch(err => {
         this.$notify({
           type: 'error',
           message: err,
@@ -565,28 +572,28 @@ export default {
       this.playEnd()
     },
     //查询该音乐是否被收藏
-    searchStar(){
-      this.request.post('/music/searchStar',{
+    searchStar() {
+      this.request.post('/music/searchStar', {
         userId: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).id.toString() : '',
         musicId: this.music.id
-      }).then(res=>{
-        if(res.code === '200'){
+      }).then(res => {
+        if (res.code === '200') {
           this.star = res.data
-        }else{
+        } else {
           this.$notify({
             type: 'error',
             message: res.msg,
             title: '查询音乐是否被收藏错误'
           })
         }
-      }).catch(err=>{
+      }).catch(err => {
         this.$notify({
           type: 'error',
           message: err,
           title: '查询音乐是否被收藏错误'
         })
       })
-    }
+    },
   },
   filters: {
     // 将整数转化成时分秒
@@ -676,10 +683,10 @@ export default {
       this.handlePlayOrPauseClick()
     })
     //上一首和下一首
-    this.$bus.$on('lastMusic', ()=>{
+    this.$bus.$on('lastMusic', () => {
       this.lastMusic()
     })
-    this.$bus.$on('nextMusic', ()=>{
+    this.$bus.$on('nextMusic', () => {
       this.nextMusic()
     })
   },
@@ -700,6 +707,7 @@ export default {
   width: 100%;
   height: 100%;
   z-index: 2;
+  transition: 1s ease-in-out;
 }
 
 .footer {
@@ -742,6 +750,8 @@ export default {
   background-color: var(--footerBg);
   display: flex;
   flex-direction: row;
+  justify-content: right;
+  padding-right: 20px;
 }
 
 .rightContainer * {

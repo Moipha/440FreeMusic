@@ -418,7 +418,12 @@ export default {
   color: var(--leftBtnActive);
 }
 
-/*按钮*/
+/deep/ .el-checkbox__inner::after{
+  margin-left: 1px;
+  margin-top: 1px;
+}
+
+  /*按钮*/
 .createBtn {
   margin: 20px auto;
   width: 200px;

@@ -1,5 +1,5 @@
 <template>
-  <div style="overflow-y: scroll;height: calc(100% - 100px)">
+  <el-main style="overflow-y: scroll;height: calc(100% - 100px)">
     <div class="optionContainer" v-if="existUser">
       <div class="container">
         <span class="title">账号</span>
@@ -99,7 +99,7 @@
         <span class="title" style="font-size: 14px">spring starter: 2.7.7</span>
       </div>
     </div>
-  </div>
+  </el-main>
 </template>
 
 <script>

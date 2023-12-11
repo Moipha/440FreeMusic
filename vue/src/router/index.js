@@ -153,7 +153,7 @@ export function getThis(that) {
 }
 
 router.beforeEach((to, from, next) => {
-    //如果需要通过守卫
+    //判断是否需要通过守卫
     if (store.state.need) {
         if(to.fullPath.substring(0,6) !== '/list#'){
             store.commit("addVisited", to.fullPath)

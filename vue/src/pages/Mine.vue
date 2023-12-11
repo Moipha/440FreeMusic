@@ -159,7 +159,7 @@
         <el-table
             ref="singleTable"
             :data="tableData"
-            style="width: 100%;margin: auto;height: calc(100vh - 450px);overflow-y: scroll;padding-right: 8px"
+            style="width: 100%;margin: auto;height: 100%;overflow-y: scroll;padding-right: 8px"
             @selection-change="handleSelectionChange"
             v-loading="loadingTable"
             @mouseenter.native="showScrollbar"
@@ -205,11 +205,7 @@
               <el-switch v-model="scope.row.enable" @change="changeEnable(scope.row)"></el-switch>
             </template>
           </el-table-column>
-          <el-table-column
-              property="edit"
-              width="50">
-            <span class="el-icon-more" style="cursor: pointer;font-size: 20px"></span>
-          </el-table-column>
+          <el-table-column width="20"></el-table-column>
         </el-table>
 
       </el-tab-pane>
@@ -219,7 +215,6 @@
     </el-tabs>
   </div>
 </template>
-<!--TODO 实现多选操作和启用等操作-->
 <script>
 import {serverIp} from "../../public/config";
 import axios from "axios";
