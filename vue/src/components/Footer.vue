@@ -712,7 +712,7 @@ export default {
   display: flex;
   flex-direction: row;
   padding: 0;
-  backdrop-filter: blur(15px);
+  backdrop-filter: blur(25px);
   color: var(--footerText);
   border-top: 1px var(--footerHover) solid;
 }

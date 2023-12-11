@@ -1,5 +1,6 @@
 package com.test.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.UnsupportedTagException;
 import com.test.common.Result;
@@ -20,6 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/music")
@@ -63,7 +66,7 @@ public class MusicController {
     //获取所有歌曲
     @GetMapping("/getAll")
     public Result getAll() {
-        return Result.success(musicService.list());
+        return Result.success(musicService.list(new QueryWrapper<Music>().orderByDesc("create_time")));
     }
 
     //收藏歌曲

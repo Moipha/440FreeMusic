@@ -10,7 +10,7 @@ export default {
   name: 'App',
 }
 
-//禁止鼠标右键菜单
+// 禁止鼠标右键菜单
 // document.oncontextmenu = function(e){
 //   return false;
 // }
@@ -40,6 +40,7 @@ export default {
   /*上边栏*/
   /*--headerBg: rgba(23, 23, 26, 0.8);*/
   --headerBg: rgba(0, 0, 0, 0);
+  --headerBgOp: #17171acc;
   --headerBtn: rgba(46, 46, 48, 0.7);
   --headerBtnHover: #444444;
   --headerText: var(--whiteText);
@@ -95,7 +96,7 @@ export default {
   --searchLightText: var(--lightBlackText);
   /*底栏*/
   --footerText: #FFFFFF;
-  --footerBg: #00000022;
+  --footerBg: #00000055;
   --footerHover: var(--headerBtnHover);
   --footerActive: var(--leftBtnActive);
   /*右边栏*/
@@ -118,65 +119,6 @@ export default {
   --menuText: var(--leftText);
   --menuBorder: #333333;
   --menuHover: var(--searchHover);
-}
-
-.Orange {
-  /*总体*/
-  --whiteText: #DDDDDD;
-  --blackText: #333333;
-  --lightWhiteText: #AAAAAA;
-  --lightBlackText: #777777;
-  --scrollbar: var(--headerBtnHover);
-  /*右部背景*/
-  --rightBg: rgb(58, 60, 63);
-  /*左边栏*/
-  --leftbg: #B56536;
-  --leftText: var(--whiteText);
-  --leftBtnActive: #863020;
-  --leftBtnHover: rgb(115, 45, 98);
-  /*header*/
-  --headerBg: rgb(151, 88, 50);
-  --headerBtn: rgba(31, 33, 36, 0.8);
-  --headerBtnHover: rgb(187, 181, 172);
-  --headerText: var(--whiteText);
-  --headerSearchBg: rgb(103, 66, 44);
-  --headerTabText: var(--leftText);
-  --headerTabHover: rgb(134, 48, 32);
-  --headerInputText: rgb(58, 60, 63);
-
-  /*dialog*/
-  --hr: rgb(88, 69, 59);
-  --dialogBg: rgb(210, 128, 6);
-  --dialogText: var(--headerText);
-  /*setting*/
-  --settingText: var(--whiteText);
-  --settingLightText: var(--lightBlackText);
-  --settingBtn: rgb(134, 48, 32);
-  --settingBtnText: var(--lightWhiteText);
-  --settingBtnHover: rgb(119, 50, 39);
-  --settingHr: rgb(151, 88, 50);
-  /*个人中心*/
-  --mineText: var(--whiteText);
-  --mineCardBg: #862617;
-  --mineTabText: var(--mineText);
-  --mineTabHover: #fa5d19;
-  --mineAvatarBg: var(--whiteText);
-  --mineAvatarText: var(--blackText);
-  --mineBtnBg: var(--loginBtn);
-  --mineBtnText: var(--loginText);
-  --mineBtnHover: var(--loginBtnHover);
-  --mineInputBg: var(--loginInputBg);
-  /*登录注册*/
-  --loginA: rgb(181, 101, 54);
-  --loginBtn: var(--loginA);
-  --loginBg: var(--mineTabHover);
-  --loginInputBg: rgb(141, 88, 58);
-  --loginInputText: var(--lightBlackText);
-  --loginInputActive: var(--mineCardBg);
-  --loginInputBorder: rgba(0, 0, 0, 0);
-  --loginText: var(--whiteText);
-  --loginBtnHover: rgb(157, 93, 56);
-  --loginAHover: rgba(181, 101, 54, 0.6);
 }
 
 .Light {

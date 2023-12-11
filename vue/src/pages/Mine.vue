@@ -169,8 +169,7 @@
               width="50"
               v-if="showSelection">
           </el-table-column>
-          <el-table-column
-              width="70">
+          <el-table-column width="70">
             <template slot-scope="scope">
               <el-avatar shape="square" size="medium" style="background-color: #00000000"
                          :src="scope.row.avatar"></el-avatar>

@@ -201,6 +201,10 @@ export default {
     },
     //保存歌单信息
     save() {
+      if (this.list.avatar === null) {
+        //如果未上传过头像，则直接提交更新
+        this.updateList()
+      }
       if (this.list.avatar.length > 100) {
         //如果list的avatar长度很长的话，那就是保存了本地图片的路径，说明已经预上传了封面，此时需要提交封面
         this.$refs.avatar.submit()

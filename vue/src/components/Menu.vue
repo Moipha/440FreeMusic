@@ -119,6 +119,9 @@ export default {
         let menu = document.getElementsByClassName('secondMenu')[0]
         if (menu.style !== null) {
           menu.style.display = 'flex'
+          menu.style.animationDuration = '0.2s'
+          menu.style.animationName = 'in'
+          menu.style.backdropFilter = 'blur(10px)'
         }
       })
     },
@@ -127,6 +130,8 @@ export default {
         let menu = document.getElementsByClassName('secondMenu')[0]
         if (menu.style !== null) {
           menu.style.display = 'none'
+          menu.style.animationDuration = '0.2s'
+          menu.style.animationName = 'out'
         }
       })
     },
@@ -354,14 +359,17 @@ export default {
 .secondMenu {
   position: absolute;
   width: 160px;
+  height: 200px;
+  overflow-y: scroll;
   background-color: var(--menuBg);
   border: solid 1px var(--menuBorder);
-  left: 98%;
+  left: 103%;
   top: 55%;
   border-radius: 10px;
   display: none;
   flex-direction: column;
   padding: 5px;
+  z-index: 0;
 }
 
 .listItem {
@@ -391,5 +399,24 @@ export default {
   to {
     opacity: 0
   }
+}
+
+::-webkit-scrollbar {
+  overflow: auto;
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbarHover);
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgba(0,0,0,0);
+  border-radius: 5px;
 }
 </style>

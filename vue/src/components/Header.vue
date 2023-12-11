@@ -1,5 +1,5 @@
 <template>
-  <el-header ref="header" class="header" style="width: calc(100% - 250px)">
+  <el-header ref="header" class="header" :class="{ 'not-top': !isTop }" style="width: calc(100% - 250px)">
     <!--前进后退按钮-->
     <span class="navigation" @click="goBack" :class="{disabled: $store.state.index===0}">
       <span class="el-icon-arrow-left" style="font-weight: 1000;color: var(--headerText)"/>
@@ -19,59 +19,14 @@
           @click="openD">
       <span class="el-icon-search" style="margin: 0 10px 0 20px;line-height: 40px"/>搜索
     </span>
-    <el-tooltip class="item" effect="dark" content="项目地址" placement="bottom">
-      <a class="el-dropdown-link" id="icon" href="https://gitee.com/YoungTrendFar/Project" target="_blank">
-        <span class="el-icon-tickets"/>
-      </a>
-    </el-tooltip>
-    <el-tooltip class="item" effect="dark" content="主题切换" placement="bottom">
-      <span class="el-dropdown-link" id="icon" @click="changeTheme">
+    <!--    <el-tooltip class="item" effect="dark" content="项目地址" placement="bottom">-->
+    <!--      <a class="el-dropdown-link" id="icon" href="https://gitee.com/YoungTrendFar/Project" target="_blank">-->
+    <!--        <span class="el-icon-tickets"/>-->
+    <!--      </a>-->
+    <!--    </el-tooltip>-->
+    <span class="el-dropdown-link" id="icon" @click="changeTheme">
         <span :class="icon"/>
       </span>
-    </el-tooltip>
-
-    <!--对话框-->
-    <el-dialog :visible.sync="showDialog"
-               :show-close="false"
-               @open="openDialog"
-               ref="dialog"
-               :modal-append-to-body='false'
-               :append-to-body="false">
-      <div style="font-size: 17px">
-        <span class="el-icon-search"
-              style="line-height: 10px;margin: 20px 5px 20px 20px;color: var(--headerInputText)!important"/>
-        <el-input
-            style="width: 55%;user-select: auto;font-size: 16px"
-            placeholder=" 搜索"
-            ref="input"
-            v-model="searchString"
-            @keydown.enter.native="jumpToSearch"
-            clearable/>
-        <span class="word">打开搜索</span>
-        <span class="keys">Alt S</span>
-        <span class="word" style="margin-left: 10px">退出</span>
-        <span class="keys">Esc</span>
-      </div>
-      <hr style="border: var(--hr) 1px solid;width: 100%;padding: 0;margin: 0">
-      <div style="margin-left: 30px;margin-top: 20px;color: var(--searchText)">
-        <span style="font-size: 17px;margin-right: 15px;">历史搜索</span>
-        <el-popconfirm
-            title="确定删除搜索记录吗？"
-            confirm-button-type="danger"
-            cancel-button-type="primary"
-            icon-color="red"
-            @confirm="deleteHistory"
-        >
-          <span slot="reference" class="el-icon-delete deleteIcon"></span>
-        </el-popconfirm>
-        <div v-if="keywordList.length!==0" v-for="word in keywordList" class="searchItem" @click="searchString=word">
-          <span>{{ word }}</span>
-        </div>
-        <div v-if="keywordList.length===0" style="margin: 100px 160px;width: 200px">
-          <span style="font-size: 14px">暂无搜索记录</span>
-        </div>
-      </div>
-    </el-dialog>
 
   </el-header>
 </template>
@@ -84,21 +39,16 @@ export default {
   name: "Header",
   data() {
     return {
-      //弹窗显示
-      showDialog: false,
       //当前图标
       currentIcon: this.$store.state.theme,
       //当前响应的标签页
       activeTab: this.$router.currentRoute.fullPath,
-      //搜索的内容
-      searchString: '',
-      //搜索记录
-      keywordList: localStorage.getItem('searchHistory') ? JSON.parse(localStorage.getItem('searchHistory')) : []
+      isTop: true,
     }
   },
   computed: {
     icon() {
-      return this.currentIcon === 'Dark' ? 'el-icon-moon' : this.currentIcon === 'Light' ? 'el-icon-sunny' : 'el-icon-orange'
+      return this.currentIcon === 'Dark' ? 'el-icon-moon' : 'el-icon-sunny'
     }
   },
   methods: {
@@ -109,21 +59,13 @@ export default {
     goForward() {
       this.$store.commit("goForward")
     },
-    //打开对话框
-    openDialog() {
-      this.$nextTick(() => {
-        this.$refs.input.focus();
-      })
-    },
+
     //修改主题
     changeTheme() {
       const theme = this.$store.state.theme
       let themeName
       if (theme === 'Dark') {
         themeName = 'Light'
-        this.$bus.$emit('changeIcon', themeName)
-      } else if (theme === 'Light') {
-        themeName = 'Orange'
         this.$bus.$emit('changeIcon', themeName)
       } else {
         themeName = 'Dark'
@@ -139,40 +81,20 @@ export default {
         router.push(option.name)
       }
     },
-    //搜索
-    jumpToSearch() {
-      //添加搜索记录
-      this.keywordList.unshift(this.searchString)
-      localStorage.setItem('searchHistory', JSON.stringify(this.keywordList))
-      //跳转并传参
-      this.showDialog = false
-      this.$router.push({path: '/search', query: {searchStr: this.searchString}})
-      this.$bus.$emit('changeSearchStr', this.searchString)
-      this.searchString = ''
+
+    //监听滚动条事件
+    handleScroll(e) {
+      console.log(e.srcElement._prevClass)
+      if(e.srcElement._prevClass !== 'el-table el-table--fit el-table--enable-row-hover el-table--enable-row-transition el-table--small'
+        && e.srcElement._prevClass !== undefined
+        && e.srcElement._prevClass !== 'secondMenu'){
+        this.isTop = e.target.scrollTop <= 60;
+      }
     },
-    // //滚动条
-    // handleScroll(e) {
-    //   if (e.target.__vue__._uid === '22') {
-    //     const header = document.getElementsByClassName('header')[0]
-    //     if (header) {
-    //       header.style.borderBottomColor = `rgba(64,64,64,${e.target.scrollTop})`
-    //       if (e.target.scrollTop !== 0) {
-    //         header.style.backgroundColor = 'var(--rightBg)'
-    //       } else {
-    //         header.style.backgroundColor = 'var(--headerBg)'
-    //
-    //       }
-    //     }
-    //   }
-    // },
     openD() {
-      this.showDialog = true
+      this.$bus.$emit('openSearch', true)
     },
-    //清除搜索记录
-    deleteHistory() {
-      localStorage.removeItem('searchHistory')
-      this.keywordList = []
-    }
+
   },
   mounted() {
     this.$bus.$on('changeActiveTab', (path) => {
@@ -182,16 +104,14 @@ export default {
       this.currentIcon = icon
     })
     //监听滚动条事件
-    // window.addEventListener('scroll', this.handleScroll, true);
-    //使用快捷键打开或关闭搜索框
-    this.$bus.$on('openSearch', () => {
-      this.showDialog = !this.showDialog
-    })
-  },
+    window.addEventListener('scroll', this.handleScroll, true);
+
+  }
+  ,
   beforeDestroy() {
     this.$bus.$off('changeActiveTab')
     this.$bus.$off('changeIcon')
-    // window.removeEventListener('scroll', this.handleScroll)
+    window.removeEventListener('scroll', this.handleScroll)
     this.$bus.$off('openSearch')
   }
 }
@@ -199,6 +119,13 @@ export default {
 
 
 <style scoped>
+
+/*header不在顶部的样式*/
+.not-top {
+  backdrop-filter: blur(25px);
+  background-color: var(--headerBgOp) !important;
+  border-bottom: 1px var(--footerHover) solid !important;
+}
 
 .header {
   position: fixed;

@@ -1,5 +1,5 @@
 <template>
-  <div style="overflow-y: scroll;height: 624px"
+  <div style="height: 100%"
        @mouseenter="showScrollbar"
        @mouseleave="hideScrollbar">
     <table>

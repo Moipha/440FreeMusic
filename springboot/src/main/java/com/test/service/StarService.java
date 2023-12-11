@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -38,6 +39,7 @@ public class StarService extends ServiceImpl<StarMapper, Star> {
     public Result getStars(Star star) {
         QueryWrapper<Star> qw = new QueryWrapper<>();
         qw.eq("user_id", star.getUserId());
+
         List<Star> stars = list(qw);
         List<Music> result = new ArrayList<>();
         for (Star s : stars) {

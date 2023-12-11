@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService extends ServiceImpl<UserMapper, User> {
@@ -119,17 +120,18 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     //获取该用户创建的歌单
     public List<com.test.pojo.List> getLists(Integer userId) {
         //获取该用户相关的所有UserList对象
-        List<UserList> userLists = userListService.list(new QueryWrapper<UserList>().eq("user_id", userId).eq("type", 1));
+        QueryWrapper<UserList> qw = new QueryWrapper<>();
+        qw.eq("user_id", userId);
+        qw.eq("type", 1);
+        qw.orderByDesc("create_time");
+        List<UserList> userLists = userListService.list(qw);
         //获取list的id数组
-        List<Integer> listIds = new ArrayList<>();
-        for (UserList userList : userLists) {
-            listIds.add(userList.getListId());
+        List<Integer> listIds = userLists.stream().map(UserList::getListId).collect(Collectors.toList());
+        //通过listId获取list对象集合返回
+        if (listIds.size() != 0) {
+            return listMapper.selectBatchIds(listIds);
+        }else{
+            return new ArrayList<>();
         }
-        //通过listId获取list对象集合
-        List<com.test.pojo.List> result = new ArrayList<>();
-        for (Integer id : listIds) {
-            result.add(listMapper.selectOne(new QueryWrapper<com.test.pojo.List>().eq("id", id)));
-        }
-        return result;
     }
 }

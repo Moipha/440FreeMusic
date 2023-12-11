@@ -26,6 +26,8 @@ public class AvatarService extends ServiceImpl<AvatarMapper, Avatar> {
 
     @Value("${files.upload.path}avatars/")
     private String fileUploadPath;
+    @Value("${config.interface}")
+    private String interfaceUrl;
 
     //保存封面文件
     public Result saveAvatar(MultipartFile file) throws IOException {
@@ -64,9 +66,7 @@ public class AvatarService extends ServiceImpl<AvatarMapper, Avatar> {
             uploadFile.delete();
         } else {
             //不存在，那就在服务器中保存
-            //TODO 此处在部署时需要修改
-//            url = "http://47.94.161.201:8080/avatar/" + fileUuid;
-            url = "http://localhost:8080/avatar/" + fileUuid;
+            url = interfaceUrl + "/avatar/" + fileUuid;
 
             //将封面存入数据库
             Avatar dbData = new Avatar();

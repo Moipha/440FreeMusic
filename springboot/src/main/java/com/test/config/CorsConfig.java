@@ -1,5 +1,6 @@
 package com.test.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -9,6 +10,9 @@ import org.springframework.web.filter.CorsFilter;
 @Configuration
 public class CorsConfig{
 
+    @Value("${config.origin}")
+    private String allowedOrigin;
+
     // 当前跨域请求最大有效时长。这里默认1天
     private static final long MAX_AGE = 24 * 60 * 60;
 
@@ -16,9 +20,7 @@ public class CorsConfig{
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        //TODO 此处在部署时需要修改
-        corsConfiguration.addAllowedOrigin("http://localhost"); // 1 设置访问源地址
-//        corsConfiguration.addAllowedOrigin("http://47.94.161.201"); // 1 设置访问源地址
+        corsConfiguration.addAllowedOrigin(allowedOrigin); // 1 设置访问源地址
         corsConfiguration.addAllowedHeader("*"); // 2 设置访问源请求头
         corsConfiguration.addAllowedMethod("*"); // 3 设置访问源请求方法
         corsConfiguration.addExposedHeader("Access-Control-Allow-Origin"); // 添加需要暴露的头信息

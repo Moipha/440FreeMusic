@@ -4,7 +4,7 @@
       <div>
         <h1 style="font-size: 25px">歌单推荐 <span class="el-icon-present"></span></h1>
         <div style="display: flex;flex-direction: row">
-          <div v-for="l in lists" style="display: flex;flex-direction: column;margin-right: 20px">
+          <div v-for="l in lists" style="display: flex;flex-direction: column;margin: 0 auto">
             <div @click="jumpToList(l)" class="avatarContainer">
               <el-avatar :src="l.avatar?l.avatar:require('@/assets/DefaultAvatar.png')" shape="square"
                          style="height: 150px;width: 150px;transition: 0.4s;margin-bottom: -75px"></el-avatar>

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @Service
 public class ListService extends ServiceImpl<ListMapper, List> {
@@ -56,16 +57,19 @@ public class ListService extends ServiceImpl<ListMapper, List> {
         java.util.List<List> lists = userService.getLists(Integer.valueOf(userId));
         QueryWrapper<List> qw = new QueryWrapper<>();
         qw.eq("title", title);
-        java.util.List<Integer> ids = new ArrayList<>();
-        for (List list : lists) {
-            ids.add(list.getId());
-        }
-        qw.in("id", ids);
-        List list = getOne(qw);
-        if (list == null) {
+        java.util.List<Integer> ids = lists.stream().map(List::getId).collect(Collectors.toList());
+        if(ids.size()!=0){
+            qw.in("id", ids);
+            List list = getOne(qw);
+            if (list == null) {
+                throw new ServiceException("400", "不存在这样标题的歌单");
+            }
+            return Result.success(list);
+        }else{
             throw new ServiceException("400", "不存在这样标题的歌单");
         }
-        return Result.success(list);
+
+
     }
 
     //获取创建者信息
