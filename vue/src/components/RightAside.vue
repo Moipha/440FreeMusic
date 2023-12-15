@@ -166,12 +166,11 @@ export default {
 
 .right {
   width: 360px !important;
-  height: calc(100% - 100px) !important;
+  height: 100% !important;
   padding-top: 70px;
   position: absolute;
   right: -400px;
-  /*right: 0;*/
-  bottom: 100px;
+  bottom: 0;
   background-color: var(--rightAsideBg);
   transition: 0.3s ease-in-out;
   z-index: 0;

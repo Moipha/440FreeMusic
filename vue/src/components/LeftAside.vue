@@ -198,7 +198,7 @@ export default {
       if (firstChar.match(/[a-zA-Z]/)) {
         return firstChar.toUpperCase()
       }
-      return ''
+      return firstChar
     },
     defaultUrl() {
       if (this.username === '点击登录') {

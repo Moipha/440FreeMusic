@@ -74,7 +74,7 @@ export default {
     },
     //获取当前正在播放的音乐
     getCurrentMusic() {
-      this.currentPlayId = JSON.parse(localStorage.getItem('currentMusic')).id
+      this.currentPlayId = JSON.parse(localStorage.getItem('currentMusic')) ? JSON.parse(localStorage.getItem('currentMusic')).id : ''
     },
     //双击播放
     dbClick(music) {

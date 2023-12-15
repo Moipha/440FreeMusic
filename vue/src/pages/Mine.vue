@@ -209,9 +209,9 @@
         </el-table>
 
       </el-tab-pane>
-      <el-tab-pane label="关注用户" name="user">
+<!--      <el-tab-pane label="关注用户" name="user">-->
 
-      </el-tab-pane>
+<!--      </el-tab-pane>-->
     </el-tabs>
   </div>
 </template>
@@ -268,7 +268,7 @@ export default {
       if (firstChar.match(/[a-zA-Z]/)) {
         return firstChar.toUpperCase()
       }
-      return ''
+      return firstChar
     },
     currentIcon() {
       return this.nowChanging ? 'el-icon-finished' : 'el-icon-edit'

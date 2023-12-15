@@ -1,5 +1,5 @@
 <template>
-  <el-main style="overflow-y: scroll;height: calc(100% - 100px)">
+  <el-main style="overflow-y: scroll;height: 100%">
     <div class="optionContainer" v-if="existUser">
       <div class="container">
         <span class="title">账号</span>
@@ -19,9 +19,8 @@
         <h4 style="margin: 0 0 5px 0">主题颜色模式</h4>
         <span class="deepText">{{ theme }}</span><br>
         <el-button-group style="margin-top: 15px">
-          <el-button @click="btnClick1" class="btnGroup btnInGroup" icon="el-icon-sunny"></el-button>
-          <el-button @click="btnClick2" class="btnGroup btnInGroup" icon="el-icon-moon"></el-button>
-          <el-button @click="btnClick3" class="btnGroup" icon="el-icon-orange"></el-button>
+          <el-button @click="btnClick('Light')" class="btnGroup btnInGroup" icon="el-icon-sunny"></el-button>
+          <el-button @click="btnClick('Dark')" class="btnGroup btnInGroup" icon="el-icon-moon"></el-button>
         </el-button-group>
       </div>
     </div>
@@ -112,22 +111,7 @@ export default {
     }
   },
   methods: {
-    btnClick1() {
-      const themeName = 'Light'
-      this.$bus.$emit('changeTheme', themeName)
-      this.$store.commit('setTheme', themeName)
-      this.$bus.$emit('changeIcon', themeName)
-      localStorage.setItem('theme', themeName)
-    },
-    btnClick2() {
-      const themeName = 'Dark'
-      this.$bus.$emit('changeTheme', themeName)
-      this.$store.commit('setTheme', themeName)
-      this.$bus.$emit('changeIcon', themeName)
-      localStorage.setItem('theme', themeName)
-    },
-    btnClick3() {
-      const themeName = 'Orange'
+    btnClick(themeName) {
       this.$bus.$emit('changeTheme', themeName)
       this.$store.commit('setTheme', themeName)
       this.$bus.$emit('changeIcon', themeName)

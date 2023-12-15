@@ -1,5 +1,17 @@
 <template>
   <el-footer id="footer" class="container">
+    <div class="expandBtn">
+      <svg @click="hidePlay(false)" style="margin-left: 5px;margin-top: 5px" t="1702623457457"
+           viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+           p-id="5754" width="40" height="40">
+        <path
+            d="M199.36 572.768a31.904 31.904 0 0 0 22.624-9.376l294.144-294.144 285.728 285.728a31.968 31.968 0 1 0 45.248-45.248l-308.352-308.352a32 32 0 0 0-45.28 0l-316.768 316.768a31.968 31.968 0 0 0 22.656 54.624z"
+            p-id="5755" fill="currentColor"></path>
+        <path
+            d="M538.784 457.376a32 32 0 0 0-45.28 0l-316.768 316.768a31.968 31.968 0 1 0 45.248 45.248l294.144-294.144 285.728 285.728a31.968 31.968 0 1 0 45.248-45.248l-308.32-308.352z"
+            p-id="5756" fill="currentColor"></path>
+      </svg>
+    </div>
     <!--footer-->
     <div class="footer">
       <!--左边-->
@@ -897,4 +909,20 @@ export default {
   margin: auto 0;
 }
 
+.expandBtn {
+  position: fixed;
+  width: 50px;
+  height: 50px;
+  bottom: 0;
+  right: 20px;
+  background-color: var(--footerBg);
+  border-radius: 10px 10px 0 0;
+  backdrop-filter: blur(25px);
+  color: var(--footerText);
+  border: 1px var(--footerHover) solid;
+  cursor: pointer;
+}
+.expandBtn:hover{
+  background-color: var(--footerHover) !important;
+}
 </style>

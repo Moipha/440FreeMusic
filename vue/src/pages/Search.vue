@@ -13,9 +13,9 @@
       <el-tab-pane label="专辑" name="album"/>
       <el-tab-pane label="歌手" name="author"/>
     </el-tabs>
-    <div style="overflow-y: scroll;height: 514px"
-         @mouseenter="showScrollbar"
-         @mouseleave="hideScrollbar">
+    <div
+        @mouseenter="showScrollbar"
+        @mouseleave="hideScrollbar">
       <table>
         <tr style="color: var(--listTh);font-size: 14px">
           <th style="width: 5%" align="center"></th>
@@ -115,7 +115,7 @@ export default {
     },
     //获取当前正在播放的音乐
     getCurrentMusic() {
-      this.currentPlayId = JSON.parse(localStorage.getItem('currentMusic')).id
+      this.currentPlayId = JSON.parse(localStorage.getItem('currentMusic')) ? JSON.parse(localStorage.getItem('currentMusic')).id : ''
     },
     //双击播放
     dbClick(music) {
