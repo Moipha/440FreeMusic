@@ -65,11 +65,6 @@ export const router = new VueRouter({
             ]
         },
         {
-            path: '/about',
-            name: 'About',
-            component: () => import('@/components/About')
-        },
-        {
             path: '/404',
             name: 'NotFound',
             component: () => import('@/pages/404')

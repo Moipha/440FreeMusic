@@ -39,7 +39,7 @@
       <span class="listBtn cancelBtn" style="background-color: var(--listInput);margin: 10px 0 15px"
             @click="showDialog=false">取消</span>
     </el-dialog>
-    <div class="background" :style="`background-image: url(${src})`"></div>
+    <div class="background" :style="`background: url(${src}); background-size: cover`"></div>
     <div class="top">
       <el-avatar class="left" shape="square" :size="200" :src="src"></el-avatar>
       <div class="right">

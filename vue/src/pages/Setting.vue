@@ -106,7 +106,7 @@ export default {
   name: "Setting",
   data() {
     return {
-      theme: localStorage.getItem('theme') === 'Dark' ? 'Dark' : localStorage.getItem('theme') === 'Light' ? 'Light' : 'Orange',
+      theme: localStorage.getItem('theme') === 'Light' ? 'Light' : 'Dark',
       existUser: localStorage.getItem('user') !== null
     }
   },

@@ -363,8 +363,7 @@ export default {
       isLoaded: false,
       //音乐对象
       music: {
-        avatar: require('@/assets/DefaultAvatar.png'),
-        url: require('@/assets/testMusic/test2.mp3'),
+        avatar: require('@/assets/DefaultAvatar.png')
       },
       //音乐界面的类名
       bottomClass: 'hiddenMusic',

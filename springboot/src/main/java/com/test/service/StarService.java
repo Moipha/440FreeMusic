@@ -2,6 +2,7 @@ package com.test.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.test.common.Constants;
 import com.test.common.Result;
 import com.test.mapper.StarMapper;
 import com.test.pojo.Music;
@@ -30,7 +31,13 @@ public class StarService extends ServiceImpl<StarMapper, Star> {
             remove(qw);
         } else {
             //未收藏
-            save(star);
+            if (star.getUserId() == null) {
+                return Result.error(Constants.CODE_400, "歌曲未选中");
+            } else if (star.getMusicId() == null) {
+                return Result.error(Constants.CODE_400, "用户未登录");
+            } else {
+                save(star);
+            }
         }
         return Result.success(one == null);
     }

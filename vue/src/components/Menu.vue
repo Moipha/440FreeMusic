@@ -359,8 +359,8 @@ export default {
 .secondMenu {
   position: absolute;
   width: 160px;
-  height: 200px;
-  overflow-y: scroll;
+  /*height: 200px;*/
+  /*overflow-y: scroll;*/
   background-color: var(--menuBg);
   border: solid 1px var(--menuBorder);
   left: 103%;
@@ -369,7 +369,7 @@ export default {
   display: none;
   flex-direction: column;
   padding: 5px;
-  z-index: 0;
+  backdrop-filter: blur(10px);
 }
 
 .listItem {
