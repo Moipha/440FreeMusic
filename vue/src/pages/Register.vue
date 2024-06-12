@@ -48,7 +48,7 @@
         </el-form-item>
         <el-button style="margin-top: 20px;width: 350px;
                       height: 40px;background-color: var(--loginA);
-                      border: none;color: var(--loginText);font-weight: bold;
+                      border: none;color: var(--btnText);font-weight: bold;
                       font-size: 14px;transition: 0.4s"
                    @click="register">
           立即注册

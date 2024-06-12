@@ -402,7 +402,7 @@ export default {
   top: 0;
   left: 0;
   z-index: -1;
-  filter: blur(10px) brightness(40%);
+  filter: blur(10px) brightness(var(--bright));
 }
 
 
@@ -592,5 +592,6 @@ tr td:last-child {
 
 #light {
   background-color: var(--listActive);
+  color: var(--btnText)
 }
 </style>

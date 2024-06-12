@@ -395,5 +395,6 @@ tr td:last-child {
 
 #light {
   background-color: var(--listActive);
+  color: var(--btnText)
 }
 </style>

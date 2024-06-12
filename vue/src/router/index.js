@@ -1,6 +1,5 @@
 import VueRouter from "vue-router"
 import store from "@/store";
-import Mine from "@/pages/Mine";
 
 export const router = new VueRouter({
     routes: [

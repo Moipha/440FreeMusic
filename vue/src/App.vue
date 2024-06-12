@@ -20,6 +20,7 @@ export default {
 
 .Dark {
   /*总体*/
+  --btnText: white;
   --whiteText: #DDDDDD;
   --blackText: #333333;
   --lightWhiteText: #AAAAAA;
@@ -114,6 +115,7 @@ export default {
   --listTh: rgb(134, 134, 136);
   --listInput: #55555577;
   --listActive: #006bad;
+  --bright: 40%;
   /*菜单*/
   --menuBg: #222222bb;
   --menuText: var(--leftText);
@@ -123,6 +125,7 @@ export default {
 
 .Light {
   /*总体*/
+  --btnText: white;
   --whiteText: #DDDDDD;
   --blackText: #333333;
   --lightWhiteText: #AAAAAA;
@@ -130,33 +133,32 @@ export default {
   --scrollbar: var(--leftBtnActive);
   --scrollbarHover: var(--loginBtnHover);
   /*右边栏*/
-  --rightBg: #E9DABB;
+  --rightBg: white;
   /*左边栏*/
-  --leftbg: #001345;
-  --leftText: #EEEEEE;
-  --leftBtnActive: #B4A117;
-  --leftBtnHover: #005283;
+  --leftbg: whitesmoke;
+  --leftText: black;
+  --leftBtnActive: dodgerblue;
+  --leftBtnHover: #eee;
   /*header*/
-  /*--headerBg: rgba(0, 19, 69, 0.6);*/
   --headerBg: rgba(0, 0, 0, 0);
-  --headerBtn: #005283dd;
-  --headerBtnHover: #001345cc;
-  --headerText: var(--whiteText);
-  --headerSearchBg: var(--headerBtn);
+  --headerBtn: whitesmoke;
+  --headerBtnHover: #ddd;
+  --headerText: var(--blackText);
+  --headerSearchBg: whitesmoke;
   --headerTabText: var(--blackText);
   --headerTabHover: var(--leftBtnActive);
   --headerInputText: var(--lightBlackText);
   /*dialog*/
-  --hr: #FFFFFF;
-  --dialogBg: #DBD7D6;
+  --hr: #333;
+  --dialogBg: ghostwhite;
   --dialogText: var(--headerText);
   /*setting*/
   --settingText: var(--blackText);
   --settingLightText: var(--lightBlackText);
-  --settingBtn: var(--leftBtnHover);
-  --settingBtnText: var(--whiteText);
-  --settingBtnHover: #006bad;
-  --settingHr: var(--leftbg);
+  --settingBtn: dodgerblue;
+  --settingBtnText: white;
+  --settingBtnHover: royalblue;
+  --settingHr: black;
   /*个人中心*/
   --mineText: var(--blackText);
   --mineCardBg: var(--leftBtnActive);
@@ -177,8 +179,8 @@ export default {
   --loginInputActive: var(--mineCardBg);
   --loginInputBorder: var(--blackText);
   --loginText: var(--blackText);
-  --loginBtnHover: #beae2b;
-  --loginAHover: var(--settingBtnHover);
+  --loginBtnHover: royalblue;
+  --loginAHover: #ddd;
   /*搜索界面*/
   --searchInputBg: var(--loginInputBg);
   --searchInputText: var(--blackText);
@@ -186,14 +188,35 @@ export default {
   --searchTabText: var(--mineTabText);
   --searchText: var(--blackText);
   --searchHr: var(--settingHr);
-  --searchHover: #d3d0bf;
+  --searchHover: #eee;
   --searchActive: var(--leftBtnActive);
   --searchLightText: var(--lightBlackText);
   /*底栏*/
   --footerText: var(--leftText);
-  --footerBg: #00000030;
+  --footerBg: #22222230;
   --footerHover: var(--lightBlackText);
   --footerActive: var(--mineTabHover);
+  /*右边栏*/
+  --rightAsideBg: whitesmoke;
+  --rightAsideText: black;
+  --rightTabBg: white;
+  --rightTab: whitesmoke;
+  --rightLightText: #AAAAAA;
+  --rightHover: #ddd;
+  /*歌单*/
+  --listText: var(--whiteText);
+  --listHover: #aaaaaa55;
+  --listBtn: var(--loginBtn);
+  --listBtnHover: var(--loginBtnHover);
+  --listTh: rgb(134, 134, 136);
+  --listInput: #55555577;
+  --listActive: dodgerblue;
+  --bright: 90%;
+  /*菜单*/
+  --menuBg: #ffffffbb;
+  --menuText: var(--leftText);
+  --menuBorder: #aaa;
+  --menuHover: var(--searchHover);
 }
 
 
