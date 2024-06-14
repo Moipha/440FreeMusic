@@ -69,7 +69,7 @@ export const router = new VueRouter({
             component: () => import('@/pages/404')
         },
     ],
-    mode: 'history'
+    mode: 'hash'
 })
 
 // //动态路由
