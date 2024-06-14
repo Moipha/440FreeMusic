@@ -5,5 +5,5 @@ module.exports = defineConfig({
   devServer:{
     port: 80
   },
-  publicPath: '/440FreeMusic/'
+  // publicPath: '/440FreeMusic/'
 })

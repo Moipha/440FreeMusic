@@ -92,7 +92,7 @@
                 :limit="1"
                 class="upload-demo"
                 drag
-                :action="'http://'+serverIp+'/music/getData'"
+                :action="protocol + '://'+serverIp+'/music/getData'"
                 :auto-upload="true"
                 :on-success="handleGetDataSuccess"
                 :before-upload="beforeGetData"
@@ -117,7 +117,7 @@
                     :show-file-list="false"
                     style="margin-top: 10px"
                     :on-change="handleUploadAvatar"
-                    :action="'http://'+serverIp+'/avatar/saveAvatar'"
+                    :action="protocol + '://'+serverIp+'/avatar/saveAvatar'"
                     :auto-upload="false"
                     list-type="picture"
                     :disabled="uploadAvatar!==''"
@@ -159,7 +159,7 @@
         <el-table
             ref="singleTable"
             :data="tableData"
-            style="width: 100%;margin: auto;height: 100%;overflow-y: scroll;padding-right: 8px"
+            style="width: 100%;margin: auto;padding-right: 8px"
             @selection-change="handleSelectionChange"
             v-loading="loadingTable"
             @mouseenter.native="showScrollbar"
@@ -209,14 +209,14 @@
         </el-table>
 
       </el-tab-pane>
-<!--      <el-tab-pane label="关注用户" name="user">-->
+      <!--      <el-tab-pane label="关注用户" name="user">-->
 
-<!--      </el-tab-pane>-->
+      <!--      </el-tab-pane>-->
     </el-tabs>
   </div>
 </template>
 <script>
-import {serverIp} from "../../public/config";
+import {protocol, serverIp} from "../../public/config";
 import axios from "axios";
 
 export default {
@@ -242,6 +242,7 @@ export default {
       loading: false,
       //IP
       serverIp: serverIp,
+      protocol: protocol,
       //upload-dragger样式修改
       showDragger: true,
       //即将上传的头像地址
@@ -333,7 +334,6 @@ export default {
       this.$router.push('/login')
       this.$bus.$emit('changeLists', [])
     },
-    //TODO 实现改密码的功能： 最好是弹窗，然后让你输入旧密码，验证成功后再输入两次新密码，然后确定两次输入一样
     changePassword() {
 
     },
@@ -432,7 +432,7 @@ export default {
       let formData = new FormData()
       formData.append('file', file)
       //不能使用utils中配置的默认请求头，因为要使用multipart类型的contentType
-      axios.post(`http://${serverIp}/music/saveMusic`, formData, {
+      axios.post(`${protocol}://${serverIp}/music/saveMusic`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         }

@@ -17,7 +17,7 @@
         <el-avatar shape="square" size="large" :src="src" style="margin-bottom: 10px"></el-avatar>
         <el-upload
             ref="avatar"
-            :action="'http://'+serverIp+'/avatar/saveAvatar'"
+            :action="protocol + '://'+serverIp+'/avatar/saveAvatar'"
             :limit="1"
             :show-file-list="false"
             :on-change="handleUploadAvatar"
@@ -39,7 +39,10 @@
       <span class="listBtn cancelBtn" style="background-color: var(--listInput);margin: 10px 0 15px"
             @click="showDialog=false">取消</span>
     </el-dialog>
-    <div class="background" :style="`background: url(${src}); background-size: cover`"></div>
+    <div class="background">
+      <div :style="`background: url(${src})`"
+           style="filter: blur(10px) brightness(var(--bright));background-size: cover;height: 100%;width: 100%"></div>
+    </div>
     <div class="top">
       <el-avatar class="left" shape="square" :size="200" :src="src"></el-avatar>
       <div class="right">
@@ -95,7 +98,7 @@
   </div>
 </template>
 <script>
-import {serverIp} from "../../public/config";
+import {serverIp, protocol} from "../../public/config";
 
 export default {
   name: "List",
@@ -111,6 +114,7 @@ export default {
       existMenu: false,
       //IP
       serverIp: serverIp,
+      protocol: protocol,
       //正在播放
       currentPlayId: -1,
     }
@@ -402,7 +406,7 @@ export default {
   top: 0;
   left: 0;
   z-index: -1;
-  filter: blur(10px) brightness(var(--bright));
+  overflow: hidden;
 }
 
 

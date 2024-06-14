@@ -84,7 +84,7 @@ export default {
 
     //监听滚动条事件
     handleScroll(e) {
-      console.log(e.srcElement._prevClass)
+      // console.log(e.srcElement._prevClass)
       if(e.srcElement._prevClass !== undefined && e.srcElement._prevClass !== 'secondMenu' && e.srcElement._prevClass !== 'content'){
         this.isTop = e.target.scrollTop <= 60;
       }

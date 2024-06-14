@@ -191,6 +191,7 @@ export default {
 .right {
   display: flex;
   flex-direction: column;
+  color: var(--headerTabText)
 }
 
 .bottom {
@@ -208,7 +209,7 @@ export default {
 }
 
 .btn {
-  color: #EEEEEE;
+  color: var(--btnText);
   background-color: var(--listBtn);
   transition: 0.2s;
   border: none;
