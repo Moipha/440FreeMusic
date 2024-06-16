@@ -65,20 +65,20 @@
           <el-tooltip content="上传">
             <el-button @click="showDialog=true" class="btnInGroup btnGroup" icon="el-icon-plus"></el-button>
           </el-tooltip>
-          <el-tooltip content="批量操作">
-            <el-button @click="mulEdit" class="btnInGroup btnGroup" icon="el-icon-s-grid"></el-button>
-          </el-tooltip>
-          <template v-if="showSelection">
-            <el-tooltip content="批量启用">
-              <el-button @click="mulEnable" class="btnInGroup btnGroup" icon="el-icon-open"></el-button>
-            </el-tooltip>
-            <el-tooltip content="批量禁用">
-              <el-button @click="mulDisable" class="btnInGroup btnGroup" icon="el-icon-turn-off"></el-button>
-            </el-tooltip>
-            <el-tooltip content="批量删除">
-              <el-button @click="mulDelete" class="btnInGroup btnGroup" icon="el-icon-delete"></el-button>
-            </el-tooltip>
-          </template>
+<!--          <el-tooltip content="批量操作">-->
+<!--            <el-button @click="mulEdit" class="btnInGroup btnGroup" icon="el-icon-s-grid"></el-button>-->
+<!--          </el-tooltip>-->
+<!--          <template v-if="showSelection">-->
+<!--            <el-tooltip content="批量启用">-->
+<!--              <el-button @click="mulEnable" class="btnInGroup btnGroup" icon="el-icon-open"></el-button>-->
+<!--            </el-tooltip>-->
+<!--            <el-tooltip content="批量禁用">-->
+<!--              <el-button @click="mulDisable" class="btnInGroup btnGroup" icon="el-icon-turn-off"></el-button>-->
+<!--            </el-tooltip>-->
+<!--            <el-tooltip content="批量删除">-->
+<!--              <el-button @click="mulDelete" class="btnInGroup btnGroup" icon="el-icon-delete"></el-button>-->
+<!--            </el-tooltip>-->
+<!--          </template>-->
         </el-button-group>
         <el-dialog :visible.sync="showDialog"
                    :show-close="false"
@@ -197,14 +197,14 @@
               width="60">
           </el-table-column>
 
-          <el-table-column
-              property="enable"
-              label="启用"
-              width="60">
-            <template slot-scope="scope">
-              <el-switch v-model="scope.row.enable" @change="changeEnable(scope.row)"></el-switch>
-            </template>
-          </el-table-column>
+<!--          <el-table-column-->
+<!--              property="enable"-->
+<!--              label="启用"-->
+<!--              width="60">-->
+<!--            <template slot-scope="scope">-->
+<!--              <el-switch v-model="scope.row.enable" @change="changeEnable(scope.row)"></el-switch>-->
+<!--            </template>-->
+<!--          </el-table-column>-->
           <el-table-column width="20"></el-table-column>
         </el-table>
 

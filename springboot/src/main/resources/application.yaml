@@ -1,9 +1,8 @@
 spring:
   datasource:
     username: root
-    password: dir99
+    password: dir999
     url: jdbc:mysql://localhost:3306/music?useSSL=false&serverTimezone=GMT%2d8
-#    url: jdbc:mysql://47.94.161.201:3306/music?useSSL=false&serverTimezone=GMT%2d8
     driver-class-name: com.mysql.cj.jdbc.Driver
   servlet:
     multipart:
@@ -13,13 +12,16 @@ spring:
 
 # 自定义配置
 config:
-  origin: "http://localhost"
-#  origin: "http://47.94.161.201"
-  interface: "http://localhost:8080"
-#  interface: "http://47.94.161.201:8080"
+  origin: "*"
+  interface: "https://zhixiao.site:4400"
 
 server:
-  port: 8080
+  port: 4400
+  ssl:
+    enabled: true
+    key-store: classpath:https.jks
+    key-store-password: Kh9&uSo#NCRYKxtp
+    key-store-type: jks
 
 mybatis-plus:
   configuration:
@@ -27,5 +29,5 @@ mybatis-plus:
 
 files:
   upload:
-        path: C:/Users/Young/Desktop/Works/daerxia/软件工程/Project/files/
-#    path: /home/files/
+    #        path: C:/Users/Young/Desktop/Works/daerxia/软件工程/Project/files/
+    path: /home/test/files/

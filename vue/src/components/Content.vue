@@ -1,5 +1,7 @@
 <template>
-  <el-container style="height: 100vh">
+  <el-container v-loading="loading"
+                element-loading-background="var(--rightBg)"
+                style="height: 100vh">
     <!--左边栏-->
     <LeftAside @mouseenter.native="showLeftScrollbar"
                @mouseleave.native="hideLeftScrollbar"/>
@@ -41,6 +43,11 @@ import SearchWindow from "@/components/SearchWindow";
 export default {
   name: "Content",
   components: {Menu, LeftAside, Header, Footer, RightAside, SearchWindow},
+  data(){
+    return {
+      loading: false
+    }
+  },
   methods: {
     showScrollbar() {
       document.documentElement.style.setProperty('--test', 'visible');
@@ -56,6 +63,15 @@ export default {
       document.documentElement.style.setProperty('--notTest', 'hidden');
     }
   },
+  // mounted() {
+  //   this.$bus.$on('changeLoadingState', (b)=>{
+  //     this.loading = b
+  //   })
+  // },
+  //
+  // beforeDestroy() {
+  //   this.$bus.$off('changeLoadingState')
+  // }
 
 }
 </script>

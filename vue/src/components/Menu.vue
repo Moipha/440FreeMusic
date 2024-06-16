@@ -54,7 +54,10 @@
         <span>收藏到歌单</span>
         <span style="float: right"> <i class="el-icon-arrow-right" style="font-weight: bold"></i> </span>
         <div class="secondMenu" @mouseenter="showSecond">
-          <div class="listItem" v-for="list in lists" @click="star(list)">
+          <div v-if="!lists.length" style="text-align: center">
+            暂无歌单
+          </div>
+          <div v-else class="listItem" v-for="list in lists" @click="star(list)">
             {{ list.title }}
           </div>
         </div>
@@ -110,7 +113,9 @@ export default {
       //目前操作的歌单
       list: {},
       //目前歌单中的内容
-      musics: []
+      musics: [],
+      // 窗口的位置
+      position: [0, 0]
     }
   },
   methods: {
@@ -118,10 +123,23 @@ export default {
       this.$nextTick(() => {
         let menu = document.getElementsByClassName('secondMenu')[0]
         if (menu.style !== null) {
-          menu.style.display = 'flex'
           menu.style.animationDuration = '0.2s'
           menu.style.animationName = 'in'
-          menu.style.backdropFilter = 'blur(10px)'
+          menu.style.display = 'flex'
+          console.log(window.innerWidth, window.innerHeight)
+          console.log(this.position)
+
+          if (this.position[0] > window.innerWidth - 400) {
+              menu.style.left = '-160px'
+          }else{
+            menu.style.left = '240px'
+          }
+          if(this.position[1] > window.innerHeight - 450){
+            menu.style.top = '25%'
+          }else{
+            menu.style.top = '55%'
+          }
+
         }
       })
     },
@@ -266,37 +284,34 @@ export default {
       let container = document.querySelector('.menu')
       if (container.style !== null) {
         if (b) {
+          //设置数据
+          this.music = music
+          this.list = list
+          this.mode = mode
+          this.musics = musics
+          this.position[0] = x
+          this.position[1] = y
+          this.getLists()
           //如果菜单已经打开，那就先关闭再打开
           if (container.style.display === 'flex') {
+            // 先关闭
+            container.style.display = 'none'
             container.style.animationDuration = '0.1s'
             container.style.animationName = 'out'
             setTimeout(() => {
-              container.style.display = 'none'
-              container.style.display = 'flex'
               //打开
               container.style.left = x + 'px'
               container.style.top = y + 'px'
               container.style.animationName = 'in'
-              //设置数据
-              this.music = music
-              this.list = list
-              this.mode = mode
-              this.musics = musics
-              this.getLists()
+              container.style.display = 'flex'
             }, 100)
           } else {
             container.style.animationDuration = '0.2s'
-            container.style.display = 'flex'
             //打开
             container.style.left = x + 'px'
             container.style.top = y + 'px'
             container.style.animationName = 'in'
-            //设置数据
-            this.music = music
-            this.list = list
-            this.mode = mode
-            this.musics = musics
-            this.getLists()
+            container.style.display = 'flex'
           }
         } else {
           container.style.animationDuration = '0.2s'
@@ -363,13 +378,13 @@ export default {
   /*overflow-y: scroll;*/
   background-color: var(--menuBg);
   border: solid 1px var(--menuBorder);
-  left: 103%;
+  left: 99%;
   top: 55%;
   border-radius: 10px;
   display: none;
   flex-direction: column;
   padding: 5px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(8px);
 }
 
 .listItem {
@@ -416,7 +431,7 @@ export default {
 }
 
 ::-webkit-scrollbar-track {
-  background-color: rgba(0,0,0,0);
+  background-color: rgba(0, 0, 0, 0);
   border-radius: 5px;
 }
 </style>

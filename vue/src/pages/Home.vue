@@ -4,7 +4,7 @@
       <div>
         <h1 style="font-size: 25px">歌单推荐 <span class="el-icon-present"></span></h1>
         <div style="display: flex;flex-direction: row">
-          <div v-for="l in lists" style="display: flex;flex-direction: column;margin: 0 auto">
+          <div v-for="l in lists" style="display: flex;flex-direction: column;margin: auto;">
             <div @click="jumpToList(l)" class="avatarContainer">
               <el-avatar :src="l.avatar?l.avatar:require('@/assets/DefaultAvatar.png')" shape="square"
                          style="height: 150px;width: 150px;transition: 0.4s;margin-bottom: -75px"></el-avatar>
@@ -85,17 +85,22 @@
       <el-divider></el-divider>
       <div style="margin-bottom: 100px">
         <h3>更新日志</h3>
-        <!--        <h5>2023/6/11</h5>-->
-        <!--        <h6>基本实现目前所有功能，即将正式上线</h6>-->
-        <!--        <h5>2023/6/12</h5>-->
-        <!--        <h6>修复了首页推荐歌单少于7个时悬浮图标显示错位的问题；修复了歌单信息修改出错的问题</h6>-->
-        <!--        <h6>实现了收藏和歌单页面添加歌曲至播放列表的功能；修正了播放和添加按钮稍微错位的样式错误</h6>-->
+        <h5>2023/6/11</h5>
+        <h6>基本实现目前所有功能，即将正式上线</h6>
+        <h5>2023/6/12</h5>
+        <h6>修复了首页推荐歌单少于7个时悬浮图标显示错位的问题；修复了歌单信息修改出错的问题</h6>
+        <h6>实现了收藏和歌单页面添加歌曲至播放列表的功能；修正了播放和添加按钮稍微错位的样式错误</h6>
         <h5>2023/11/29</h5>
         <h6>实现了Header根据滚动条位置动态显示下边框和背景模糊效果</h6>
         <h6>修复了部分页面显示不全的错误</h6>
         <h5>2023/12/12</h5>
         <h6>底栏添加隐藏和恢复按钮</h6>
         <h6>修复了未登录状态点击收藏歌曲的500报错</h6>
+        <h5>2024/6/14</h5>
+        <h6>重置了亮色主题</h6>
+        <h5>2024/6/16</h5>
+        <h6>删除了未完成的部分</h6>
+        <h6>修复了二级弹窗在边缘显示出错的问题</h6>
       </div>
     </div>
     <router-view></router-view>

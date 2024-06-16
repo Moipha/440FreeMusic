@@ -40,8 +40,7 @@
             @click="showDialog=false">取消</span>
     </el-dialog>
     <div class="background">
-      <div :style="`background: url(${src})`"
-           style="filter: blur(10px) brightness(var(--bright));background-size: cover;height: 100%;width: 100%"></div>
+      <div :style="`background-image: url(${src})`" class="avatar"></div>
     </div>
     <div class="top">
       <el-avatar class="left" shape="square" :size="200" :src="src"></el-avatar>
@@ -121,7 +120,8 @@ export default {
   },
   computed: {
     src() {
-      return this.list.avatar ? this.list.avatar : require('@/assets/DefaultAvatar.png')
+      // return this.list.avatar ? this.list.avatar : require('@/assets/DefaultAvatar.png')
+      return this.list.avatar ? this.list.avatar : this.musics[0] ? this.musics[0].avatar : require('@/assets/DefaultAvatar.png')
     },
     //判断该歌单是不是自己的
     isMine() {
@@ -183,7 +183,7 @@ export default {
     getMusics() {
       this.request.post('/list/getMusics/' + this.list.id).then(res => {
         if (res.code === '200') {
-          this.musics = res.data
+          this.musics = res.data.reverse()
         } else {
           this.$notify({
             type: 'error',
@@ -597,5 +597,13 @@ tr td:last-child {
 #light {
   background-color: var(--listActive);
   color: var(--btnText)
+}
+
+.avatar {
+  filter: blur(10px) brightness(var(--bright));
+  background-size: cover;
+  background-position: center;
+  height: 100%;
+  width: 100%;
 }
 </style>

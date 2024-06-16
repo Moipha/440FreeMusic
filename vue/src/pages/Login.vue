@@ -37,10 +37,10 @@
                       font-size: 14px;transition: 0.4s"
                    @click="login">登录
         </el-button>
-        <h5 class="register" style="float:right;margin-right: 50px;
-          cursor: pointer;color: var(--loginA);
-          padding: 2px 5px 5px 5px;border-radius: 5px"
-            @click="$router.push('/forget')">忘记密码?</h5>
+<!--        <h5 class="register" style="float:right;margin-right: 50px;-->
+<!--          cursor: pointer;color: var(&#45;&#45;loginA);-->
+<!--          padding: 2px 5px 5px 5px;border-radius: 5px"-->
+<!--            @click="$router.push('/forget')">忘记密码?</h5>-->
       </el-form>
     </div>
   </div>
