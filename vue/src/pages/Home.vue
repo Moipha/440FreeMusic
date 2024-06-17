@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="!$route.path.endsWith('recent')" style="color: var(--homeText);font-family: 华文宋体,serif">
+    <div v-if="!$route.path.endsWith('recent')" class="container">
       <div>
         <h1 style="font-size: 25px">歌单推荐 <span class="el-icon-present"></span></h1>
         <div style="display: flex;flex-direction: row">
@@ -16,17 +16,17 @@
         </div>
       </div>
       <el-divider></el-divider>
-      <div style="display: flex;flex-direction: row">
-        <div style="width: 48%;margin-right: 4%">
+      <div style="display: flex;flex-direction: row;justify-content: space-between">
+        <div style="width: 49%">
           <h1 style="font-size: 25px">单曲推荐 <span class="el-icon-headset"></span></h1>
-          <table>
+          <table style="width: 100%">
             <tr style="color: var(--listTh);font-size: 14px">
-              <th style="width: 10%" align="center"></th>
-              <th align="left" style="width: 30%;">音乐标题</th>
+              <th align="center" style="width: 10%"></th>
+              <th align="left" style="width: 30%">音乐标题</th>
               <th align="left" style="width: 20%">歌手</th>
               <th align="left" style="width: 20%">专辑</th>
               <th align="left" style="width: 10%">时长</th>
-              <th align="left" style="width: 10%;"></th>
+              <th align="left" style="width: 10%"></th>
             </tr>
             <tr style="height: 20px"></tr>
             <tr :id="music.id === currentPlayId ? 'light' : ''" class="items" v-for="music in tableData"
@@ -47,13 +47,13 @@
             </tr>
           </table>
         </div>
-        <div style="width: 48%;">
+        <div style="width: 49%">
           <h1 style="font-size: 25px">
             <span @click="$router.push('/home/recent')" style="margin-right: 10px;cursor: pointer;">最新上传</span>
             <span @click="$router.push('/home/recent')" class="el-icon-arrow-right"
                   style="font-size: 18px;font-weight: bold;cursor: pointer;"></span>
           </h1>
-          <table>
+          <table style="width: 100%">
             <tr style="color: var(--listTh);font-size: 14px">
               <th style="width: 10%" align="center"></th>
               <th align="left" style="width: 30%;">音乐标题</th>
@@ -317,5 +317,12 @@ tr td:last-child {
   bottom: 40px;
 }
 
+
+.container {
+  color: var(--homeText);
+  font-family: 华文宋体, serif;
+  width: 1150px;
+  margin: auto;
+}
 
 </style>
