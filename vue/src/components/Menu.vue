@@ -155,7 +155,8 @@ export default {
     },
     //获取该用户的所有歌单列表
     getLists() {
-      this.request.get('/user/getLists/' + JSON.parse(localStorage.getItem('user')).id,).then(res => {
+      if(!JSON.parse(localStorage.getItem('user'))) return
+      this.request.get('/user/getLists/' + JSON.parse(localStorage.getItem('user')).id).then(res => {
         if (res.code === '200') {
           this.lists = res.data
         } else {
