@@ -4,7 +4,7 @@ import router from "@/router";
 
 const request = axios.create({
     baseURL: protocol + '://' + serverIp,  // 注意！！ 这里是全局统一加上了 后端接口前缀 前缀，后端必须进行跨域配置！
-    timeout: 5000
+    timeout: 10000
 })
 // request 拦截器
 // 可以自请求发送前对请求做一些处理
