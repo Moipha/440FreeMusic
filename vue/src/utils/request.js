@@ -1,9 +1,9 @@
 import axios from 'axios'
-import {serverIp} from "../../public/config";
+import {serverIp, protocol} from "../../public/config";
 import router from "@/router";
 
 const request = axios.create({
-    baseURL: 'https://' + serverIp,  // 注意！！ 这里是全局统一加上了 后端接口前缀 前缀，后端必须进行跨域配置！
+    baseURL: protocol + '://' + serverIp,  // 注意！！ 这里是全局统一加上了 后端接口前缀 前缀，后端必须进行跨域配置！
     timeout: 5000
 })
 // request 拦截器

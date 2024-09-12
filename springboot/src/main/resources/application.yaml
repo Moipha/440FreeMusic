@@ -13,15 +13,15 @@ spring:
 # 自定义配置
 config:
   origin: "*"
-  interface: "https://zhixiao.site:4400"
+  interface: "http://39.107.246.56:4400"
 
 server:
   port: 4400
-  ssl:
-    enabled: true
-    key-store: classpath:https.jks
-    key-store-password: Kh9&uSo#NCRYKxtp
-    key-store-type: jks
+#  ssl:
+#    enabled: true
+#    key-store: classpath:https.jks
+#    key-store-password: Kh9&uSo#NCRYKxtp
+#    key-store-type: jks
 
 mybatis-plus:
   configuration:
